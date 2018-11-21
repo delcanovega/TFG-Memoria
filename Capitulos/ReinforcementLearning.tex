@@ -34,4 +34,32 @@ El campo del \textbf{aprendizaje automático} (o \textit{machine learning}) se e
 \end{itemize}
 
 \section{¿Por qué aprendizaje por refuerzo?}
-Como muchos otros campos o elementos pertenecientes a la rama de Inteligencia Artificial, el aprendizaje por refuerzo se inspira en estudios sobre el comportamiento en humanos y animales. De esta forma toma su base en la psicología conductivista, en la que el algoritmo decide si una acción tomada ha sido positiva o negativa, y la refuerza consecuentemente.
+Como muchos otros campos o elementos pertenecientes a la rama de Inteligencia Artificial, el aprendizaje por refuerzo se inspira en estudios sobre el comportamiento en humanos y animales. De esta forma toma su base en la psicología conductivista, en la que el algoritmo decide si una acción tomada ha sido positiva o negativa, y la refuerza consecuentemente. ¡¡¡REESCRIBIR!!!
+
+¡¡¡COMPLETAR!!!
+
+\section{Elementos del Reinforcement Learning}
+A lo largo de este capítulo el término ``agente'' ha aparecido en repetidas ocasiones. Un \textbf{agente} no es más que el sujeto de nuestro experimento. Si nos encontrasemos en el mundo real un agente podría ser un ratón intentando salir de un laberinto. En nuestro contexto software, llamamos agente a un programa capaz de interactuar con el \textbf{entorno}, aprender de él y \textbf{tomar decisiones}.
+
+El \textit{entorno} es el otro elemento fundamental del \textit{reinforcement learning}. El entorno proporciona información al agente, quien la usará para tomar una decisión. Esta decisión, en forma de acción, provocará cambios en el entorno, los cuales servirán para decidir la recompsa que el agente recibirá.
+
+Más allá del agente y el entorno, existen cuatro subelementos en un sistema de aprendizaje por refuerzo: una \textit{política}, una \textit{recompensa}, una \textit{función de utilidad} y por último un \textit{modelo} del entorno.
+
+La \textit{política} define la forma en la que el agente afronta un determinado problema. Por ejemplo, si nos encontrásemos a un enemigo en un videojuego una política válida sería enfrentarnos a él. Huir podría ser otra política perfectamente válida. Generalizando esto, la política es un mapeo entre el estado en que se encuentra el entorno y la acción que tomará el agente.
+
+Es a través de la \textit{recompensa} como el agente obtiene \textit{feedback} del entorno. Después de cada acción tomada un valor numérico es enviado al agente. El objetivo del agente es maximizar la recompensa acumulada a lo largo de una simulación. A través de la recompensa se modela – y modifica de cara a acciones futuras – la política del agente.
+
+Pero la recompensa no es suficiente para lograr un comportamiento óptimo por parte del agente. Es aquí donde entra en juego la \textit{función de utilidad}. Si nos paramos a pensarlo, existen acciones que no nos proporcionan una gran recompensa por si solas, pero facilitan el camino a otras que generan una recompensa aún mayor. En una partida de \textit{Tetris} podríamos apilar piezas a un lado mientras esperamos la ficha en forma de barra, completando así cuatro líneas en un solo movimiento y así obtener muchos más puntos que si hubiésemos completado una única línea cuatro veces seguidas. Desde un punto de vista más teórico podemos entender la utilidad como la recompensa máxima a la que se podría llegar desde un estado. Es decir, una recompensa a largo plazo.
+
+Dependiendo del problema que afrontemos tendremos que ajustar la importancia que damos a la recompensa y a la utilidad, para que nuestro agente sea capaz de lograr buenos resultados.
+
+Llegamos al último elemento por definir, el \textit{modelo}. Se encarga de simular cómo se comportaría el entorno el tomar una decisión. A través de él podemos \textbf{planificar}, es decir, decidir cuál de todas las acciones posibles nos beneficia más. No todos los problemas usan un modelo, también existen aquellos \textit{libres de modelo} en los cuales el agente depende únicamente en la prueba y error. 
+
+\subsection{Problemas de decisión de Markov}
+
+\section{Q-Learning}
+
+\subsection{CartPole}
+
+\section{Los límites del Reinforcement Learning}
+ 
