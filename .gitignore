@@ -12,4 +12,15 @@
 *.cb2
 .*.lb
 
+*.bbl
+*.blg
+*.fdb_latexmk
+*.idx
+*.ilg
+*.ind
+*.synctex.gz
+
 .DS_Store
+
+## tmp
+TFMTeXiS.pdf
