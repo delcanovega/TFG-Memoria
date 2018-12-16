@@ -65,6 +65,53 @@ Llegamos al último elemento por definir, el \textit{modelo}. Se encarga de simu
 
 \subsection{Problemas de decisión de Markov}
 
+Entendemos como Proceso de Decisión de Markov (MDP) el método mediante el cual buscamos el resultado de la evaluación de un problema en el tiempo, es decir, un problema que requiere de distintos pasos secuenciales para su resolución, de modo que las acciones tomadas previamente tienen influencia en las decisiones que tomaremos a futuro para dicha resolución.
+
+Teniendo en cuenta esta idea, podemos definir los elementos que compondrán nuestro MDP y nos ayuden a comprender mejor cómo funciona este modelo de toma de decisiones:
+
+\begin{itemize}
+    \item \textbf{S}: Conjunto de estados finitos en los que nos podemos encontrar en un determinado momento.
+    \item \textbf{A}: Conjunto de acciones que pueden ser tomadas.
+    \item \textbf{Modelo de transición}: Función que define el estado futuro (\textbf{s'}) basándose en el estado actual (\textbf{s}) y la acción tomada en dicho estado (\textbf{a}). El modelo de transición se representa mediante la función \textbf{P(s, a, s’)}.
+    \item \textbf{Recompensa}: “Puntuación” positiva o negativa que se obtiene al tomar una acción en un determinado estado. Se representa mediante la función \textbf{R(r | s, a)}.
+\end{itemize}
+
+Pongamos el ejemplo de un laberinto. Nuestro conjunto de \textbf{estados} serían todas las posibles posiciones dentro del laberinto donde podemos situarnos, las \textbf{acciones} serían las direcciones en las que nos podemos mover en cada posición del laberinto, nuestro \textbf{modelo de transición} estaría definido de modo que si nos encontramos en una posición [x, y] y decidimos tomar la acción de movernos hacia arriba, nuestra siguiente posición (estado) sería [x, y+1], de modo que podríamos definir la  \textbf{recompensa} como una puntuación de +1 si consigo moverme a una posición buena dentro del laberinto, 0 si me choco contra una pared y +100 si consigo encontrar la salida.
+
+(Foto laberinto)
+
+Visto este ejemplo, podemos generalizar la idea de un MDP como un \textbf{agente} que toma acciones respecto a un entorno y, en función de los estados futuros y las recompensas obtenidas, buscará maximizar su recompensa final.
+
+(Foto MDP Environment-Agent)
+
+Este hecho de que un agente tome una acción y haga cambiar el estado del entorno lo llamamos \textbf{episodio}. Un episodio está compuesto por el estado en el que el agente se encuentre, la acción tomada y la recompensa obtenida:
+
+\begin{equation}
+    episode = (state, action, reward)
+\end{equation}
+
+Los episodios se suceden hasta que el entorno llega a un estado de “finalizado”. Un entorno puede llegar a su estado “finalizado” si perdemos el juego (Game Over) o, si por el contrario, lo ganamos. Podemos diferenciar 2 tipos de entornos y sus diferentes objetivos para conseguir ganar:
+
+\begin{itemize}
+    \item \textbf{Entornos finitos}: Finalizan cuanto el agente obtiene una determinada recompensa, es decir, conocemos el estado final. Un ejemplo de entorno finito podría ser el ejemplo del laberinto antes planteado.
+    \item \textbf{Entornos infinitos}: Son aquellos entornos de los que no tienen un estado “finalizado”, si no que simplemente solo puedes perder, por lo que el objetivo es aguantar el máximo tiempo posible, acumulando recompensas, antes de perder. Un ejemplo de entornos infinitos podría ser el Cart Pole.
+\end{itemize}
+
+Pero, ¿cómo sabemos o cómo decidimos que acción es mejor tomar en cada estado? Éste es el objetivo de nuestro MDP, el de encontrar una \textbf{política} óptima que nos ayude a tomar buenas decisiones acerca de qué acciones tomar en cada momento basándonos en el estado actual y conseguir maximizar nuestro “future return”.
+
+Entendemos como \textbf{future return} las consecuencias futuras a largo plazo de las acciones tomadas por el agente. De este modo, el objetivo de nuestro MDP es el de optimizar su política para buscar obtener una mayor recompensa a la larga, aunque eso conlleve obtener recompensas inmediatas más pequeñas. Este concepto se conoce como \textbf{recompensas retrasadas}, ya que no las obtendremos instantáneamente tras ejecutar una acción, si no después de la sucesión de una serie de acciones.
+
+Gracias a esto, conseguimos que nuestra política aprenda a pensar no solo en qué acción tomar ahora, si no en que acción tomar después de la misma. Un escollo que podemos encontrar de esta manera es el de que nuestra política piense demasiado a la larga y le tome infinitos episodios para encontrar una recompensa que le merezca la pena, de modo que nuestra recompensa futura diverge. Para evitar que esto suceda, introduciremos las llamadas penalizaciones.
+
+Una \textbf{penalización} es un pequeño valor que se descuenta de la recompensa, con el fin de evitar que, como acabamos de ver, nuestra política tome demasiados episodios antes de encontrar una recompensa positiva. Teniendo esto en cuenta, podemos definir nuestra función de recompensa como:
+
+\begin{equation}
+    R_{t} = \sum^{T}_{k = 0} \gamma^{t}r_{t + k + 1}
+\end{equation}
+
+El factor de penalización, \( \gamma \), representa cuánto se descuenta de la recompensa en cada episodio, y su valor siempre se encuentra entre 0 y 1. Valores más altos corresponden a una penalización menor. Los factores de penalización más típicamente usados se encuentran entre 0,97 y 0,99.
+
+
 \section{Q-Learning}
 
 \subsection{CartPole}
