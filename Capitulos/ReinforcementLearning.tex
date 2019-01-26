@@ -38,7 +38,7 @@ Como muchos otros campos pertenecientes a la rama de Inteligencia Artificial, el
 
 Pero antes de todo esto, ¿por qué es el Aprendizaje por refuerzo una opción interesante?
 
-Echemos un vistazo a las técnicas de aprendizaje vistas en la sección anterior. ¿Qué es lo que necesita cada una de ellas para triunfar? Empecemos por el \textit{unsupervised learning}: este es quizá el caso más sencillo, ya que lo único que necesitaremos es algo de lo que vivimos rodeados, \textbf{información}. En internet disponemos de grandes cantidades de ella. Podemos servirnos de las APIs de servicios de música, series, entretenimiento, organismos públicos... Todo esto, en la mayoría de los casos, sin necesidad de tratar la información antes de alimentarla a nuestro algoritmo. Esto, por otra parte, es uno de los problemas del \textit{supervised learning}. Para poder usar información necesitamos que esté correctamente clasificada y, aunque hay conjuntos de pruebas maravillosos disponibles en internet, ante la necesidad de crear uno nuevo es esfuerzo requerido es muy grande.
+Echemos un vistazo a las técnicas de aprendizaje vistas en la sección anterior. ¿Qué es lo que necesita cada una de ellas para triunfar? Empecemos por el \textit{unsupervised learning}: este es quizá el caso más sencillo, ya que lo único que necesitaremos es algo de lo que vivimos rodeados, \textbf{información}. En internet disponemos de grandes cantidades de ella. Podemos servirnos de las APIs de servicios de música, series, entretenimiento, organismos públicos... Todo esto, en la mayoría de los casos, sin necesidad de tratar la información antes de alimentarla a nuestro algoritmo. Esto, por otra parte, es uno de los problemas del \textit{supervised learning}. Para poder usar información necesitamos que esté correctamente clasificada y, aunque en internet hay conjuntos de entrenamiento de gran calidad y variedad, podría darse el caso de que ninguno se adapta a nuestra necesidades. En esta situación podríamos construir uno nosotros mismos, pero la tarea sería larga y tediosa, cuanto menos.
 
 El caso del \textit{reinforcement learning} es distinto. El agente no necesita grandes cantidades de casos de prueba, si no un entorno con el que interactuar por sí mismo, de esta forma los casos de prueba se generan de forma automática. La forma más rápida de hacernos con un entorno en el que soltar nuestro agente y verlo actuar es, como no, simulándolo. Una simulación es la forma más sencilla de controlar las condiciones y el progreso de nuestro experimento, además de quitarnos otros problemas del mundo real: variables que no se tuvieron en cuenta, cosas rompiendose... el mundo real.
 
@@ -57,7 +57,7 @@ La \textit{política} define la forma en la que el agente afronta un determinado
 
 Es a través de la \textit{recompensa} como el agente obtiene \textit{feedback} del entorno. Después de cada acción tomada un valor numérico es enviado al agente. El objetivo del agente es maximizar la recompensa acumulada a lo largo de una simulación. A través de la recompensa se modela – y modifica de cara a acciones futuras – la política del agente.
 
-Pero la recompensa no es suficiente para lograr un comportamiento óptimo por parte del agente. Es aquí donde entra en juego la \textit{función de utilidad}. Si nos paramos a pensarlo, existen acciones que no nos proporcionan una gran recompensa por si solas, pero facilitan el camino a otras que generan una recompensa aún mayor. En una partida de \textit{Tetris} podríamos apilar piezas a un lado mientras esperamos la ficha en forma de barra, completando así cuatro líneas en un solo movimiento y así obtener muchos más puntos que si hubiésemos completado una única línea cuatro veces seguidas. Desde un punto de vista más teórico podemos entender la utilidad como la recompensa máxima a la que se podría llegar desde un estado. Es decir, una recompensa a largo plazo.
+Pero la recompensa no es suficiente para lograr un comportamiento óptimo por parte del agente. Es aquí donde entra en juego la \textit{función de utilidad}. Si nos paramos a pensarlo, existen acciones que no nos proporcionan una gran recompensa por si solas, pero facilitan el camino a otras que generan una recompensa aún mayor. En una partida de \textit{Tetris} podríamos apilar piezas a un lado mientras esperamos la ficha en forma de barra, completando así cuatro líneas en un solo movimiento y obteniendo muchos más puntos que si hubiésemos completado una única línea cuatro veces seguidas. Desde un punto de vista más teórico podemos entender la utilidad como la recompensa máxima a la que se podría llegar desde un estado. Es decir, una recompensa a largo plazo.
 
 Dependiendo del problema que afrontemos tendremos que ajustar la importancia que damos a la recompensa y a la utilidad, para que nuestro agente sea capaz de lograr buenos resultados.
 
@@ -113,8 +113,75 @@ El factor de penalización, \( \gamma \), representa cuánto se descuenta de la 
 
 
 \section{Q-Learning}
+Hasta ahora hemos hablado de muchos conceptos y elementos: agente, entorno, recompensa, política... Llega el momento de aplicarlos de manera conjunta para conseguir una técnica de aprendizaje tangible. \textbf{Q-Learning} es uno de los algoritmos de control más usados. Se trata de un algoritmo \textit{off-policy} con \textit{diferenciación temporal} que busca encontrar una función acción-utilidad que nos dirá cómo de útil es un estado. Siendo $Q(s, a)$ el valor de aplicar una acción $a$ en el estado $s$, los valores devueltos por nuestra función-Q serán la utilidad máxima alcanzable de forma:
 
-\subsection{CartPole}
+\begin{equation}
+    U(s) = \max_{a}Q(s, a)
+\end{equation}
+
+La primera etiqueta que hemos usado ha sido \textbf{off-policy}, ¿qué quiere decir esto?. Los algoritmos \textit{off-policy} son aquellos que predicen (o actualizan) sus valores-Q usando el valor-Q del estado futuro $s'$ y la acción $a'$ que más utilidad produzca. Es decir, simula un resultado voraz a pesar de que no se están tomando decisiones voraces. Debido a esto, Q-Learning es un algoritmo que no necesita un modelo para aprender.
+
+Con \textbf{diferenciación temporal} hacemos referencia al hecho de que, en busca de un aprendizaje correcto, nuestro agente tendrá que tener en cuenta tanto las recompensas directas como aquellas que puede llegar con retardo, como anticipamos en la sección anterior. Reformulando esto, el agente deberá predecir el resultado de la recompensa final. Para poder hacerlo tenemos que encontrar un equilibrio entre las recompensas inmediatas y las futuras. Como podemos imaginar, potenciar la importancia de las recompensas directas perjudica el valor de las futuras.
+
+Este balance está muy relacionado con el problema de \textbf{Exploración vs. Explotación}. Nuestro agente contará con un hiperparámetro \textit{exploración}, el cual determina con qué frecuencia el agente decide tomar una acción aleatoria (en lugar de aquella que le proporcione el valor más prometedor - explotación) con la esperanza de encontrar un nuevo estado en el que nunca haya estado, el cual resulte mucho más beneficioso. En otras palabras, el agente decide si sacar provecho de lo ya aprendido, o intentar aprender más.
+
+Existen varias fórmulas para calcular la utilidad de los estados. Uno de los métodos más utilizados es a través de la \textbf{Ecuación Bellman}, definida como la utilidad de las secuencias de estados:
+
+\begin{equation}
+    U(s) =  R(s) + \lambda\max_{a}U..........
+\end{equation}
+
+Q-Learning cuenta con tres hiperparámetros, dos de los cuales ya hemos visto: la \textit{exploración} y el \textit{factor de penalización} introducido al final de la sección anterior. !!!COMPLETAR!!!
+
+\section{CartPole}
+\begin{quote}
+    Un mástil está unido por una bisagra a un carro, el cual se mueve a lo largo de una pista sin rozamiento. El sistema es controlado aplicando una fuerza de +1 o -1 al carro. EL péndulo (mástil) comienza en posición vertical, el objetivo es prevenir que caiga. Una recompensa de +1 es otorgada por cada \textit{timestep} que el mástil permanece erguido. El episodio finaliza cuando el mástil se encuentra a más de 15 grados de su posición vertical, o el carro se mueve más de 2.4 unidades del centro.
+\end{quote}
+
+Este es el enunciado del primer problema que resolveremos mediante técnicas de Reinforcement Learning. La implementación del problema nos viene dada como parte de la librería \textit{OpenAI Gym}. Una vez importado el problema, dispondremos de un entorno con el que interactuar y nuestro objetivo será crear un agente que interaccione con el mismo.
+
+Nuestro conjunto de acciones, como se indica en el enunciado, tiene dos elementos: aplicar fuerza hacia la derecha o aplicar fuerza hacia la izquierda. El agente deberá decidir cuál de estas dos acciones tomar y se lo comunicará al entorno. Éste responderá con cuatro elementos:
+
+\begin{itemize}
+    \item \textbf{Observación} (objeto): es un array que contiene la información necesaria para describir el estado actual (tras aplicar la última acción). Los valores posibles pueden verse en la tabla \ref{obs-cartpole}.
+    \item \textbf{Recompensa} (float): refuerzo para el agente, +1.0 mientras la simulación continúe.
+    \item \textbf{Fin} (boolean): señal que indica que la simulación ha concluido, bien porque el mástil ha caído o porque lo hemos mantenido en pie durante el tiempo suficiente.
+    \item \textbf{Info} (diccionario): información de diagnóstico útil para la depuración del agente. No obstante, esta información no debe ser usada por el agente para aprender.
+\end{itemize}
+\begin{table}[]
+    \centering
+    \begin{tabular}{|l|l|l|l|}
+    \hline
+    \textbf{Num} & \textbf{Observación} & \textbf{Min} & \textbf{Max} \\ \hline
+    0            & Posición del carro   & -4.8         & 4.8          \\ \hline
+    1            & Velocidad del carro  & -Inf         & Inf          \\ \hline
+    2            & Ángulo del poste     & -24º         & 24º          \\ \hline
+    3            & Velocidad del poste  & -Inf         & Inf          \\ \hline
+    \end{tabular}
+    \caption{Observación del entorno para CartPole}
+    \label{obs-cartpole}
+\end{table}
+
+Como podemos ver a través de las observaciones, este es uno de esos problemas en los que el número de estados distintos es potencialmente infinito, debido a que los valores recibidos son vectores. Por ello tendremos que encontrar una buena \textbf{función de discretización} que simplifique la representación del estado y nos permita trabajar con un número óptimo de estados.
+
+Por otra parte, disponer de un número tan limitado de acciones posibles relaja la complejidad del problema. Al tratarse tan solo de dos opciones, si nuestro agente tomase acciones completamente aleatorias podría acertar en el 50\% de los casos.
+
+\subsection{Discretizando el estado}
+A la hora de discretizar una observación, una de las mejores formas de hacerlo es a través de una simplificación de la misma. Este acercamiento es una adaptación del \textit{Constraint Relaxation} que se aplica en muchos problemas de satisfacción de restricciones. De esta forma podemos comprender el problema desde un punto de partida mucho más sencillo, para después pulir la fórmula y tener en cuenta más variables. Además, podemos ir evaluando el rendimiento de nuestro agente a lo largo del camino, y así ver si las modificaciones que vamos añadiendo de verdad mejoran su comportamiento o simplemente añaden ruido.
+
+Centrémonos por un momento en el objetivo más básico del problema: mantener el mástil en pie. Podemos dividir el problema en dos estados muy simples, uno en el que el mástil está cayendo hacia la derecha y otro en el cae hacia la izquierda, como podemos ver en la Figura \ref{fig:cartpole_01}. Esto coincide con nuestras dos acciones disponibles y, de forma algo ingenua, podemos considerar esto un punto de partida válido.
+
+\figura{Bitmap/Capitulo2/cartpole_01}{width=0.7\textwidth}{fig:cartpole_01}%
+       {Simplificación de estados}
+
+Por supuesto esta discretización es demasiado ingenua para resolver el problema de una forma eficiente, es necesario probar otras divisiones de estados y tener en cuenta las demás observaciones. Para ello creamos una función parametrizable, la cual decide en cuantos estados dividir cada observación. Así podemos decidir a qué observaciones damos más importancia, creando más o menos estados en función a ellas, como podemos apreciar en la Figura \ref{fig:cartpole_02}.
+
+\figura{Bitmap/Capitulo2/cartpole_02}{width=0.7\textwidth}{fig:cartpole_02}%
+       {División de las observaciones}
+
+Este aumento en el número de estados permite que nuestro agente sea capaz de especializarse más en acciones concretas. Pero esta mejora viene con un precio a pagar: cuantos más estados distintos tengamos, más tiempo tardará en visitarlos todos (en repetidas ocasiones) durante su etapa de entrenamiento. Esto quiere decir que nuestro agente tardará más en tener un buen rendimiento. Es importante entonces que evaluemos el problema al que nos enfrentamos para encontrar el equilibrio ideal y así poder ahorrar recursos (memoria y tiempo).
+
+!!!COMPLETAR!!!
 
 \section{Los límites del Reinforcement Learning}
  
