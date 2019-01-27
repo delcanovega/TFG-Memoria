@@ -193,8 +193,8 @@ Para realizar las mediciones, creamos una cola con una longitud máxima de 100 e
 
 En dicha gráfica se pueden apreciar tres etapas distintas en el rendimiento del agente:
 \begin{itemize}
-    \item Episodios 1\~100: durante las primeras simulaciones el agente aún ha de rellenar la tabla-Q. Se encuentra ante situaciones nuevas ante las que aún no sabe como reaccionar. Además hay que tener en cuenta que su rendimiento se calcula en base a la media con los primeros resultados, por lo que en la etapa final de esta fase aún es lastrado por esos primeros episodios.
-    \item Episodios 101\~300: suponen el despegue en rendimiento del agente. En ellos se empieza a librar del lastre de las primeras simulaciones, además de que su tabla interna ya se encuentra en un estado bastante estable y es capaz de generar mejores resultados.
+    \item Episodios 1-50: durante las primeras simulaciones el agente aún ha de rellenar la tabla-Q. Se encuentra ante situaciones nuevas ante las que aún no sabe como reaccionar. Además hay que tener en cuenta que su rendimiento se calcula en base a la media con los primeros resultados, por lo que en la etapa final de esta fase aún es lastrado por esos primeros episodios.
+    \item Episodios 50-300: suponen el despegue en rendimiento del agente. En ellos se empieza a librar del lastre de las primeras simulaciones, además de que su tabla interna ya se encuentra en un estado bastante estable y es capaz de generar mejores resultados.
     \item A partir del episodio 300: el agente alcanza su meta y el algoritmo comienza a estabilizarse.
 \end{itemize}
 
@@ -203,4 +203,8 @@ Cabe destacar que estos resultados han sido obtenidos con una configuración en 
 De esta forma, contamos con un espacio dimensional bastante reducido ($1*1*3*6=18$ estados!). Si por el contrario hubiésemos optado por un número mayor de estados, la primera fase descrita arriba se alargaría considerablemente, pero a cambio podríamos esperar una mayor estabilidad del agente en la tercera fase.
 
 \section{Los límites del Reinforcement Learning}
- 
+A lo largo de este capítulo hemos introducido el \textit{Reinforcement Learning} como método de aprendizaje, las ventajas que tiene sobre otros métodos de aprendizaje, sus mecánicas y elementos, algunos de sus algoritmos... Pero también hemos dejado entrever ciertos problemas.
+
+El más importante es el que vimos durante la discretización del estado. Este problema a menudo es llamado \textit{The Curse of Dimensionality} y hace referencia al aumento exponencial en el tamaño de las tablas de estados en la memoria de los agentes. El problema puede ser contenido a través de buenas aproximaciones en la discretización, no obstante, un entorno continuo lo bastante complejo acaba resultando inviable de afrontar.
+
+Otra solución ha surgido durante los últimos años y consiste en combinar el \textit{Reinforcement Learning} con técnicas de \textit{Deep Learning}, las cuales estudiaremos en los próximos capítulos.
