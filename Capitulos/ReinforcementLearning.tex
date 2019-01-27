@@ -113,25 +113,29 @@ El factor de penalización, \( \gamma \), representa cuánto se descuenta de la 
 
 
 \section{Q-Learning}
-Hasta ahora hemos hablado de muchos conceptos y elementos: agente, entorno, recompensa, política... Llega el momento de aplicarlos de manera conjunta para conseguir una técnica de aprendizaje tangible. \textbf{Q-Learning} es uno de los algoritmos de control más usados. Se trata de un algoritmo \textit{off-policy} con \textit{diferenciación temporal} que busca encontrar una función acción-utilidad que nos dirá cómo de útil es un estado. Siendo $Q(s, a)$ el valor de aplicar una acción $a$ en el estado $s$, los valores devueltos por nuestra función-Q serán la utilidad máxima alcanzable de forma:
+Hasta ahora hemos hablado de muchos conceptos y elementos: agente, entorno, recompensa, política... Llega el momento de aplicarlos de manera conjunta para conseguir una técnica de aprendizaje tangible. \textbf{Q-Learning} es una técnica de aprendizaje por refuerzo que tiene el objetivo de enseñar al agente qué acción es mejor tomar en cada circunstancia. Se trata de un algoritmo \textit{off-policy} con \textit{diferenciación temporal} que busca encontrar una función acción-utilidad que nos dirá cómo de útil es un estado. 
+
+La primera etiqueta que hemos usado ha sido \textbf{off-policy}, ¿qué quiere decir esto?. Los algoritmos \textit{off-policy} son aquellos que predicen (o actualizan) sus valores-Q usando el valor-Q del estado futuro $s'$ y la acción $a'$ que más utilidad produzca. Es decir, simula un resultado voraz a pesar de que no se están tomando decisiones voraces. A diferencia de este modelo, el Q-Learning no necesita un modelo para aprender ya que se basa en la prueba y error mediante la ejecución de acciones en determinado estado, de modo que no aprendemos sobre una política, si no en base al valor de los pares acción-estado. Siendo $Q(s, a)$ el valor de aplicar una acción $a$ en el estado $s$, los valores devueltos por nuestra función-Q serán la utilidad máxima alcanzable de forma:
 
 \begin{equation}
     U(s) = \max_{a}Q(s, a)
 \end{equation}
 
-La primera etiqueta que hemos usado ha sido \textbf{off-policy}, ¿qué quiere decir esto?. Los algoritmos \textit{off-policy} son aquellos que predicen (o actualizan) sus valores-Q usando el valor-Q del estado futuro $s'$ y la acción $a'$ que más utilidad produzca. Es decir, simula un resultado voraz a pesar de que no se están tomando decisiones voraces. Debido a esto, Q-Learning es un algoritmo que no necesita un modelo para aprender.
+Con \textbf{diferenciación temporal} hacemos referencia al hecho de que, en busca de un aprendizaje correcto, nuestro agente tendrá que tener en cuenta tanto las recompensas directas como aquellas que puede llegar con retardo, como anticipamos en la sección anterior. Reformulando esto, el agente deberá predecir el resultado de la recompensa final mediante la ejecucióno secuencial de distintas acciones. Para poder hacerlo tenemos que encontrar un equilibrio entre las recompensas inmediatas y las futuras. Como podemos imaginar, potenciar la importancia de las recompensas directas perjudica el valor de las futuras.
 
-Con \textbf{diferenciación temporal} hacemos referencia al hecho de que, en busca de un aprendizaje correcto, nuestro agente tendrá que tener en cuenta tanto las recompensas directas como aquellas que puede llegar con retardo, como anticipamos en la sección anterior. Reformulando esto, el agente deberá predecir el resultado de la recompensa final. Para poder hacerlo tenemos que encontrar un equilibrio entre las recompensas inmediatas y las futuras. Como podemos imaginar, potenciar la importancia de las recompensas directas perjudica el valor de las futuras.
+Este balance está muy relacionado con el problema de \textbf{Exploración vs. Explotación}. Nuestro agente contará con un hiperparámetro \textit{exploración}, el cual determina con qué frecuencia el agente decide tomar una acción aleatoria (exploración) en lugar de aquella que le proporcione el valor más prometedor (explotación), con la esperanza de encontrar un nuevo estado en el que nunca haya estado y el cual pueda resultar más beneficioso. En otras palabras, el agente decide si sacar provecho de lo ya aprendido, o intentar aprender más.
 
-Este balance está muy relacionado con el problema de \textbf{Exploración vs. Explotación}. Nuestro agente contará con un hiperparámetro \textit{exploración}, el cual determina con qué frecuencia el agente decide tomar una acción aleatoria (en lugar de aquella que le proporcione el valor más prometedor - explotación) con la esperanza de encontrar un nuevo estado en el que nunca haya estado, el cual resulte mucho más beneficioso. En otras palabras, el agente decide si sacar provecho de lo ya aprendido, o intentar aprender más.
-
-Existen varias fórmulas para calcular la utilidad de los estados. Uno de los métodos más utilizados es a través de la \textbf{Ecuación Bellman}, definida como la utilidad de las secuencias de estados:
+Existen varias fórmulas para calcular la utilidad de los estados. Uno de los métodos más utilizados es a través de la \textbf{Ecuación Bellman}, la cual nos indica que la máxima recompensa futura de tomar una acción es la suma de la recompensa actual y la máxima recompensa futura del siguiente episodio, permitiéndonos así obtener una relación entre valores-Q.
 
 \begin{equation}
-    U(s) =  R(s) + \lambda\max_{a}U..........
+    Q^*(s_{t}, a_{t}) = E [ r_{t} + \gamma\ max_{a'}\ Q^*(s_{t+1}, a')]
 \end{equation}
 
-Q-Learning cuenta con tres hiperparámetros, dos de los cuales ya hemos visto: la \textit{exploración} y el \textit{factor de penalización} introducido al final de la sección anterior. !!!COMPLETAR!!!
+De este modo, podemos calcular el valor-Q para un par estado-acción, del mismo modo que con cada nuevo episodio podremos actualizar valores-Q previamente calculador con nueva información obtenida.
+
+Q-Learning cuenta con tres hiperparámetros, dos de los cuales ya hemos visto: la \textit{exploración} y el \textit{factor de penalización} introducido al final de la sección anterior. El tercer hiperparámetro en cuestión corresponde a la \textbf{tasa de aprendizaje}. Este hiperparámetro, que toma valores entre 0 y 1, nos indica cuánta nueva información actualizamos sobre los valores-Q previamente calculados. De este modo, si nuestra tasa de aprendizaje es igual a 0, con cada nuevo episodio no se actualilzarán valores-Q con nueva información, y si es igual a 1, los valores previos se sobreescribirán por completo con la nueva información obtenida.
+
+Llegados a este punto podemos observar como se crea una tabla-Q que relaciona los pares estado-acción con su correspondiente valor-Q, encontrándonos así que esta tabla crece alarmantemente rápido para problemas con un pequeño grado de complejidad y haciendo excesivamente costoso el hecho de visitar todas las experiencias recogidas, así como de actualizarlas, volviéndose el problema de esta forma inmanejable desde un punto de vista computacional.
 
 \section{CartPole}
 \begin{quote}
