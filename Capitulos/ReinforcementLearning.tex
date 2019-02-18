@@ -78,11 +78,14 @@ Teniendo en cuenta esta idea, podemos definir los elementos que compondrán nues
 
 Pongamos el ejemplo de un laberinto. Nuestro conjunto de \textbf{estados} serían todas las posibles posiciones dentro del laberinto donde podemos situarnos, las \textbf{acciones} serían las direcciones en las que nos podemos mover en cada posición del laberinto, nuestro \textbf{modelo de transición} estaría definido de modo que si nos encontramos en una posición [x, y] y decidimos tomar la acción de movernos hacia arriba, nuestra siguiente posición (estado) sería [x, y+1], de modo que podríamos definir la  \textbf{recompensa} como una puntuación de +1 si consigo moverme a una posición buena dentro del laberinto, 0 si me choco contra una pared y +100 si consigo encontrar la salida.
 
-(Foto laberinto)
+\figura{Bitmap/Capitulo2/MDP-Maze}{width=0.7\textwidth}{fig:mdp-01}%
+       {Representación de un MDP}
 
 Visto este ejemplo, podemos generalizar la idea de un MDP como un \textbf{agente} que toma acciones respecto a un entorno y, en función de los estados futuros y las recompensas obtenidas, buscará maximizar su recompensa final.
 
-(Foto MDP Environment-Agent)
+\figura{Bitmap/Capitulo2/MDP-Diagram}{width=0.6\textwidth}{fig:mdp-02}%
+       {Diagrama de un MDP}
+
 
 Este hecho de que un agente tome una acción y haga cambiar el estado del entorno lo llamamos \textbf{episodio}. Un episodio está compuesto por el estado en el que el agente se encuentre, la acción tomada y la recompensa obtenida:
 
