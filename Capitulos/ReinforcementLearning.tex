@@ -47,7 +47,7 @@ Un dominio muy interesante sobre el que realizar simulaciones de Aprendizaje por
 Pero hay mucho más. En la próximas secciones describiremos los distintos componentes de nuestros problemas, además de cuestiones más complejas: cómo definir la interacción entre agente y entorno, cómo representar el entorno de una forma eficiente o cómo discernir si una acción tomada ha sido buena o mala.
 
 \section{Elementos del Reinforcement Learning}
-A lo largo de este capítulo el término ``agente'' ha aparecido en repetidas ocasiones. Un \textbf{agente} no es más que el sujeto de nuestro experimento. Si nos encontrasemos en el mundo real un agente podría ser un ratón intentando salir de un laberinto. En nuestro contexto software, llamamos agente a un programa capaz de interactuar con el \textbf{entorno}, aprender de él y \textbf{tomar decisiones}.
+A lo largo de este capítulo el término ``agente'' ha aparecido en repetidas ocasiones. Un \textbf{agente} no es más que el sujeto de nuestro experimento. Si nos encontrásemos en el mundo real un agente podría ser un ratón intentando salir de un laberinto. En nuestro contexto software, llamamos agente a un programa capaz de interactuar con el \textbf{entorno}, aprender de él y \textbf{tomar decisiones}.
 
 El \textit{entorno} es el otro elemento fundamental del \textit{reinforcement learning}. El entorno proporciona información al agente, quien la usará para tomar una decisión. Esta decisión, en forma de acción, provocará cambios en el entorno, los cuales servirán para decidir la recompsa que el agente recibirá.
 
@@ -76,16 +76,14 @@ Teniendo en cuenta esta idea, podemos definir los elementos que compondrán nues
     \item \textbf{Recompensa}: “Puntuación” positiva o negativa que se obtiene al tomar una acción en un determinado estado. Se representa mediante la función \textbf{R(r | s, a)}.
 \end{itemize}
 
-Pongamos el ejemplo de un laberinto. Nuestro conjunto de \textbf{estados} serían todas las posibles posiciones dentro del laberinto donde podemos situarnos, las \textbf{acciones} serían las direcciones en las que nos podemos mover en cada posición del laberinto, nuestro \textbf{modelo de transición} estaría definido de modo que si nos encontramos en una posición [x, y] y decidimos tomar la acción de movernos hacia arriba, nuestra siguiente posición (estado) sería [x, y+1], de modo que podríamos definir la  \textbf{recompensa} como una puntuación de +1 si consigo moverme a una posición buena dentro del laberinto, 0 si me choco contra una pared y +100 si consigo encontrar la salida.
+Pongamos el ejemplo de un laberinto, como podemos apreciar en la Figura \ref{fig:mdp-01}. Nuestro conjunto de \textbf{estados} serían todas las posibles posiciones dentro del laberinto donde podemos situarnos, las \textbf{acciones} serían las direcciones en las que nos podemos mover en cada posición del laberinto, nuestro \textbf{modelo de transición} estaría definido de modo que si nos encontramos en una posición [x, y] y decidimos tomar la acción de movernos hacia arriba, nuestra siguiente posición (estado) sería [x, y+1], de modo que podríamos definir la  \textbf{recompensa} como una puntuación de +1 si consigo moverme a una posición buena dentro del laberinto, 0 si me choco contra una pared y +100 si consigo encontrar la salida.
 
-\figura{Bitmap/Capitulo2/MDP-Maze}{width=0.7\textwidth}{fig:mdp-01}%
-       {Representación de un MDP}
+\figura{Bitmap/Capitulo2/MDP-Maze.png}{width=0.6\textwidth}{fig:mdp-01}{MDP como laberinto}
 
-Visto este ejemplo, podemos generalizar la idea de un MDP como un \textbf{agente} que toma acciones respecto a un entorno y, en función de los estados futuros y las recompensas obtenidas, buscará maximizar su recompensa final.
+Visto este ejemplo, podemos generalizar la idea de un MDP como un \textbf{agente} que toma acciones respecto a un entorno y, en función de los estados futuros y las recompensas obtenidas, buscará maximizar su recompensa final. Representaremos el agente como se aprecia en la figura \ref{fig:mdp-02}
 
 \figura{Bitmap/Capitulo2/MDP-Diagram}{width=0.6\textwidth}{fig:mdp-02}%
-       {Diagrama de un MDP}
-
+      {Diagrama de un MDP}
 
 Este hecho de que un agente tome una acción y haga cambiar el estado del entorno lo llamamos \textbf{episodio}. Un episodio está compuesto por el estado en el que el agente se encuentre, la acción tomada y la recompensa obtenida:
 
