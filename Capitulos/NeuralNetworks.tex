@@ -9,8 +9,11 @@ En el que estudiaremos la estructura y las utilidades de las redes neuronales.
 En vistas a imitar el funcionamiento de un cerebro humano, en cuanto lo que a procesamiento se refiere, se crearon las primeras redes neuronales artificiales. Éstas se basaron en cálculos matemáticos y algoritmos para conseguir dicho objetivo, a partir del diseño de neuronas artificiales y procesos de auto-aprendizaje.
 
 \subsection{Neuronas}
-La neurona es el elemento básico de una red neuronal. Al igual que las existentes en el cerebro humano, estas neuronas son células de procesamiento; reciben varias entradas de datos y devuelven una única salida. En la mayoría de los casos, esta salida consiste en la suma de la multiplicación de cada entrada por un peso asignado por la propia neurona, de forma que cada neurona devuelve una salida distinta a pesar de que las entradas sean las mismas. \\
-(Foto: func de neurona)
+La neurona es el elemento básico de una red neuronal \ref{fig:esquema_neurona}. Al igual que las existentes en el cerebro humano, estas neuronas son células de procesamiento; reciben varias entradas de datos y devuelven una única salida. En la mayoría de los casos, esta salida consiste en la suma de la multiplicación de cada entrada por un peso asignado por la propia neurona, de forma que cada neurona devuelve una salida distinta a pesar de que las entradas sean las mismas. \\
+
+\figura{Bitmap/Capitulo3/Neuron}{width=1\textwidth}{fig:esquema_neurona}%
+        {Esquema de una neurona artificial, donde X son las entradas, Y la salida y W los pesos.}
+
 Sin embargo, dentro de estas neuronas existen varios tipos, siendo las especializadas en no linealidad las que nos interesan. Éstas también se dividen en función de su algoritmo de activación. A continuación, mencionaremos las más utilizadas.
 
 \begin{itemize}
@@ -59,17 +62,16 @@ En nuestro ejemplo de aprendizaje supervisado sobre clasificación, hemos elegid
 
 Para este caso, hemos establecido una red neuronal de tres capas, la de entrada, la de salida y una capa intermedia u oculta para que la red realice los cálculos necesarios. Hemos utilizado un optimizador Adam, de forma que el descenso de gradiente se realice de forma más efectiva y los valores de los pesos en la red se reajusten más rápidamente. \\
 
-Tanto la capa de entrada como la oculta, son del tipo \textit{ReLu}, visto anteriormente. La capa de entrada se encarga de procesar los 400 píxeles que representan la imagen de una cifra escrita a mano. 
+Tanto la capa de entrada como la oculta, son del tipo \textit{ReLu}, visto anteriormente. La capa de entrada se encarga de procesar los 400 píxeles que representan la imagen de una cifra escrita a mano. A modo de salida, hemos utilizado un tipo especial de capa llamado \textit{softmax}. En ella, se da la condición de que la suma de todas las salidas sea igual a 1. De esta forma, las probabilidades que reflejan las distintas salidas se encuentran normalizadas y son excluyentes entre sí, dejando que haya una probabilidad que destaque por encima de las demás en su conjunto; ésa será nuestra predicción. \\
 
-A modo de salida, hemos utilizado un tipo especial de capa llamado \textit{softmax}. En ella, se da la condición de que la suma de todas las salidas sea igual a 1. De esta forma, las probabilidades que reflejan las distintas salidas se encuentran normalizadas y son excluyentes entre sí, dejando que haya una probabilidad que destaque por encima de las demás en su conjunto; ésa será nuestra predicción. 
+Además, para comprobar que nuestra red neuronal entrena y aprende correctamente, hemos utilizado \textbf{cross-validation} mediante \textbf{K-Fold}. La técnica de cross-validation (o validación cruzada) consiste en dividir en varios grupos el dataset proporcionado y entrenar varias veces el modelo sobre ellos, alternando la función de dichos grupos entre entrenamiento y testeo. El algoritmo K-Fold nos permite barajar el dataset y dividirlo en k grupos, todos para entrenamiento a excepción de uno que se reserva para el testeo. De esta forma, podemos comprobar las distintas en las que ha aprendido, en función de los grupos formados durante la aplicación del K-Fold \ref{fig:Class_accuracy}.
 
+\figura{Bitmap/Capitulo3/Results Classification NN/Class_accuracy3}{width=1\textwidth}{fig:Class_accuracy}%
+        {Resultados de la clasificación con K-Fold de k = 10.}
 
 \subsection{Regresión}
 Los problemas de regresión se distinguen de los de clasificación en que la respuesta de la red neuronal no pertenece a un grupo, sino que forma parte de un conjunto continuo de posibles resultados. La forma de entender este tipo de problemas sería tomando como ejemplo una red neuronal que sea capaz de predecir el precio de una casa en función de su tamaño, número de habitaciones, etc. 
 
 Para este ejemplo, hemos utilizado dicho dataset, ya que está incluido directamente en uno de los paquetes de Keras. 
 (completar ejemplo regresión)
-
-
-
 
