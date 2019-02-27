@@ -3,10 +3,10 @@
 
 En el que estudiaremos la estructura y las utilidades de las redes neuronales. 
 
-\chapterquote{}{}
+\chapterquote{Puede que la única diferencia importante entre una simulación realmente inteligente y un ser humano sea el ruido que hacen cuando les pegas un puñetazo.}{Terry Pratchett}
 
 \section{Definición y elementos}
-En vistas a imitar el funcionamiento de un cerebro humano, en cuanto lo que a procesamiento se refiere, se crearon las primeras redes neuronales. (Meter historia y patatas)
+En vistas a imitar el funcionamiento de un cerebro humano, en cuanto lo que a procesamiento se refiere, se crearon las primeras redes neuronales artificiales. Éstas se basaron en cálculos matemáticos y algoritmos para conseguir dicho objetivo, a partir del diseño de neuronas artificiales y procesos de auto-aprendizaje.
 
 \subsection{Neuronas}
 La neurona es el elemento básico de una red neuronal. Al igual que las existentes en el cerebro humano, estas neuronas son células de procesamiento; reciben varias entradas de datos y devuelven una única salida. En la mayoría de los casos, esta salida consiste en la suma de la multiplicación de cada entrada por un peso asignado por la propia neurona, de forma que cada neurona devuelve una salida distinta a pesar de que las entradas sean las mismas. \\
@@ -19,7 +19,7 @@ Sin embargo, dentro de estas neuronas existen varios tipos, siendo las especiali
     \item Tanh: $f(z)= tahn(z)$\\
     Este tipo de neurona tiene una salida muy parecida a las tipo sigmoide, manteniendo la forma de S, pero con la diferencia de que el marco esta entre -1 y 1. Suele ser usada con más asiduidad debido a que esta centrada en 0.(Foto: función tahn)
     \item ReLu: $f(z) = max(0,z)$\\
-    La neurona de linealidad restringida o ReLu(restricted linear unit) utiliza un distinto tipo de no linealidad. A pesar de su variadas desventajas, en los últimos años se ha posicionado como la más usada en los problemas de visión computacional. Y será la que más usaremos nosotros en nuestros ejemplos. (Foto: función ReLu)
+    La neurona de linealidad restringida o ReLu (Restricted Linear Unit) utiliza un distinto tipo de no linealidad. A pesar de su variadas desventajas, en los últimos años se ha posicionado como la más usada en los problemas de visión computacional. Y será la que más usaremos nosotros en nuestros ejemplos. (Foto: función ReLu)
 \end{itemize}
 
 \subsection{Estructura y funcionamiento}
@@ -27,18 +27,30 @@ Ya que las funcionalidades de una neurona son limitadas, nos resultaría imposib
 
 Las redes neuronales están compuestas generalmente por varias capas, de forma que las salidas de la anterior forman las entradas de la siguiente. Entre ellas, podemos distinguir la capa de entrada, que es la que recibe los datos a analizar, la capa de salida, que es la que devuelve los resultados en el formato que nos interesa en función del problema, y las capas intermedias u ocultas. Éstas son las encargadas de abstraer todos los datos recibidos por la capa anterior para que sea más fácil procesarlos y analizarlos. Un ejemplo sería el ser capaz de reconocer formas y contornos: Nuestros ojos reciben sólo un grupo de colores que el cerebro ayuda a procesarlo añadiendo el concepto de bordes y separaciones para poder interpretar las imágenes. \\
 
-(explicar back-propagation)
+La relación entre cada capa esta condicionada por unos pesos, estos son los que dan distintas prioridades a las entradas y consiguen la abstracción deseada. El problema es que estos pesos no tienen porque ser los ideales y para afinarlos se lleva a cabo un algoritmo conocido como \textbf {backpropagation} o \textbf {retropropagación}. El algoritmo consiste en comparar la salida de de la red neuronal con la salida deseada y comprobar su error para minimizarlo, cambiando los pesos de la capa anterior. Este proceso se lleva a cabo hasta alcanzar la capa de entrada. Existen distintos métodos de cálculo de error pero el más usado, y el que nosotros utilizaremos, es el de error cuadrático.\\
 
+\subsubsection{Optimizadores}
+Uno de los grandes problemas a la hora de entrenar redes neuronales, es el \textbf{ratio de aprendizaje}. Mientras que un ratio pequeño puede aproximarse mejor al error mínimo, en problemas de gran volumen puede resultar demasiado lento. Con un ratio de aprendizaje demasiado grande, ocurre exactamente lo contrario: Aprenderá más rápidamente pero puede resultar muy difícil converger en un mínimo error local.
+
+Para evitar que ocurriera este tipo de problemas, se estudiaron múltiples algoritmos de optimización, de forma que dicho ratio se pudiera modificar dinámicamente durante el entrenamiento. A continuación explicaremos los optimizadores más utilizados.
+
+\begin{itemize}
+    \item \textbf{AdaGrad}: Intenta adaptar el ratio de aprendizaje global a partir de la acumulación del historial de gradientes. Para ser específicos, mantiene un seguimiento del ratio de cada parámetro, de forma que éste sea inversamente proporcional a la raíz de la suma de los cuadrados del historial de gradiente de todos los estados. 
+    \item \textbf{RMSProp}: Este algoritmo utiliza el de descenso de gradiente con momento que, en resumen, se trata de un descenso de gradiente donde los pasos para reducir el error son cada vez más cortos, de forma que se pueda converger en un error mínimo sin problemas. Combinando este algoritmo con el historial de gradientes de AdaGrad, obtenemos el optimizador RMSProp. 
+    \item \textbf{Adam}: Mientras que RMSProp utiliza la media de los gradientes que guarda Adagrad (primer momento), Adam utiliza la media de la varianza (segundo momento). Hay que tener en cuenta que ya que los momentos están inicializados a cero, es necesario un factor de corrección para obtener el valor real de ellos. Adam será el optimizador que utilizaremos, por ser más eficiente y poder adaptarse a la mayoría de problemas. 
+\end{itemize}
 
 \section{Tipos de problemas}
 Como ya hemos visto, las redes neuronales están diseñadas para poder adaptarse y usarse en múltiples problemas de Machine Learning. Para aprender a manejarnos con ellas, hemos desarrollado ejemplos de redes neuronales en los siguientes tipos de problemas.
 
 \subsection{Clasificación}
-Los problemas de clasificación consisten, a grandes rasgos, en asignar un dato recibido a una categoría de un conjunto ya establecido. El ejemplo más claro de esta categoría sería proveer de imágenes de perros y gatos a una red neuronal, y que sea ésta la que decida de qué animal se trata en cada caso. \\
+Los problemas de clasificación consisten, a grandes rasgos, en asignar un dato recibido a una categoría de un conjunto ya establecido. El ejemplo más claro de esta categoría sería proveer de imágenes de perros y gatos a una red neuronal, y que sea ésta la que decida de qué animal se trata en cada caso. Modificando el comportamiento del ojo humano, la red recibiría dichas imágenes como un conjunto de píxeles y a partir ellos, crearía contornos y buscaría patrones para distinguir entre un animal u otro. \\
 
-En nuestro ejemplo de aprendizaje sobre clasificación, hemos elegido otro dataset conocido: Reconocimiento de cifras escritas a mano. El dataset consiste en un conjunto de imágenes de cada número escrito a mano de distintas formas, incluyendo la respuesta correcta para comprobar los resultados de nuestro clasificador. \\ 
+En nuestro ejemplo de aprendizaje supervisado sobre clasificación, hemos elegido otro dataset conocido: Reconocimiento de cifras escritas a mano. El dataset consiste en un conjunto de imágenes de cada número escrito a mano de distintas formas, incluyendo la respuesta correcta para comprobar los resultados de nuestro clasificador. \\
 
-(añadir estructura del clasificador: EN REVISIÓN)
+Para este caso, hemos establecido una red neuronal de tres capas, la de entrada, la de salida y una capa intermedia u oculta para que la red realice los cálculos necesarios. Hemos utilizado un optimizador Adam, de forma que el descenso de gradiente se realice de forma más efectiva y los valores de los pesos en la red se reajusten más rápidamente. \\
+
+Tanto la capa de entrada como la oculta, son del tipo \textit{ReLu}, visto anteriormente. La capa de entrada se encarga de procesar los 400 píxeles que representan la imagen de una cifra escrita a mano. 
 
 A modo de salida, hemos utilizado un tipo especial de capa llamado \textit{softmax}. En ella, se da la condición de que la suma de todas las salidas sea igual a 1. De esta forma, las probabilidades que reflejan las distintas salidas se encuentran normalizadas y son excluyentes entre sí, dejando que haya una probabilidad que destaque por encima de las demás en su conjunto; ésa será nuestra predicción. 
 
@@ -48,4 +60,7 @@ Los problemas de regresión se distinguen de los de clasificación en que la res
 
 Para este ejemplo, hemos utilizado dicho dataset, ya que está incluido directamente en uno de los paquetes de Keras. 
 (completar ejemplo regresión)
+
+
+
 
