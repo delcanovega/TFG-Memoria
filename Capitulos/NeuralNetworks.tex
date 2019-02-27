@@ -15,11 +15,20 @@ Sin embargo, dentro de estas neuronas existen varios tipos, siendo las especiali
 
 \begin{itemize}
     \item Sigmoide: $f(z) = \frac{1}{(1-e^{-z})}$\\
-    Esta función logit marca una diferenciación clara entre valores pequeños y grandes agrupándolos en 0 o 1 respectivamente, entre estos dos extremos las neuronas adoptarán una forma de S.(Foto: funcion sigmoide)
+    Esta función logit marca una diferenciación clara entre valores pequeños y grandes agrupándolos en 0 o 1 respectivamente, entre estos dos extremos las neuronas adoptarán una forma de S.\ref{fig: función_sigmoide}.
+
+\figura{Bitmap/Capitulo3/sigmoide}{width=1\textwidth}{fig:función_sigmoide}%
+
     \item Tanh: $f(z)= tahn(z)$\\
-    Este tipo de neurona tiene una salida muy parecida a las tipo sigmoide, manteniendo la forma de S, pero con la diferencia de que el marco esta entre -1 y 1. Suele ser usada con más asiduidad debido a que esta centrada en 0.(Foto: función tahn)
+    Este tipo de neurona tiene una salida muy parecida a las tipo sigmoide, manteniendo la forma de S, pero con la diferencia de que el marco esta entre -1 y 1. Suele ser usada con más asiduidad debido a que esta centrada en 0.\ref{fig: función_tanh}.
+
+\figura{Bitmap/Capitulo3/tanh}{width=1\textwidth}{fig:función_tanh}%
+
     \item ReLu: $f(z) = max(0,z)$\\
-    La neurona de linealidad restringida o ReLu (Restricted Linear Unit) utiliza un distinto tipo de no linealidad. A pesar de su variadas desventajas, en los últimos años se ha posicionado como la más usada en los problemas de visión computacional. Y será la que más usaremos nosotros en nuestros ejemplos. (Foto: función ReLu)
+    La neurona de linealidad restringida o ReLu (Restricted Linear Unit) utiliza un distinto tipo de no linealidad. A pesar de su variadas desventajas, en los últimos años se ha posicionado como la más usada en los problemas de visión computacional. Y será la que más usaremos nosotros en nuestros ejemplos.\ref{fig: función_ReLu}.
+
+\figura{Bitmap/Capitulo3/Relu}{width=1\textwidth}{fig:función_ReLu}%
+
 \end{itemize}
 
 \subsection{Estructura y funcionamiento}
