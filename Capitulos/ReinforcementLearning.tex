@@ -49,7 +49,7 @@ Pero hay mucho más. En la próximas secciones describiremos los distintos compo
 \section{Elementos del Aprendizaje por Refuerzo}
 A lo largo de este capítulo el término ``agente'' ha aparecido en repetidas ocasiones. Un \textbf{agente} no es más que el sujeto de nuestro experimento. Si nos encontrásemos en el mundo real un agente podría ser un ratón intentando salir de un laberinto. En nuestro contexto software, llamamos agente a un programa capaz de interactuar con el \textbf{entorno}, aprender de él y \textbf{tomar decisiones}.
 
-El \textit{entorno} es el otro elemento fundamental del \textit{Aprendizaje por Refuerzo}. El entorno proporciona información al agente, quien la usará para tomar una decisión. Esta decisión, en forma de acción, provocará cambios en el entorno, los cuales servirán para decidir la recompensa que el agente recibirá.
+El \textit{entorno} es el otro elemento fundamental del \textit{Aprendizaje por Refuerzo}. El entorno proporciona información al agente, quien la usará para tomar una decisión. Esta decisión, en forma de acción, provocará cambios en el entorno, los cuales servirán para que el entorno proporcione la recompensa consecuente al agente.
 
 Más allá del agente y el entorno, existen cuatro subelementos en un sistema de Aprendizaje por Refuerzo: una \textit{política}, una \textit{recompensa}, una \textit{función de utilidad} y por último un \textit{modelo} del entorno.
 
@@ -65,9 +65,9 @@ Llegamos al último elemento por definir, el \textit{modelo}. Se encarga de simu
 
 \subsection{Problemas de decisión de Markov}
 
-Entendemos como Proceso de Decisión de Markov (MDP) el método mediante el cual buscamos el resultado de la evaluación de un problema en el tiempo, es decir, un problema que requiere de distintos pasos secuenciales para su resolución, de modo que las acciones tomadas previamente tienen influencia en las decisiones que tomaremos a futuro para dicha resolución.
+El Proceso de Decisión de Markov (MDP), llamado así por el matemático ruso Andrei Markov,  es un modelo matemático mediante el cual podemos modelar la resolución de cierta clase de problemas relacionados con la toma de decisiones.
 
-Teniendo en cuenta esta idea, podemos definir los elementos que compondrán nuestro MDP y nos ayuden a comprender mejor cómo funciona este modelo de toma de decisiones:
+Teniendo en cuenta esta idea, podemos definir los elementos que compondrán nuestro MDP y nos ayuden a comprender mejor cómo funciona:
 
 \begin{itemize}
     \item \textbf{S}: Conjunto de estados finitos en los que nos podemos encontrar en un determinado momento.
@@ -76,11 +76,13 @@ Teniendo en cuenta esta idea, podemos definir los elementos que compondrán nues
     \item \textbf{Recompensa}: “Puntuación” positiva o negativa que se obtiene al tomar una acción en un determinado estado. Se representa mediante la función \textbf{R(r | s, a)}.
 \end{itemize}
 
+Podemos relacionar todos estos elementos de modo que para un estado actual (\textbf{s}) se toma determinada acción (\textbf{a}), llevándonos así a un estado siguiente (\textbf{s'}) definido en el modelo de transición, y obteniendo una recompensa (\textbf{r}) asociada a la toma de dicha decisión en ese estado.
+
 Pongamos el ejemplo de un laberinto, como podemos apreciar en la Figura \ref{fig:mdp-01}. Nuestro conjunto de \textbf{estados} serían todas las posibles posiciones dentro del laberinto donde podemos situarnos, las \textbf{acciones} serían las direcciones en las que nos podemos mover en cada posición del laberinto, nuestro \textbf{modelo de transición} estaría definido de modo que si nos encontramos en una posición [x, y] y decidimos tomar la acción de movernos hacia arriba, nuestra siguiente posición (estado) sería [x, y+1], de modo que podríamos definir la  \textbf{recompensa} como una puntuación de +1 si consigo moverme a una posición buena dentro del laberinto, 0 si me choco contra una pared y +100 si consigo encontrar la salida.
 
 \figura{Bitmap/Capitulo2/MDP-Maze.png}{width=0.6\textwidth}{fig:mdp-01}{MDP como laberinto}
 
-Visto este ejemplo, podemos generalizar la idea de un MDP como un \textbf{agente} que toma acciones respecto a un entorno y, en función de los estados futuros y las recompensas obtenidas, buscará maximizar su recompensa final. Representaremos el agente como se aprecia en la figura \ref{fig:mdp-02}
+Visto este ejemplo, podemos generalizar la idea de un MDP como la relación que existe entre un agente que toma decisiones sobre un entorno, por las cuales recibe recompensas. Representaremos este proceso como se aprecia en la figura \ref{fig:mdp-02}
 
 \figura{Bitmap/Capitulo2/MDP-Diagram}{width=0.6\textwidth}{fig:mdp-02}%
       {Diagrama de un MDP}
@@ -88,21 +90,21 @@ Visto este ejemplo, podemos generalizar la idea de un MDP como un \textbf{agente
 Este hecho de que un agente tome una acción y haga cambiar el estado del entorno lo llamamos \textbf{episodio}. Un episodio está compuesto por el estado en el que el agente se encuentre, la acción tomada y la recompensa obtenida:
 
 \begin{equation}
-    episode = (state, action, reward)
+    episodio = (estado, accion, recompensa)
 \end{equation}
 
 Los episodios se suceden hasta que el entorno llega a un estado de “finalizado”. Un entorno puede llegar a su estado “finalizado” si perdemos el juego (Game Over) o, si por el contrario, lo ganamos. Podemos diferenciar 2 tipos de entornos y sus diferentes objetivos para conseguir ganar:
 
 \begin{itemize}
-    \item \textbf{Entornos finitos}: Finalizan cuanto el agente obtiene una determinada recompensa, es decir, conocemos el estado final. Un ejemplo de entorno finito podría ser el ejemplo del laberinto antes planteado.
-    \item \textbf{Entornos infinitos}: Son aquellos entornos de los que no tienen un estado “finalizado”, si no que simplemente solo puedes perder, por lo que el objetivo es aguantar el máximo tiempo posible, acumulando recompensas, antes de perder. Un ejemplo de entornos infinitos podría ser el Cart Pole.
+    \item \textbf{Entornos finitos}: Finalizan cuando el agente obtiene una determinada recompensa, es decir, conocemos el estado final al que deseamos llegar. Un ejemplo de entorno finito podría ser el ejemplo del laberinto antes planteado.
+    \item \textbf{Entornos infinitos}: Son aquellos entornos que carecen de un estado “finalizado”, de modo que el objetivo que plantean es el de buscar de un modo infinito dicho estado, que al no existir, se convierte en un sinónimo de no perder. Un ejemplo de entornos infinitos podría ser el problema del CartPole que se detallará más adelante.
 \end{itemize}
 
-Pero, ¿cómo sabemos o cómo decidimos que acción es mejor tomar en cada estado? Éste es el objetivo de nuestro MDP, el de encontrar una \textbf{política} óptima que nos ayude a tomar buenas decisiones acerca de qué acciones tomar en cada momento basándonos en el estado actual y conseguir maximizar nuestro “future return”.
+Pero, ¿cómo sabemos o cómo decidimos que acción es mejor tomar en cada estado? Éste es el objetivo de nuestro MDP, el de encontrar una \textbf{política} óptima que nos ayude a tomar buenas decisiones acerca de qué acciones tomar en cada momento basándonos en el estado actual y conseguir maximizar nuestro “recompensa futura” (future return).
 
-Entendemos como \textbf{future return} las consecuencias futuras a largo plazo de las acciones tomadas por el agente. De este modo, el objetivo de nuestro MDP es el de optimizar su política para buscar obtener una mayor recompensa a la larga, aunque eso conlleve obtener recompensas inmediatas más pequeñas. Este concepto se conoce como \textbf{recompensas retrasadas}, ya que no las obtendremos instantáneamente tras ejecutar una acción, si no después de la sucesión de una serie de acciones.
+Entendemos como \textbf{recompensa futura} las consecuencias futuras a largo plazo de las acciones tomadas por el agente. De este modo, el objetivo de nuestro MDP es el de optimizar su política para buscar obtener una mayor recompensa a la larga, aunque eso conlleve obtener recompensas inmediatas más pequeñas. Este concepto se conoce como \textbf{recompensas retrasadas}, ya que no las obtendremos instantáneamente tras ejecutar una acción, si no después de la sucesión de una serie de acciones.
 
-Gracias a esto, conseguimos que nuestra política aprenda a pensar no solo en qué acción tomar ahora, si no en que acción tomar después de la misma. Un escollo que podemos encontrar de esta manera es el de que nuestra política piense demasiado a la larga y le tome infinitos episodios para encontrar una recompensa que le merezca la pena, de modo que nuestra recompensa futura diverge. Para evitar que esto suceda, introduciremos las llamadas penalizaciones.
+Gracias a esto, conseguimos que nuestra política aprenda a pensar no solo en qué acción tomar ahora, si no en que acción tomar después de la misma. Un escollo que podemos encontrar de esta manera es el de que nuestra política piense demasiado a largo plazo y le lleve infinitos episodios encontrar una recompensa que le merezca la pena, de modo que nuestra recompensa futura diverge. Para evitar que esto suceda, introduciremos las llamadas penalizaciones.
 
 Una \textbf{penalización} es un pequeño valor que se descuenta de la recompensa, con el fin de evitar que, como acabamos de ver, nuestra política tome demasiados episodios antes de encontrar una recompensa positiva. Teniendo esto en cuenta, podemos definir nuestra función de recompensa como:
 
@@ -114,33 +116,39 @@ El factor de penalización, \( \gamma \), representa cuánto se descuenta de la 
 
 
 \section{Q-Learning}
-Hasta ahora hemos hablado de muchos conceptos y elementos: agente, entorno, recompensa, política... Llega el momento de aplicarlos de manera conjunta para conseguir una técnica de aprendizaje tangible. \textbf{Q-Learning} es una técnica de Aprendizaje por Refuerzo que tiene el objetivo de enseñar al agente qué acción es mejor tomar en cada circunstancia. Se trata de un algoritmo \textit{off-policy} con \textit{diferenciación temporal} que busca encontrar una función acción-utilidad que nos dirá cómo de útil es un estado. 
+Hasta ahora hemos hablado de muchos conceptos y elementos: agente, entorno, recompensa, política... Llega el momento de aplicarlos de manera conjunta para conseguir una técnica de aprendizaje tangible. \textbf{Q-Learning} es una técnica de Aprendizaje por Refuerzo que tiene el objetivo de enseñar al agente qué acción es mejor tomar en cada circunstancia. Se trata de un algoritmo \textit{off-policy} con \textit{diferenciación temporal} que busca encontrar una función acción-utilidad que nos dirá cómo de bueno es ejecutar una acción es un determinado estado.
 
-La primera etiqueta que hemos usado ha sido \textbf{off-policy}, ¿qué quiere decir esto?. Los algoritmos \textit{off-policy} son aquellos que predicen (o actualizan) sus valores-Q usando el valor-Q del estado futuro $s'$ y la acción $a'$ que más utilidad produzca. Es decir, simula un resultado voraz a pesar de que no se están tomando decisiones voraces. A diferencia de este modelo, el Q-Learning no necesita un modelo para aprender ya que se basa en la prueba y error mediante la ejecución de acciones en determinado estado, de modo que no aprendemos sobre una política, si no en base al valor de los pares acción-estado. Siendo $Q(s, a)$ el valor de aplicar una acción $a$ en el estado $s$, los valores devueltos por nuestra función-Q serán la utilidad máxima alcanzable de forma:
+La primera etiqueta que hemos usado ha sido \textbf{off-policy}, ¿qué quiere decir esto?. Los algoritmos \textit{off-policy} son aquellos que predicen (o actualizan) sus valores-Q usando el valor-Q del estado futuro $s'$ y la acción $a'$ que más utilidad produzca. De este modo, el Q-Learning no necesita una política para aprender ya que se basa en la prueba y error mediante la ejecución de acciones en determinado estado, aprendiendo así en base al valor de los pares acción-estado. Siendo $Q(s, a)$ el valor de aplicar una acción $a$ en el estado $s$, los valores devueltos por nuestra función-Q serán la utilidad máxima alcanzable de forma:
 
 \begin{equation}
     U(s) = \max_{a}Q(s, a)
 \end{equation}
 
-Con \textbf{diferenciación temporal} hacemos referencia al hecho de que, en busca de un aprendizaje correcto, nuestro agente tendrá que tener en cuenta tanto las recompensas directas como aquellas que puede llegar con retardo, como anticipamos en la sección anterior. Reformulando esto, el agente deberá predecir el resultado de la recompensa final mediante la ejecucióno secuencial de distintas acciones. Para poder hacerlo tenemos que encontrar un equilibrio entre las recompensas inmediatas y las futuras. Como podemos imaginar, potenciar la importancia de las recompensas directas perjudica el valor de las futuras.
+Con \textbf{diferenciación temporal} hacemos referencia al hecho de que, en busca de un aprendizaje correcto, nuestro agente tendrá que tener en cuenta tanto las recompensas directas como aquellas que puede llegar con retardo, como anticipamos en la sección anterior. Reformulando esto, el agente deberá predecir el resultado de la recompensa final mediante la ejecución secuencial de distintas acciones. Para poder hacerlo tenemos que encontrar un equilibrio entre las recompensas inmediatas y las futuras. Como podemos imaginar, potenciar la importancia de las recompensas directas puede perjudiciar el valor de las futuras.
 
 Este balance está muy relacionado con el problema de \textbf{Exploración vs. Explotación}. Nuestro agente contará con un hiperparámetro \textit{exploración}, el cual determina con qué frecuencia el agente decide tomar una acción aleatoria (exploración) en lugar de aquella que le proporcione el valor más prometedor (explotación), con la esperanza de encontrar un nuevo estado en el que nunca haya estado y el cual pueda resultar más beneficioso. En otras palabras, el agente decide si sacar provecho de lo ya aprendido, o intentar aprender más.
 
 Existen varias fórmulas para calcular la utilidad de los estados. Uno de los métodos más utilizados es a través de la \textbf{Ecuación Bellman}, la cual nos indica que la máxima recompensa futura de tomar una acción es la suma de la recompensa actual y la máxima recompensa futura del siguiente episodio, permitiéndonos así obtener una relación entre valores-Q.
 
 \begin{equation}
-    Q^*(s_{t}, a_{t}) = E [ r_{t} + \gamma\ max_{a'}\ Q^*(s_{t+1}, a')]
+    Q^*(s_{t}, a_{t}) = r_{t} + \gamma\ max_{a'}\ Q^*(s_{t+1}, a')
 \end{equation}
 
 De este modo, podemos calcular el valor-Q para un par estado-acción, del mismo modo que con cada nuevo episodio podremos actualizar valores-Q previamente calculador con nueva información obtenida.
 
 Q-Learning cuenta con tres hiperparámetros, dos de los cuales ya hemos visto: la \textit{exploración} y el \textit{factor de penalización} introducido al final de la sección anterior. El tercer hiperparámetro en cuestión corresponde a la \textbf{tasa de aprendizaje}. Este hiperparámetro, que toma valores entre 0 y 1, nos indica cuánta nueva información actualizamos sobre los valores-Q previamente calculados. De este modo, si nuestra tasa de aprendizaje es igual a 0, con cada nuevo episodio no se actualilzarán valores-Q con nueva información, y si es igual a 1, los valores previos se sobreescribirán por completo con la nueva información obtenida.
 
+Podemos relacionar este nuevo hiperparámetro tasa de aprendizaje ($\alpha$) y la ecuación antes propuesta del siguiente modo:
+
+\begin{equation}
+    Q^*(s_{t}, a_{t}) = (1-\alpha ) Q(s_{t}, a_{t}) + \alpha [r(s_{t}, a_{t}) + \gamma\ max_{a'}\ Q^*(s_{t+1}, a')]
+\end{equation}
+
 Llegados a este punto podemos observar como se crea una tabla-Q que relaciona los pares estado-acción con su correspondiente valor-Q, encontrándonos así que esta tabla crece alarmantemente rápido para problemas con un pequeño grado de complejidad y haciendo excesivamente costoso el hecho de visitar todas las experiencias recogidas, así como de actualizarlas, volviéndose el problema de esta forma inmanejable desde un punto de vista computacional.
 
 \section{CartPole}
 \begin{quote}
-    Un mástil está unido por una bisagra a un carro, el cual se mueve a lo largo de una pista sin rozamiento. El sistema es controlado aplicando una fuerza de +1 o -1 al carro. EL péndulo (mástil) comienza en posición vertical, el objetivo es prevenir que caiga. Una recompensa de +1 es otorgada por cada \textit{timestep} que el mástil permanece erguido. El episodio finaliza cuando el mástil se encuentra a más de 15 grados de su posición vertical, o el carro se mueve más de 2.4 unidades del centro.
+    Un mástil está unido por una bisagra a un carro, el cual se mueve a lo largo de una pista sin rozamiento. El sistema es controlado aplicando una fuerza de +1 o -1 al carro. El péndulo (mástil) comienza en posición vertical, el objetivo es prevenir que caiga. Una recompensa de +1 es otorgada por cada \textit{timestep} que el mástil permanece erguido. El episodio finaliza cuando el mástil se encuentra a más de 15 grados de su posición vertical, o el carro se mueve más de 2.4 unidades del centro.
 \end{quote}
 
 Este es el enunciado del primer problema que resolveremos mediante técnicas de Aprendizaje por Refuerzo. La implementación del problema nos viene dada como parte de la librería \textit{OpenAI Gym}. Una vez importado el problema, dispondremos de un entorno con el que interactuar y nuestro objetivo será crear un agente que interaccione con el mismo.
