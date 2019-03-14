@@ -20,19 +20,19 @@ Estas neuronas se caracterizan por tener función de activación, o bien la func
 
 \begin{itemize}
     \item Sigmoide: $f(z) = \frac{1}{(1-e^{-z})}$\\
-    Esta función logit marca una diferenciación clara entre valores pequeños y grandes agrupándolos en 0 o 1 respectivamente, entre estos dos extremos las neuronas adoptarán una forma de S.\ref{fig: función_sigmoide}.
+    Esta función logit marca una diferenciación clara entre valores pequeños y grandes agrupándolos en 0 o 1 respectivamente, entre estos dos extremos las neuronas adoptarán una forma de S.\ref{fig:funcion_sigmoide}.
 
-\figura{Bitmap/Capitulo3/sigmoide}{width=1\textwidth}{fig:función_sigmoide}%
+\figura{Bitmap/Capitulo3/sigmoide}{width=1\textwidth}{fig:funcion_sigmoide}%
 
     \item Tanh: $f(z)= tahn(z)$\\
-    Este tipo de neurona tiene una salida muy parecida a las tipo sigmoide, manteniendo la forma de S, pero con la diferencia de que el marco esta entre -1 y 1. Suele ser usada con más asiduidad debido a que esta centrada en 0.\ref{fig: función_tanh}.
+    Este tipo de neurona tiene una salida muy parecida a las tipo sigmoide, manteniendo la forma de S, pero con la diferencia de que el marco esta entre -1 y 1. Suele ser usada con más asiduidad debido a que esta centrada en 0.\ref{fig:funcion_tanh}.
 
-\figura{Bitmap/Capitulo3/tanh}{width=1\textwidth}{fig:función_tanh}%
+\figura{Bitmap/Capitulo3/tanh}{width=1\textwidth}{fig:funcion_tanh}%
 
     \item ReLu: $f(z) = max(0,z)$\\
-    La neurona de linealidad restringida o ReLu (Restricted Linear Unit) utiliza un distinto tipo de no linealidad. A pesar de su variadas desventajas, en los últimos años se ha posicionado como la más usada en los problemas de visión computacional. Y será la que más usaremos nosotros en nuestros ejemplos.\ref{fig: función_ReLu}.
+    La neurona de linealidad restringida o ReLu (Restricted Linear Unit) utiliza un distinto tipo de no linealidad. A pesar de su variadas desventajas, en los últimos años se ha posicionado como la más usada en los problemas de visión computacional. Y será la que más usaremos nosotros en nuestros ejemplos.\ref{fig:funcion_ReLu}.
 
-\figura{Bitmap/Capitulo3/Relu}{width=1\textwidth}{fig:función_ReLu}%
+\figura{Bitmap/Capitulo3/Relu}{width=1\textwidth}{fig:funcion_ReLu}%
 
 \end{itemize}
 
@@ -76,7 +76,7 @@ Tanto la capa de entrada como la oculta, son del tipo \textit{ReLu}, visto anter
 
 Además, para comprobar que nuestra red neuronal entrena y aprende correctamente, hemos utilizado \textbf{cross-validation} mediante \textbf{K-Fold}. La técnica de cross-validation (o validación cruzada) consiste en dividir en varios grupos el conjunto de datos proporcionado y entrenar varias veces el modelo sobre ellos, alternando la función de dichos grupos entre entrenamiento y testeo. El algoritmo K-Fold nos permite barajar el conjunto de datos y dividirlo en k grupos, todos para entrenamiento a excepción de uno que se reserva para el testeo. De esta forma, podemos comprobar las distintas en las que ha aprendido, en función de los grupos formados durante la aplicación del K-Fold \ref{fig:Class_accuracy}.
 
-\figura{Bitmap/Capitulo3/Results Classification NN/Class_accuracy3}{width=1\textwidth}{fig:Class_accuracy}%
+\figura{Bitmap/Capitulo3/ClassificationNN/Class_accuracy3}{width=1\textwidth}{fig:Class_accuracy}%
         {Resultados de la clasificación con K-Fold de k = 10.}
 
 
