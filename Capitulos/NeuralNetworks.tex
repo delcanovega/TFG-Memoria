@@ -9,39 +9,34 @@ En el que estudiaremos la estructura y las utilidades de las redes neuronales.
 En vistas a imitar el funcionamiento de un cerebro humano, en cuanto lo que a procesamiento se refiere, se crearon las primeras redes neuronales artificiales. Éstas se basaron en cálculos matemáticos y algoritmos para conseguir dicho objetivo, a partir del diseño de neuronas artificiales y procesos de auto-aprendizaje.
 
 \subsection{Neuronas}
-La neurona es el elemento básico de una red neuronal \ref{fig:esquema_neurona}. Al igual que las existentes en el cerebro humano, estas neuronas son células de procesamiento; reciben varias entradas de datos y devuelven una única salida. En la mayoría de los casos, esta salida consiste en la suma de la multiplicación de cada entrada por un peso asignado por la propia neurona, de forma que cada neurona devuelve una salida distinta a pesar de que las entradas sean las mismas. \\
+La neurona es el elemento básico de una red neuronal \ref{fig:esquema_neurona}. Al igual que las existentes en el cerebro humano, estas neuronas son células de procesamiento; reciben varias entradas de datos y devuelven una única salida. En la mayoría de los casos, esta salida consiste en la suma de la multiplicación de cada entrada por un peso asignado por la propia neurona, de forma que cada neurona devuelve una salida distinta a pesar de que las entradas sean las mismas.
 
 \figura{Bitmap/Capitulo3/Neuron}{width=1\textwidth}{fig:esquema_neurona}%
-        {Esquema de una neurona artificial, donde X son las entradas, Y la salida y W los pesos.}
+       {Esquema de una neurona artificial, donde X son las entradas, Y la salida y W los pesos.}
 
 Sin embargo, dentro de estas neuronas existen varios tipos, siendo las especializadas en no linealidad las que nos interesan, ya qué este tipo de neuronas va a producir respuestas acotadas, desapareciendo los problemas de fluctuación y la falta de adecuación a señales pequeñas y grandes. 
 
 Estas neuronas se caracterizan por tener función de activación, o bien la función de transferencia (o ambas) no lineales. Éstas también se dividen en función de la función de activación antes mencionada. A continuación, listaremos las más utilizadas.
 
 \begin{itemize}
-    \item Sigmoide: $f(z) = \frac{1}{(1-e^{-z})}$\\
-    Esta función logit marca una diferenciación clara entre valores pequeños y grandes agrupándolos en 0 o 1 respectivamente, entre estos dos extremos las neuronas adoptarán una forma de S.\ref{fig:funcion_sigmoide}.
-
-\figura{Bitmap/Capitulo3/sigmoide}{width=1\textwidth}{fig:funcion_sigmoide}%
-
-    \item Tanh: $f(z)= tahn(z)$\\
-    Este tipo de neurona tiene una salida muy parecida a las tipo sigmoide, manteniendo la forma de S, pero con la diferencia de que el marco esta entre -1 y 1. Suele ser usada con más asiduidad debido a que esta centrada en 0.\ref{fig:funcion_tanh}.
-
-\figura{Bitmap/Capitulo3/tanh}{width=1\textwidth}{fig:funcion_tanh}%
-
-    \item ReLu: $f(z) = max(0,z)$\\
-    La neurona de linealidad restringida o ReLu (Restricted Linear Unit) utiliza un distinto tipo de no linealidad. A pesar de su variadas desventajas, en los últimos años se ha posicionado como la más usada en los problemas de visión computacional. Y será la que más usaremos nosotros en nuestros ejemplos.\ref{fig:funcion_ReLu}.
-
-\figura{Bitmap/Capitulo3/Relu}{width=1\textwidth}{fig:funcion_ReLu}%
-
+    \item Sigmoide: $f(z) = \frac{1}{(1-e^{-z})}$: Esta función logit marca una diferenciación clara entre valores pequeños y grandes agrupándolos en 0 o 1 respectivamente, entre estos dos extremos las neuronas adoptarán una forma de S.\ref{fig:funcion_sigmoide}.
+    \item Tanh: $f(z)= tahn(z)$: Este tipo de neurona tiene una salida muy parecida a las tipo sigmoide, manteniendo la forma de S, pero con la diferencia de que el marco esta entre -1 y 1. Suele ser usada con más asiduidad debido a que esta centrada en 0.\ref{fig:funcion_tanh}.
+    \item ReLu: $f(z) = max(0,z)$: La neurona de linealidad restringida o ReLu (Restricted Linear Unit) utiliza un distinto tipo de no linealidad. A pesar de su variadas desventajas, en los últimos años se ha posicionado como la más usada en los problemas de visión computacional. Y será la que más usaremos nosotros en nuestros ejemplos.\ref{fig:funcion_ReLu}.
 \end{itemize}
 
+\figura{Bitmap/Capitulo3/sigmoide}{width=1\textwidth}{fig:funcion_sigmoide}%
+       {...}
+\figura{Bitmap/Capitulo3/tanh}{width=1\textwidth}{fig:funcion_tanh}%
+       {...}
+\figura{Bitmap/Capitulo3/Relu}{width=1\textwidth}{fig:funcion_ReLu}%
+       {...}
+
 \subsection{Estructura y funcionamiento}
-Ya que las funcionalidades de una neurona son limitadas, nos resultaría imposible resolver un problema de Aprendizaje Automático con ella. Para ello, de nuevo basándose en el modelo de nuestro cerebro, las neuronas se encuentran agrupadas por capas, formando así una red neuronal. Cada capa consta de un número finito de neuronas del mismo tipo, recibiendo todas el mismo volumen de datos pero, como hemos mencionado antes, devolviendo resultados diferentes cada una. \\
+Ya que las funcionalidades de una neurona son limitadas, nos resultaría imposible resolver un problema de Aprendizaje Automático con ella. Para ello, de nuevo basándose en el modelo de nuestro cerebro, las neuronas se encuentran agrupadas por capas, formando así una red neuronal. Cada capa consta de un número finito de neuronas del mismo tipo, recibiendo todas el mismo volumen de datos pero, como hemos mencionado antes, devolviendo resultados diferentes cada una.
 
-Las redes neuronales están compuestas generalmente por varias capas, de forma que las salidas de la anterior forman las entradas de la siguiente. Entre ellas, podemos distinguir la capa de entrada, que es la que recibe los datos a analizar, la capa de salida, que es la que devuelve los resultados en el formato que nos interesa en función del problema, y las capas intermedias u ocultas. Éstas son las encargadas de abstraer todos los datos recibidos por la capa anterior para que sea más fácil procesarlos y analizarlos. Un ejemplo sería el ser capaz de reconocer formas y contornos: Nuestros ojos reciben sólo un grupo de colores que el cerebro ayuda a procesarlo añadiendo el concepto de bordes y separaciones para poder interpretar las imágenes. \\
+Las redes neuronales están compuestas generalmente por varias capas, de forma que las salidas de la anterior forman las entradas de la siguiente. Entre ellas, podemos distinguir la capa de entrada, que es la que recibe los datos a analizar, la capa de salida, que es la que devuelve los resultados en el formato que nos interesa en función del problema, y las capas intermedias u ocultas. Éstas son las encargadas de abstraer todos los datos recibidos por la capa anterior para que sea más fácil procesarlos y analizarlos. Un ejemplo sería el ser capaz de reconocer formas y contornos: Nuestros ojos reciben sólo un grupo de colores que el cerebro ayuda a procesarlo añadiendo el concepto de bordes y separaciones para poder interpretar las imágenes.
 
-La relación entre cada capa esta condicionada por unos pesos, estos son los que dan distintas prioridades a las entradas y consiguen la abstracción deseada. El problema es que estos pesos no tienen porque ser los ideales y para afinarlos se lleva a cabo un algoritmo conocido como \textbf{retropropagación} (backpropagation). El algoritmo consiste en comparar la salida de de la red neuronal con la salida deseada y comprobar su error para minimizarlo, cambiando los pesos de la capa anterior. Este proceso se lleva a cabo hasta alcanzar la capa de entrada. Existen distintos métodos de cálculo de error pero el más usado, y el que nosotros utilizaremos, es el de error cuadrático.\\
+La relación entre cada capa esta condicionada por unos pesos, estos son los que dan distintas prioridades a las entradas y consiguen la abstracción deseada. El problema es que estos pesos no tienen porque ser los ideales y para afinarlos se lleva a cabo un algoritmo conocido como \textbf{retropropagación} (backpropagation). El algoritmo consiste en comparar la salida de de la red neuronal con la salida deseada y comprobar su error para minimizarlo, cambiando los pesos de la capa anterior. Este proceso se lleva a cabo hasta alcanzar la capa de entrada. Existen distintos métodos de cálculo de error pero el más usado, y el que nosotros utilizaremos, es el de error cuadrático.
 
 \subsubsection{Optimizadores}
 Uno de los grandes problemas a la hora de entrenar redes neuronales, es el \textbf{ratio de aprendizaje}. Mientras que un ratio pequeño puede aproximarse mejor al error mínimo, en problemas de gran volumen puede resultar demasiado lento. Con un ratio de aprendizaje demasiado grande, ocurre exactamente lo contrario: Aprenderá más rápidamente pero puede resultar muy difícil converger en un mínimo error local.
@@ -62,17 +57,17 @@ Como ya hemos visto, las redes neuronales están diseñadas para poder adaptarse
 
 
 \subsection{Clasificación}
-Los problemas de clasificación consisten, a grandes rasgos, en asignar un dato recibido a una categoría de un conjunto ya establecido. El ejemplo más claro de esta categoría sería proveer de imágenes de perros y gatos a una red neuronal, y que sea ésta la que decida de qué animal se trata en cada caso. Modificando el comportamiento del ojo humano, la red recibiría dichas imágenes como un conjunto de píxeles y a partir ellos, crearía contornos y buscaría patrones para distinguir entre un animal u otro. \\
+Los problemas de clasificación consisten, a grandes rasgos, en asignar un dato recibido a una categoría de un conjunto ya establecido. El ejemplo más claro de esta categoría sería proveer de imágenes de perros y gatos a una red neuronal, y que sea ésta la que decida de qué animal se trata en cada caso. Modificando el comportamiento del ojo humano, la red recibiría dichas imágenes como un conjunto de píxeles y a partir ellos, crearía contornos y buscaría patrones para distinguir entre un animal u otro.
 
 \subsection{Regresión}
 Los problemas de regresión se distinguen de los de clasificación en que la respuesta de la red neuronal no pertenece a un grupo, sino que forma parte de un conjunto continuo de posibles resultados. La forma de entender este tipo de problemas sería tomando como ejemplo una red neuronal que sea capaz de predecir el precio de una casa en función de su tamaño, número de habitaciones, localización, etc. \\
 
 \subsection{Ejemplo de problema de clasificación}
-En nuestro ejemplo de aprendizaje supervisado sobre clasificación, hemos elegido otro conjunto de datos conocido: Reconocimiento de cifras escritas a mano. Este consiste en un conjunto de imágenes de cada número escrito a mano de distintas formas, incluyendo la respuesta correcta para comprobar los resultados de nuestro clasificador. \\
+En nuestro ejemplo de aprendizaje supervisado sobre clasificación, hemos elegido otro conjunto de datos conocido: Reconocimiento de cifras escritas a mano. Este consiste en un conjunto de imágenes de cada número escrito a mano de distintas formas, incluyendo la respuesta correcta para comprobar los resultados de nuestro clasificador.
 
-Para este caso, hemos establecido una red neuronal de tres capas, la de entrada, la de salida y una capa intermedia u oculta para que la red realice los cálculos necesarios. Hemos utilizado un optimizador Adam, de forma que el descenso de gradiente se realice de forma más efectiva y los valores de los pesos en la red se reajusten más rápidamente. \\
+Para este caso, hemos establecido una red neuronal de tres capas, la de entrada, la de salida y una capa intermedia u oculta para que la red realice los cálculos necesarios. Hemos utilizado un optimizador Adam, de forma que el descenso de gradiente se realice de forma más efectiva y los valores de los pesos en la red se reajusten más rápidamente.
 
-Tanto la capa de entrada como la oculta, son del tipo \textit{ReLu}, visto anteriormente. La capa de entrada se encarga de procesar los 400 píxeles que representan la imagen de una cifra escrita a mano. A modo de salida, hemos utilizado un tipo especial de capa llamado \textit{softmax}. En ella, se da la condición de que la suma de todas las salidas sea igual a 1. De esta forma, las probabilidades que reflejan las distintas salidas se encuentran normalizadas y son excluyentes entre sí, dejando que haya una probabilidad que destaque por encima de las demás en su conjunto; ésa será nuestra predicción. \\
+Tanto la capa de entrada como la oculta, son del tipo \textit{ReLu}, visto anteriormente. La capa de entrada se encarga de procesar los 400 píxeles que representan la imagen de una cifra escrita a mano. A modo de salida, hemos utilizado un tipo especial de capa llamado \textit{softmax}. En ella, se da la condición de que la suma de todas las salidas sea igual a 1. De esta forma, las probabilidades que reflejan las distintas salidas se encuentran normalizadas y son excluyentes entre sí, dejando que haya una probabilidad que destaque por encima de las demás en su conjunto; ésa será nuestra predicción. 
 
 Además, para comprobar que nuestra red neuronal entrena y aprende correctamente, hemos utilizado \textbf{cross-validation} mediante \textbf{K-Fold}. La técnica de cross-validation (o validación cruzada) consiste en dividir en varios grupos el conjunto de datos proporcionado y entrenar varias veces el modelo sobre ellos, alternando la función de dichos grupos entre entrenamiento y testeo. El algoritmo K-Fold nos permite barajar el conjunto de datos y dividirlo en k grupos, todos para entrenamiento a excepción de uno que se reserva para el testeo. De esta forma, podemos comprobar las distintas en las que ha aprendido, en función de los grupos formados durante la aplicación del K-Fold \ref{fig:Class_accuracy}.
 
