@@ -23,7 +23,8 @@
 .DS_Store
 
 ## tmp
-TFMTeXiS.pdf
+*.pdf
+*.dvi
 
 ## vs code
 .vscode
