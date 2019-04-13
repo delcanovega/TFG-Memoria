@@ -1,11 +1,29 @@
 \chapter{Q-Learning en acción}
 \label{cap:q-learning}
 
-\chapterquote{Frase célebre dicha por alguien inteligente}{Autor}
+En el que descubriremos un aliado en la búsqueda de la AGI, y pondremos a prueba las capacidades del Aprendizaje por Refuerzo.
+
+\chapterquote{Si no tienes esperanza, no encontrarás lo que está más allá de tus esperanzas}{Clemente de Alejandría}
 
 \section{OpenAI}
+OpenAI es una iniciativa cuyo objetivo es asegurar que la \textbf{Inteligencia Artificial General} (AGI) beneficie a toda la humanidad. En su web (\citet{OpenAI_charter}) se encuentra el siguiente manifiesto:
 
-\subsection{OpenAI Gym}
+\begin{quote}
+    La misión de OpenAI es asegurar que la inteligencia artificial general - refiriéndose a sistemas altamente autónomos que superen el rendimiento humano en el trabajo más valioso económicamente - beneficie a toda la humanidad. Intentaremos desarrollar AGI de una forma segura y beneficiosa, pero también consideraremos nuestra misión completa si nuestro trabajo ayuda a otros a conseguir esta meta. 
+\end{quote}
+
+En busca de este objetivo, OpenAI sigue tres caminos:
+\begin{itemize}
+    \item \textbf{Investigación y desarrollo:} sus contribuciones al Aprendizaje Automático como estado del arte durante los últimos años no han sido pocas: desde nuevos algoritmos de Aprendizaje por Refuerzo (\citet{baselines}) hasta demostraciones de cómo una Inteligencia Artificial puede sobrepasar a jugadores expertos (\citet{OpenAI_dota}).
+    \item \textbf{Recursos académicos} \citet{spinningup} puestos a disposición de todo aquél que quiera aprender sobre el Aprendizaje por Refuerzo Profundo.
+    \item \textbf{Herramientas y plataformas} mediante las cuales facilitar la labor de investigación y pruebas del Aprendizaje Automático.
+\end{itemize}
+
+Es nuestra investigación nos serviremos de una de estas plataformas, \textbf{OpenAI Gym}, para experimentar y descubrir los puntos fuertes y débiles de las distintas técnicas y algoritmos de aprendizaje. 
+
+Gym es un conjunto de herramientas para desarrollar y comparar algoritmos de aprendizaje de refuerzo. En él los agentes son capaces de aprender cualquier cosa, desde caminar hasta jugar a juegos como Pong o Pinball.
+
+Para ello la librería te aporta una interfaz sencilla, a través de la cual un entorno de simulación te es provisto. Tú tendrás que aportar el algoritmo, en nuestro caso se tratará del agente que interaccionará con el entorno para aprender de él e intentar lograr unos objetivos.
 
 \section{CartPole}
 \begin{quote}
