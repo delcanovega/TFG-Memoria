@@ -5,35 +5,7 @@ En el que estudiaremos cómo un agente puede aprender a través del éxito y el 
 
 \chapterquote{El comportamiento es modelado y mantenido por sus consecuencias}{B. F. Skinner}
 
-\section{Contexto}
-La \textbf{Inteligencia Artificial} es una de las ramas de la computación que más interés ha generado, tanto entre expertos de la materia como en otro tipo de público, más interesado en la parte lúdica de este concepto. Dotar a una máquina de la capacidad de realizar funciones asociadas sólo al intelecto humano ha sido siempre considerado ciencia ficción. Y sin embargo esta misma idea ha supuesto un enorme avance tecnológico en los últimos años.
-
-Para conocer mejor este concepto desde sus orígenes, es necesario hacer referencia al \textbf{Test de Turing}, propuesto por Alan \citet{Turing1950-TURCMA}. Éste consiste en realizar una serie de preguntas a un ente y el test se considerará superado si el interrogador no es capaz de discernir si las respuestas provienen de una máquina o una persona.
-
-Intentar definir la Inteligencia Artificial nos lleva directamente a conceptos como el \textit{proceso del pensamiento} o el \textit{razonamiento}, los cuales terminan por conducir a otros más complejos como es el \textit{comportamiento}. A partir de estas ideas podemos encontrar otras definiciones, clasificadas en la matriz~\ref{fig:tabla_IA}.
-
-\figura{Bitmap/Capitulo2/tabla_IA}{width=1\textwidth}{fig:tabla_IA}%
-       {Definiciones de Inteligencia Artificial, \citet{Russell:2009:AIM:1671238}}
-
-En base a estas clasificaciones podríamos diferenciar dos corrientes de interpretación:
-\begin{itemize}
-    \item Una visión empírica (columna izquierda) con el ser humano como centro de la investigación.
-    \item Una visión racionalista (columna derecha) que involucra una combinación de matemáticas e ingeniería.
-\end{itemize}
-
-Multitud de expertos han abordado ambos acercamientos de distintas formas. Nosotros nos centraremos en la visión empírica, buscando que nuestro \textit{agente} tome las ``decisiones correctas'' en función del conocimiento que posea.
-
-\subsection{Aprendiendo a aprender}
-Una de las funciones humanas de las que necesitaremos dotar a nuestra máquina en busca de este \textit{rendimiento ideal} es el \textbf{aprendizaje}.
-
-El campo del \textbf{Aprendizaje Automático} (o \textit{Machine Learning}) se encarga de esta tarea, a través de la generalización y la búsquedas de patrones en experiencias pasadas. En función del tipo de \textit{realimentación} obtenido existen diferentes técnicas de aprendizaje, diseñadas para distintos casos y objetivos:
-\begin{itemize}
-    \item \textbf{Aprendizaje Supervisado} (\textit{Supervised Learning}): El agente observa una serie de ejemplos de entradas y salidas, aprendiendo una función que es capaz de asignar a una entrada su salida correspondiente. Se llama \textbf{supervisado} porque esta serie de ejemplos, llamado conjunto de entrenamiento, deben estar correctamente clasificada desde un primer momento (es decir, supervisado por un humano). Podría decirse que el agente aprende en base a estas experiencias, hasta que llegado un punto es capaz de clasificar una entrada completamente nueva. La exactitud de esta clasificación dependerá del entrenamiento recibido; más adelante en el proyecto haremos uso de esta técnica de aprendizaje.
-    \item \textbf{Aprendizaje no Supervisado} (\textit{Unsupervised Learning}): A diferencia del supervisado, en el aprendizaje no supervisado los ejemplos no cuentan con una etiqueta que los clasifica inequívocamente. En su lugar el agente busca patrones en el conjunto de entrada, intentando extraer características comunes de sus elementos. Uno de los usos más comunes del Aprendizaje No Supervisado es la agrupación o \textbf{clustering}: La unión de ejemplos como grupos o \textit{clústeres} que comparten características comunes. Por ejemplo, la agrupación de películas con características similares, de modo que si a un usuario le resultan interesantes varias de un mismo \textit{clúster}, es muy probable que también disfrute de otros elementos de esa misma agrupación. Estas ideas se usan, por ejemplo, en algunos sistemas de recomendación.   
-    \item \textbf{Aprendizaje por Refuerzo} (\textit{Reinforcement Learning}): El agente aprende a partir de una serie de refuerzos: Recompensas si son positivos y penalizaciones en caso de ser negativos. Por ejemplo, cuando una mascota cumple una orden y recibe una galleta como recompensa; o un músico desafina en directo y recibe un abucheo por parte del público. Además el agente puede "pensar" a largo plazo, de forma que su comportamiento le permita conseguir una recompensa mayor en un futuro, así como adaptarse a entornos totalmente nuevos para él. Esta técnica de aprendizaje será el punto de partida de nuestro proyecto y explicaremos su funcionamiento a lo largo de este capítulo. 
-\end{itemize}
-
-\subsection{¿Por qué Aprendizaje por Refuerzo?}
+\section{¿Por qué Aprendizaje por Refuerzo?}
 Como muchos otros campos pertenecientes a la rama de Inteligencia Artificial, el Aprendizaje por Refuerzo se inspira en estudios sobre el comportamiento en humanos y animales. De esta forma toma su base en la psicología conductista, en la que un algoritmo decide si una acción tomada ha sido positiva o negativa, y la refuerza consecuentemente.
 
 Pero antes de profundizar en ello, analicemos por qué es el Aprendizaje por Refuerzo una opción interesante y por qué será la que utilicemos en nuestro proyecto.
@@ -143,77 +115,3 @@ Podemos relacionar este nuevo hiperparámetro tasa de aprendizaje ($\alpha$) y l
 \end{equation}
 
 Llegados a este punto, podemos observar cómo se crea la tabla-Q que relacionará los pares estado-acción con su correspondiente valor-Q. También nos encontramos con que esta tabla crece alarmantemente rápido para problemas con un pequeño grado de complejidad, haciendo excesivamente costoso el hecho de visitar todas las experiencias recogidas, así como de actualizarlas, volviéndose el problema de esta forma inmanejable desde un punto de vista computacional.
-
-\section{CartPole}
-\begin{quote}
-    Un mástil está unido por una bisagra a un carro, el cual se mueve a lo largo de una pista sin rozamiento. El sistema es controlado aplicando una fuerza de +1 o -1 al carro. El péndulo (mástil) comienza en posición vertical, el objetivo es prevenir que caiga. Una recompensa de +1 es otorgada por cada \textit{timestep} que el mástil permanece erguido. El episodio finaliza cuando el mástil se encuentra a más de 15 grados de su posición vertical, o el carro se mueve más de 2.4 unidades del centro.
-\end{quote}
-
-Este es el enunciado del primer problema que resolveremos mediante técnicas de Aprendizaje por Refuerzo. La implementación del problema nos viene dada como parte de la librería \textit{OpenAI Gym}. Una vez importado el problema, dispondremos de un entorno con el que interactuar y nuestro objetivo será crear un agente que interaccione con el mismo.
-
-Nuestro conjunto de acciones, como se indica en el enunciado, tiene dos elementos: Aplicar fuerza hacia la derecha o aplicar fuerza hacia la izquierda. El agente deberá decidir cuál de estas dos acciones tomar y se lo comunicará al entorno. Éste responderá con cuatro elementos:
-
-\begin{itemize}
-    \item \textbf{Observación} (objeto): Consiste en un array que contiene la información necesaria para describir el estado actual (tras aplicar la última acción). Los valores posibles pueden verse en la tabla \ref{obs-cartpole}.
-    \item \textbf{Recompensa} (float): Refuerzo para el agente, +1.0 mientras la simulación continúe.
-    \item \textbf{Fin} (boolean): Señal que indica si la simulación ha concluido, bien porque el mástil ha caído o porque lo hemos mantenido en pie durante el tiempo suficiente.
-    \item \textbf{Info} (diccionario): Información de diagnóstico útil para la depuración del agente. No obstante, esta información no debe ser usada por el agente para aprender.
-\end{itemize}
-\begin{table}[]
-    \centering
-    \begin{tabular}{|l|l|l|l|}
-    \hline
-    \textbf{Num} & \textbf{Observación} & \textbf{Min} & \textbf{Max} \\ \hline
-    0            & Posición del carro   & -4.8         & 4.8          \\ \hline
-    1            & Velocidad del carro  & -Inf         & Inf          \\ \hline
-    2            & Ángulo del poste     & -24º         & 24º          \\ \hline
-    3            & Velocidad del poste  & -Inf         & Inf          \\ \hline
-    \end{tabular}
-    \caption{Observación del entorno para CartPole}
-    \label{obs-cartpole}
-\end{table}
-
-Como podemos ver a través de las observaciones, este es uno de esos problemas en los que el número de estados distintos es potencialmente infinito, debido a que estamos tratando con valores continuos. Por ello tendremos que encontrar una buena \textbf{función de discretización} que simplifique la representación del estado y nos permita trabajar con un número óptimo de estados. Por suerte para nosotros, disponer de un número tan limitado de acciones posibles disminuye la complejidad del problema.
-
-\subsection{Discretizando el estado}
-A la hora de discretizar una observación, una de las mejores formas de hacerlo es a través de una simplificación de la misma. Este acercamiento es una adaptación del \textit{Constraint Relaxation} que se aplica en muchos problemas de satisfacción de restricciones. De esta forma podemos comprender el problema desde un punto de partida mucho más sencillo, para después pulir la fórmula y tener en cuenta más variables. Además, podemos ir evaluando el rendimiento de nuestro agente a lo largo del camino, y así poder comprobar si las modificaciones que vamos añadiendo realmente mejoran su comportamiento o simplemente añaden ruido.
-
-Centrémonos por un momento en el objetivo más básico del problema: Mantener el mástil en pie. Podemos dividir el problema en dos estados muy simples, uno en el que el mástil está cayendo hacia la derecha y otro en el cae hacia la izquierda, como podemos ver en la Figura \ref{fig:cartpole_01}. Esto coincide con nuestras dos acciones disponibles y, de forma algo ingenua, podemos considerar esto un punto de partida válido.
-
-\figura{Bitmap/Capitulo2/cartpole_01}{width=0.7\textwidth}{fig:cartpole_01}%
-       {Simplificación de estados}
-
-Por supuesto, esta discretización es demasiado ingenua para resolver el problema de una forma eficiente; es necesario probar otras divisiones de estados y tener en cuenta las demás observaciones. Para ello creamos una función parametrizable, la cual decide en cuántos estados dividir cada observación. Así podemos decidir a qué observaciones damos más importancia, creando más o menos estados en función a éstas, como podemos apreciar en la Figura \ref{fig:cartpole_02}.
-
-\figura{Bitmap/Capitulo2/cartpole_02}{width=0.7\textwidth}{fig:cartpole_02}%
-       {División de las observaciones}
-
-Este aumento en el número de estados permite que nuestro agente sea capaz de especializarse más en acciones concretas. Pero esta mejora viene con un precio a pagar: Cuantos más estados distintos tengamos, más tiempo tardará en visitarlos todos (en repetidas ocasiones) durante su etapa de entrenamiento. Esto quiere decir que nuestro agente tardará más en tener un buen rendimiento. Es importante entonces que evaluemos el problema al que nos enfrentamos para encontrar el equilibrio ideal y así poder ahorrar recursos de memoria y tiempo.
-
-\subsection{Resultados}
-\begin{quote}
-    CartPole define como solucionado el problema al obtener una recompensa media de 195.0 durante 100 episodios consecutivos.
-\end{quote}
-
-Para realizar las mediciones, creamos una cola con una longitud máxima de 100 elementos. En ella añadimos el resultado de cada simulación, de forma que el resultado número 101 elimina el número 1. De esta forma podemos calcular la media sobre la estructura de datos y comprobar si el problema se consideraría resuelto por OpenAI Gym. Además dibujaremos esta media de la estructura tras cada episodio en una gráfica, con el fin de que los resultados sean más fáciles de apreciar y analizar. Las gráficas resultantes tienen variaciones tras cada ejecución, pero el caso más común es el mostrado en la Figura \ref{fig:cartpole_03}.
-
-\figura{Bitmap/Capitulo2/cartpole_03}{width=0.7\textwidth}{fig:cartpole_03}%
-       {Visualización de los resultados del agente RL}
-
-En dicha gráfica se pueden apreciar tres etapas distintas en el rendimiento del agente:
-\begin{itemize}
-    \item Episodios 1-50: durante las primeras simulaciones el agente aún ha de rellenar la tabla-Q. Se encuentra ante situaciones nuevas ante las que aún no sabe como reaccionar. Además hay que tener en cuenta que su rendimiento se calcula en base a la media con los primeros resultados, por lo que en la etapa final de esta fase aún es lastrado por esos primeros episodios.
-    \item Episodios 50-300: suponen el despegue en rendimiento del agente. En ellos se empieza a librar del lastre de las primeras simulaciones, además de que su tabla interna ya se encuentra en un estado bastante estable y es capaz de generar mejores resultados.
-    \item A partir del episodio 300: el agente alcanza su meta y el algoritmo comienza a estabilizarse.
-\end{itemize}
-
-Cabe destacar que estos resultados han sido obtenidos con una configuración en la discretización de \texttt{(1, 1, 3, 6)}. ¿Por qué optamos por esta configuración? Mientras probábamos distintas configuraciones descubrimos que el principal motivo de finalización de una simulación era la caída del mástil. En la mayoría de las ocasiones el mástil cae mucho antes de que el carro alcance los límites laterales. Esto nos permite ignorar las dos primeras observaciones (posición del carro y velocidad del carro) reduciendo notablemente la dimensionalidad del problema.
-
-De esta forma, contamos con un espacio dimensional bastante reducido ($1*1*3*6=18$ estados). Si por el contrario hubiésemos optado por un número mayor de estados, la primera fase descrita arriba se alargaría considerablemente, pero a cambio podríamos esperar una mayor estabilidad del agente en la tercera fase.
-
-\section{Los límites del Aprendizaje por Refuerzo}
-A lo largo de este capítulo hemos introducido el \textit{Aprendizaje por Refuerzo} como método de aprendizaje, las ventajas que tiene sobre otros métodos, sus mecánicas y elementos, algunos de sus algoritmos... Pero también hemos dejado entrever ciertos problemas.
-
-El más importante es el que vimos durante la discretización del estado. Este problema es conocido como la \textbf{maldición de la dimensión}(\textit{curse of dimensionality}) y hace referencia al aumento exponencial en el tamaño de las tablas de estados en la memoria de los agentes. El problema puede ser contenido a través de buenas aproximaciones en la discretización; no obstante, un entorno continuo lo bastante complejo acaba resultando inviable de afrontar.
-
-Otra solución ha surgido durante los últimos años y consiste en combinar el \textit{Aprendizaje por Refuerzo} con técnicas de \textit{Deep Learning}, que estudiaremos en los próximos capítulos.

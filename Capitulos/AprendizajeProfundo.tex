@@ -1,11 +1,11 @@
-\chapter{Redes Neuronales}
-\label{cap:neuralnetworks}
+\chapter{Aprendizaje Profundo}
+\label{cap:deepLearning}
 
 En el que estudiaremos la estructura y las utilidades de las redes neuronales. 
 
 \chapterquote{En otras actividades más allá del puro pensamiento lógico, nuestras mentes funcionan mucho más rápido que cualquier ordenador jamás concebido.}{Daniel Crevier}
 
-\section{Definición y elementos}
+\section{Redes Neuronales: definición y elementos}
 En vistas a imitar el funcionamiento de un cerebro humano, en cuanto lo que a procesamiento se refiere, se crearon las primeras redes neuronales artificiales. Éstas se basaron en cálculos matemáticos y algoritmos para conseguir dicho objetivo, a partir del diseño de neuronas artificiales y procesos de auto-aprendizaje.
 
 \subsection{Neuronas}
@@ -51,18 +51,9 @@ Para evitar que ocurriera este tipo de problemas, se estudiaron múltiples algor
 
 Por otro lado podemos dividir los problemas de Aprendizaje Automático en dos grupos principales, Supervisado y No Supervisado. La diferencia consiste en que los No Supervisado analizan los datos y detectan patrones mientras que los Supervisado (que son en los que nos vamos a centrar) se centran en conseguir predecir una salida a partir de ciertas entradas. Para ello cuenta con una función de error en la que se apoya para minimizar las diferencias entre la salida predicha y la deseada.
 
-\section{CAPITULO 4}
-\subsection{Introducción}
-Como ya hemos visto, las redes neuronales están diseñadas para poder adaptarse y usarse en múltiples problemas de Aprendizaje Automático. Para aprender a manejarnos con ellas, hemos desarrollado ejemplos de redes neuronales en los siguientes tipos de problemas.
-
-
-\subsection{Clasificación}
+\subsection{Problemas de clasificación}
 Los problemas de clasificación consisten, a grandes rasgos, en asignar un dato recibido a una categoría de un conjunto ya establecido. El ejemplo más claro de esta categoría sería proveer de imágenes de perros y gatos a una red neuronal, y que sea ésta la que decida de qué animal se trata en cada caso. Modificando el comportamiento del ojo humano, la red recibiría dichas imágenes como un conjunto de píxeles y a partir ellos, crearía contornos y buscaría patrones para distinguir entre un animal u otro.
 
-\subsection{Regresión}
-Los problemas de regresión se distinguen de los de clasificación en que la respuesta de la red neuronal no pertenece a un grupo, sino que forma parte de un conjunto continuo de posibles resultados. La forma de entender este tipo de problemas sería tomando como ejemplo una red neuronal que sea capaz de predecir el precio de una casa en función de su tamaño, número de habitaciones, localización, etc. \\
-
-\subsection{Ejemplo de problema de clasificación}
 En nuestro ejemplo de aprendizaje supervisado sobre clasificación, hemos elegido otro conjunto de datos conocido: Reconocimiento de cifras escritas a mano. Este consiste en un conjunto de imágenes de cada número escrito a mano de distintas formas, incluyendo la respuesta correcta para comprobar los resultados de nuestro clasificador.
 
 Para este caso, hemos establecido una red neuronal de tres capas, la de entrada, la de salida y una capa intermedia u oculta para que la red realice los cálculos necesarios. Hemos utilizado un optimizador Adam, de forma que el descenso de gradiente se realice de forma más efectiva y los valores de los pesos en la red se reajusten más rápidamente.
@@ -74,8 +65,9 @@ Además, para comprobar que nuestra red neuronal entrena y aprende correctamente
 \figura{Bitmap/Capitulo3/ClassificationNN/Class_accuracy3}{width=1\textwidth}{fig:Class_accuracy}%
         {Resultados de la clasificación con K-Fold de k = 10.}
 
+\subsection{Problemas de regresión}
+Los problemas de regresión se distinguen de los de clasificación en que la respuesta de la red neuronal no pertenece a un grupo, sino que forma parte de un conjunto continuo de posibles resultados. La forma de entender este tipo de problemas sería tomando como ejemplo una red neuronal que sea capaz de predecir el precio de una casa en función de su tamaño, número de habitaciones, localización, etc.
 
-\subsection{Ejemplo de problema de regresión}
 Para este ejemplo, hemos utilizado el conjunto de datos \textbf{Boston Housing}, incluido en uno de los paquetes de Keras. Éste consta de catorce atributos y características de un número determinado de viviendas, a partir de los cuales se puede averiguar su precio. 
 
 Esta vez los datos son muy diversos y los atributos pueden representar tanto unidades en escala de miles, como unos o ceros para representar si una característica se da o no. Por ello, antes de crear la red neuronal, es necesario estandarizar los valores mediante la función \textit{StandardScaler} de \textit{sklearn}. De esta forma, todos los atributos estarán normalizados y la red podrá trabajar con ellos de forma más eficiente.
@@ -84,3 +76,6 @@ La red neuronal se compone de tres capas, igual que en el ejemplo visto de clasi
 
 Además, para asegurarnos de la fiabilidad de la red neuronal y comprobar que no se ha dado una situación de \textbf{sobreentrenamiento} (overfitting), en el conjunto de datos disponemos dos partes separadas de estos últimos, una para entrenamiento y otra para testeo. De esta forma, mientras entrenamos la red con la primera, se puede comprobar la diferencia de errores con la segunda. 
 
+\section{Aprendizaje por Refuerzo Profundo}
+
+\subsection{DQNs}
