@@ -1,9 +1,10 @@
 \chapter{DQNs en acción}
 \label{cap:dqnEnAccion}
 
-\chapterquote{Frase célebre dicha por alguien inteligente}{Autor}
+\chapterquote{La vida no es un problema por resolver, sino una realidad que experimentar}{Søren Kierkegaard}
 
 \section{CartPole}
+\label{sec:cartpoleDQN}
 
 \subsection{Reemplazar la tabla-Q}
 
@@ -15,4 +16,53 @@
 
 \section{MountainCar}
 
-\subsection{Recompensas insuficientes}
+\begin{quote}
+    Un coche se encuentra en una pista unidimensional, posicionado entre dos "montañas". El objetivo es alcanzar la cima de la montaña derecha; sin embargo, el motor del coche no es lo bastante potente como para alcanzar la cima de la montaña con un único impulso. Por ello, la única forma de lograrlo es conducir hacia delante y hacia atrás aumentando el impulso.
+\end{quote}
+
+\figura{Bitmap/Capitulo5/MountainCar_01}{width=0.7\textwidth}{fig:mountaincar_01}%
+       {Entorno de simulación MountainCar, \citet{brockman2016openai}}
+
+Este problema fue descrito por primera vez por A. \citet{Moore90efficientmemory-based}.
+
+\subsection{Especificación del problema}
+
+\begin{itemize}
+    \item \textbf{Estado:} el estado de este problema nos viene dado a través de dos observaciones: la posición respecto al eje de abscisas y la velocidad del coche.
+    \item \textbf{Recompensa:} la recompensa recibida será de \texttt{-1} por cada paso en el que el coche no alcance la meta.
+    \item \textbf{Terminación:} el episodio terminará con éxito cuando el coche alcance la meta, o fracasará si no lo logra tras 200 pasos.
+    \item \textbf{Acciones:} dispondremos de tres acciones disponibles, impulsarse hacia la derecha, impulsarse hacia la izquierda y no hacer nada. El cada situación el agente deberá elegir la opción que más impulso le ayude a acumular.
+\end{itemize}
+
+Se puede apreciar que las características del problema son muy similares a las vistas en CartPole. Por ello para resolver este problema partiremos de la versión más estable de nuestro agente desarrollado en \ref{sec:cartpoleDQN}.
+
+
+\subsection{Enfoques de resolución}
+
+Ejecutando el problema con el agente descrito en [INSERTAR REF] y los parámetros usados en [INSERTAR REF], obtendremos unos resultados como los mostrados en la figura [INSERTAR REF]. La topología de la red también se mantiene igual, por supuesto adaptando el número de entradas y salidas a las del problema; ya que CartPole describía su estado a través de cuatro observaciones y tenía dos acciones disponibles, frente a las dos observaciones y tres acciones de las que MountainCar dispone.
+
+Los resultados tan pobres obtenidos puede que sorprendan viniendo del rendimiento visto en CartPole, pero recordemos que el tamaño de las capas internas de la red se eligió para ese problema en concreto. Es de esperar que distintos escenarios necesiten redes de distinto tamaño que sean capaces de interpretar las observaciones de manera efectiva. En definitiva, nuestra red actual \textbf{no es lo bastante descriptiva} para la complejidad del problema.
+
+\subsubsection*{Nueva topología e hiperparámetros}
+Modificando el agente para usar la siguiente red e hiperparámetros:
+
+((Imagen de la topología))
+
+$$ alpha = $$
+$$ gamma = $$
+$$ epsilon = $$
+$$ ... $$
+
+Obteniendo resultados... 
+
+((Grafica de resultados))
+
+\subsubsection*{Función de recompensa}
+Modificando la funcion de recompensa blablabla
+
+((algoritmo de modificacion))
+
+((Gráfica de resultados))
+
+\subsubsection*{Otros enfoques}
+Hablar sobre randomwalks y transfer learning
