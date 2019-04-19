@@ -14,7 +14,7 @@ OpenAI es una iniciativa cuyo objetivo es asegurar que la \textbf{Inteligencia A
 
 En busca de este objetivo, OpenAI sigue tres caminos:
 \begin{itemize}
-    \item \textbf{Investigación y desarrollo:} sus contribuciones al Aprendizaje Automático como estado del arte durante los últimos años no han sido pocas: desde nuevos algoritmos de Aprendizaje por Refuerzo (\citet{baselines}) hasta demostraciones de cómo una Inteligencia Artificial puede sobrepasar a jugadores expertos (\citet{OpenAI_dota}).
+    \item \textbf{Investigación y desarrollo:} Sus contribuciones al Aprendizaje Automático como estado del arte durante los últimos años no han sido pocas: desde nuevos algoritmos de Aprendizaje por Refuerzo (\citet{baselines}) hasta demostraciones de cómo una Inteligencia Artificial puede sobrepasar a jugadores expertos (\citet{OpenAI_dota}).
     \item \textbf{Recursos académicos} puestos a disposición por \citet{spinningup} para todo aquél que quiera aprender sobre el Aprendizaje por Refuerzo Profundo.
     \item \textbf{Herramientas y plataformas} mediante las cuales facilitar la labor de investigación y pruebas del Aprendizaje Automático.
 \end{itemize}
@@ -23,11 +23,11 @@ Es nuestra investigación nos serviremos de una de estas plataformas, \textbf{Op
 
 Gym es un conjunto de herramientas para desarrollar y comparar algoritmos de aprendizaje de refuerzo. En él los agentes son capaces de aprender cualquier cosa, desde caminar hasta jugar a juegos como Pong o Pinball.
 
-Para ello la librería te aporta una interfaz sencilla, a través de la cual un entorno de simulación te es provisto. Tú tendrás que aportar el algoritmo, en nuestro caso se tratará del agente que interaccionará con el entorno para aprender de él e intentar lograr unos objetivos.
+Para ello la librería aporta al usuario una interfaz sencilla, a través de la cual se le provee un entorno de simulación. En nuestro caso, el algoritmo que proporcionaremos será el agente que interaccionará con el entorno para aprender de él e intentar lograr unos objetivos.
 
 \section{CartPole}
 \begin{quote}
-    Un mástil está unido por una bisagra a un carro, el cual se mueve a lo largo de una pista sin rozamiento. El sistema es controlado aplicando una fuerza de +1 o -1 al carro. El péndulo (mástil) comienza en posición vertical, el objetivo es prevenir que caiga. Una recompensa de +1 es otorgada por cada \textit{timestep} que el mástil permanece erguido. El episodio finaliza cuando el mástil se encuentra a más de 15 grados de su posición vertical, o el carro se mueve más de 2.4 unidades del centro.
+    Un mástil está unido por una bisagra a un carro, el cual se mueve a lo largo de una pista sin rozamiento. El sistema es controlado aplicando una fuerza de +1 o -1 al carro. El péndulo (mástil) comienza en posición vertical, el objetivo es prevenir que caiga. Una recompensa de +1 es otorgada por cada \textit{timestep} que el mástil permanece erguido. El episodio finaliza cuando el mástil se encuentra desplazado más de 15 grados de su posición vertical, o el carro se mueve más de 2.4 unidades del centro.
 \end{quote}
 
 Este es el enunciado del primer problema que resolveremos mediante técnicas de Aprendizaje por Refuerzo. La implementación del problema nos viene dada como parte de la librería \textit{OpenAI Gym}. Una vez importado el problema, dispondremos de un entorno con el que interactuar y nuestro objetivo será crear un agente que interaccione con el mismo.
