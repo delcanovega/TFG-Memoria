@@ -6,13 +6,43 @@
 \section{CartPole}
 \label{sec:cartpoleDQN}
 
-\subsection{Reemplazar la tabla-Q}
+\subsection{Reemplazar la tabla-Q (SimpleAgent)}
 
-\subsection{Añadir memoria al agente}
+El primer problema que tratamos al trabajar con DQNs se corresponde al CartPole ya descrito en el punto \ref{cartpole-sec}, en el que jugamos con un carro que tiene un poste sobre él y su objetivo es moverse para así evitar que el poste se caiga.
 
-\subsection{Romper la cohesión de la memoria}
+Como primer paso para la resolución del probelma utilizando DQNs, se sustituyó la taba-Q y su consecuente discretización de estados (con los probemas y limitaciones que ésto traía) por una red neuronal simple, la cual únicamente interaccionaba con el entorno y, después de ejecutar cada movimiento, aplicaba la ecuación de Bellman para entrenar la red e intentar que el agente aprendiese a jugar.
 
-\subsection{Estabilizar la red}
+El resultado fue nefasto como podemos apreciar en la imagen \ref{fig:CartPole-SimpleAgent}, ya que la red no lograba aprender a jugar de ninguna manera debido a la falta de información usada para el entrenamiento.
+
+\figura{Bitmap/Capitulo5/Results-SimpleAgent.png}{width=0.6\textwidth}{fig:CartPole-SimpleAgent}{Resultados del SimpleAgent}
+
+\subsection{Añadir memoria al agente (BatchAgent)}
+
+Con la intención de proporcionar a la red neuronal más información con la que entrenar, añadimos una memoria en la cual guardar todos los datos necesarios para la perfecta representación de lo sucedido en cada paso de ejecución.
+
+De este modo, guardamos información referente al \textbf{estado-actual}, \textbf{acción-tomada}, \textbf{recompensa}, \textbf{estado-siguiente} y \textbf{finalizado}.
+
+Así, después de la ejecución de cada acción y con la información proporcionada por el entorno en este acto, guardamos todos estos valores en la memoria para posteriormente ser utilizados en el entrenamiento de la red.
+
+Siguiendo este proceso y con toda la información guardada, al completarse un episodio se cogia un conjunto ($batch$) de los últimos n pasos guardados en la memoria y se entrenaba la red con dicho conjunto, con la intención de hacerle llegar una mayor información.
+
+El problema encontrado con esta solución era la consecución de los pasos tomados para el entrenamiento, ya que al ser consecutivos la información aportada por cada uno de ellos era muy similar, lo que conllevaba que la red aprendiese, pero no lo suficiente para la resolución del problema.
+
+\subsection{Romper la cohesión de la memoria (RandomBatchAgent)}
+
+Debido a las limitaciones que tenia el entrenamiento cogiendo los últimos n pasos de la memoria como si de una ventana se tratase, decidimos cambiar el conjunto de datos proporcionado en el entrenamiento de la red de forma que los distintos pasos selelccionados no fueran consecutivos, si no seleccionados de manera aleatoria y no repetidos entre todos los guardados en la memoria, evitando así la falta de información que la consecución de pasos conllevaba.
+
+El resultado fue notoriamente mejor como muestra la imagen \ref{fig:CartPole-RandomBatchAgent}, incluso logrando en algunas simulaciones la resolución del problema y consiguiendo puntuaciones más altas, pero aun así entre unas simulaciones y otras los resultados eran muy dispares, de modo que en allgunas de ellas encontraba un camino bueno y lo reforzaba hasta el punto de lograr la resolución del problema, como que en otras de no encontrarse ese buen camino, la red no lograba aprender o suficiente, obteniendo mucha volatibilidad en los resultados y un mejor aprendizaje.
+
+\figura{Bitmap/Capitulo5/Results-RandomBatchAgent.png}{width=0.6\textwidth}{fig:CartPole-RandomBatchAgent}{Resultados del RandomBatchAgent}
+
+\subsection{Estabilizar la red (DoubleNetworkAgent)}
+
+Lograda la resolución del problema, pero aun con la gran diferencia de los resultados entre diferentes simulaciones, y siguiendo las conclusiones sacadas por el departamento de DeepMind de Google en distintos artículos publicados (poner referencias), se explica que la mejor forma para lograr la estabilización de la red es la utilización de 2 redes diferentes e idénticas, de modo que la primera red (agente) se utilice para guardar los datos previos con los cuales tomar las decisiones en cuanto a los movimientos a ejecutar, y una segunda red (aprendizaje) en la cual ir guardando los valores de la ejecución actualizados, de modo que cada X pasos ambas redes son comparadas, guardando la mejor de ellas como agente para la toma de decisiones, y utilizlando la otra para el aprendizaje.
+
+Tras la implementación de este método, comprobamos que lográbamos una mayor consistencia en los datos entre unas simulaciones y otras, obteniendo resultados menos dispares que con el entrenamiento por conjunto aleatorio como podemos observar en la imagen \ref{fig:CartPole-DoubleAgent}.
+
+\figura{Bitmap/Capitulo5/Results-DoubleAgent.png}{width=0.6\textwidth}{fig:CartPole-DoubleAgent}{Resultados del DoubleNetworkAgent}
 
 \section{MountainCar}
 
