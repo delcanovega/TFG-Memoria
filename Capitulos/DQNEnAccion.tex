@@ -36,9 +36,9 @@ El resultado fue notoriamente mejor como muestra la imagen \ref{fig:CartPole-Ran
 
 \figura{Bitmap/Capitulo5/Results-RandomBatchAgent.png}{width=0.6\textwidth}{fig:CartPole-RandomBatchAgent}{Resultados del RandomBatchAgent}
 
-\subsection{Estabilizar la red (DoubleNetworkAgent)}
+\subsection{Estabilizar la red}
 
-Lograda la resolución del problema, pero aun con la gran diferencia de los resultados entre diferentes simulaciones, y siguiendo las conclusiones sacadas por el departamento de DeepMind de Google en distintos artículos publicados (poner referencias), se explica que la mejor forma para lograr la estabilización de la red es la utilización de 2 redes diferentes e idénticas, de modo que la primera red (agente) se utilice para guardar los datos previos con los cuales tomar las decisiones en cuanto a los movimientos a ejecutar, y una segunda red (aprendizaje) en la cual ir guardando los valores de la ejecución actualizados, de modo que cada X pasos ambas redes son comparadas, guardando la mejor de ellas como agente para la toma de decisiones, y utilizlando la otra para el aprendizaje.
+Lograda la resolución del problema, pero aún con la gran diferencia de los resultados entre distintas simulaciones, y siguiendo las soluciones consideradas en el capítulo anterior vamos a optar por el uso de dos redes diferentes. Con esto esperamos conseguir estabilizar los resultados obtenidos.
 
 Tras la implementación de este método, comprobamos que lográbamos una mayor consistencia en los datos entre unas simulaciones y otras, obteniendo resultados menos dispares que con el entrenamiento por conjunto aleatorio como podemos observar en la imagen \ref{fig:CartPole-DoubleAgent}.
 
