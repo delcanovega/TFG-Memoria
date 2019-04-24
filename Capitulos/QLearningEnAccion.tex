@@ -62,12 +62,12 @@ A la hora de discretizar una observación, una de las mejores formas de hacerlo 
 
 Centrémonos por un momento en el objetivo más básico del problema: Mantener el mástil en pie. Podemos dividir el problema en dos estados muy simples, uno en el que el mástil está cayendo hacia la derecha y otro en el cae hacia la izquierda, como podemos ver en la Figura \ref{fig:cartpole_01}. Esto coincide con nuestras dos acciones disponibles y, de forma algo ingenua, podemos considerar esto un punto de partida válido.
 
-\figura{Bitmap/Capitulo2/cartpole_01}{width=0.7\textwidth}{fig:cartpole_01}%
+\figura{Bitmap/QLearningEnAccion/cartpole_01}{width=0.7\textwidth}{fig:cartpole_01}%
        {Simplificación de estados}
 
 Por supuesto, esta discretización es demasiado ingenua para resolver el problema de una forma eficiente; es necesario probar otras divisiones de estados y tener en cuenta las demás observaciones. Para ello creamos una función parametrizable, la cual decide en cuántos estados dividir cada observación. Así podemos decidir a qué observaciones damos más importancia, creando más o menos estados en función a éstas, como podemos apreciar en la Figura \ref{fig:cartpole_02}.
 
-\figura{Bitmap/Capitulo2/cartpole_02}{width=0.7\textwidth}{fig:cartpole_02}%
+\figura{Bitmap/QLearningEnAccion/cartpole_02}{width=0.7\textwidth}{fig:cartpole_02}%
        {División de las observaciones}
 
 Este aumento en el número de estados permite que nuestro agente sea capaz de especializarse más en acciones concretas. Pero esta mejora viene con un precio a pagar: Cuantos más estados distintos tengamos, más tiempo tardará en visitarlos todos (en repetidas ocasiones) durante su etapa de entrenamiento. Esto quiere decir que nuestro agente tardará más en tener un buen rendimiento. Es importante entonces que evaluemos el problema al que nos enfrentamos para encontrar el equilibrio ideal y así poder ahorrar recursos de memoria y tiempo.
@@ -79,7 +79,7 @@ Este aumento en el número de estados permite que nuestro agente sea capaz de es
 
 Para realizar las mediciones, creamos una cola con una longitud máxima de 100 elementos. En ella añadimos el resultado de cada simulación, de forma que el resultado número 101 elimina el número 1. De esta forma podemos calcular la media sobre la estructura de datos y comprobar si el problema se consideraría resuelto por OpenAI Gym. Además dibujaremos esta media de la estructura tras cada episodio en una gráfica, con el fin de que los resultados sean más fáciles de apreciar y analizar. Las gráficas resultantes tienen variaciones tras cada ejecución, pero el caso más común es el mostrado en la Figura \ref{fig:cartpole_03}.
 
-\figura{Bitmap/Capitulo2/cartpole_03}{width=0.7\textwidth}{fig:cartpole_03}%
+\figura{Bitmap/QLearningEnAccion/cartpole_03}{width=0.7\textwidth}{fig:cartpole_03}%
        {Visualización de los resultados del agente RL}
 
 En dicha gráfica se pueden apreciar tres etapas distintas en el rendimiento del agente:

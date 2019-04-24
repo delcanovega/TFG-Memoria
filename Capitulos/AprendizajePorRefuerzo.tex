@@ -48,11 +48,11 @@ El Proceso de Decisión de Markov (MDP), llamado así por el matemático ruso An
 
 Podemos relacionar todos estos elementos de modo que para un estado actual (\textbf{s}) se toma determinada acción (\textbf{a}), llevándonos así a un estado siguiente (\textbf{s'}) definido en el modelo de transición, y obteniendo una recompensa (\textbf{r}) asociada a la toma de dicha decisión en ese estado. Cabe destacar que el MDP relaciona estos elementos de forma que, para obtener los resultados futuros, sólo se toma en cuenta el estado inmediatamente anterior junto la última acción escogida; es decir, no se guarda memoria de las transiciones anteriores. Podemos representar gráficamente estos elementos en la figura \ref{fig:mdp-diagram}.
 
-\figura{Bitmap/Capitulo2/MDP-Diagram}{width=0.6\textwidth}{fig:mdp-diagram}{Diagrama de un MDP}
+\figura{Bitmap/AprendizajePorRefuerzo/MDP-Diagram}{width=0.6\textwidth}{fig:mdp-diagram}{Diagrama de un MDP}
 
 Pongamos el ejemplo de un laberinto, como podemos ver representado en la figura \ref{fig:mdp-01}. Nuestro conjunto de \textbf{estados} serían todas las posibles posiciones dentro del laberinto donde podemos situarnos, las \textbf{acciones} serían las direcciones en las que nos podemos mover en cada posición del laberinto, nuestro \textbf{modelo de transición} estaría definido de modo que si nos encontramos en una posición [x, y] y decidimos tomar la acción de movernos hacia arriba, nuestra siguiente posición (estado) sería [x, y+1], de modo que podríamos definir la \textbf{recompensa} como una puntuación de +1 si consigo moverme a una posición buena dentro del laberinto, 0 si me choco contra una pared y +100 si consigo encontrar la salida.
 
-\figura{Bitmap/Capitulo2/MDP-Maze.png}{width=0.6\textwidth}{fig:mdp-01}{MDP como laberinto}
+\figura{Bitmap/AprendizajePorRefuerzo/MDP-Maze.png}{width=0.6\textwidth}{fig:mdp-01}{MDP como laberinto}
 
 Visto este ejemplo, podemos generalizar la idea de un MDP como la relación que existe entre un agente que toma decisiones sobre un entorno, por las cuales recibe recompensas.
 
