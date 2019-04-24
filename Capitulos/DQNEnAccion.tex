@@ -14,7 +14,7 @@ Como primer paso para la resolución del probelma utilizando DQNs, se sustituyó
 
 El resultado fue nefasto como podemos apreciar en la imagen \ref{fig:CartPole-SimpleAgent}, ya que la red no lograba aprender a jugar de ninguna manera debido a la falta de información usada para el entrenamiento.
 
-\figura{Bitmap/Capitulo5/Results-SimpleAgent.png}{width=0.6\textwidth}{fig:CartPole-SimpleAgent}{Resultados del SimpleAgent}
+\figura{Bitmap/DQNEnAccion/Results-SimpleAgent.png}{width=0.6\textwidth}{fig:CartPole-SimpleAgent}{Resultados del SimpleAgent}
 
 \subsection{Añadir memoria al agente (BatchAgent)}
 
@@ -34,7 +34,7 @@ Debido a las limitaciones que tenia el entrenamiento cogiendo los últimos n pas
 
 El resultado fue notoriamente mejor como muestra la imagen \ref{fig:CartPole-RandomBatchAgent}, incluso logrando en algunas simulaciones la resolución del problema y consiguiendo puntuaciones más altas, pero aun así entre unas simulaciones y otras los resultados eran muy dispares, de modo que en algunas de ellas encontraba un camino bueno y lo reforzaba hasta el punto de lograr la resolución del problema, como que en otras de no encontrarse ese buen camino, la red no lograba aprender o suficiente, obteniendo mucha volatibilidad en los resultados y un mejor aprendizaje.
 
-\figura{Bitmap/Capitulo5/Results-RandomBatchAgent.png}{width=0.6\textwidth}{fig:CartPole-RandomBatchAgent}{Resultados del RandomBatchAgent}
+\figura{Bitmap/DQNEnAccion/Results-RandomBatchAgent.png}{width=0.6\textwidth}{fig:CartPole-RandomBatchAgent}{Resultados del RandomBatchAgent}
 
 \subsection{Estabilizar la red}
 
@@ -42,7 +42,7 @@ Lograda la resolución del problema, pero aún con la gran diferencia de los res
 
 Tras la implementación de este método, comprobamos que lográbamos una mayor consistencia en los datos entre unas simulaciones y otras, obteniendo resultados menos dispares que con el entrenamiento por conjunto aleatorio como podemos observar en la imagen \ref{fig:CartPole-DoubleAgent}.
 
-\figura{Bitmap/Capitulo5/Results-DoubleAgent.png}{width=0.6\textwidth}{fig:CartPole-DoubleAgent}{Resultados del DoubleNetworkAgent}
+\figura{Bitmap/DQNEnAccion/Results-DoubleAgent.png}{width=0.6\textwidth}{fig:CartPole-DoubleAgent}{Resultados del DoubleNetworkAgent}
 
 \section{MountainCar}
 
@@ -50,7 +50,7 @@ Tras la implementación de este método, comprobamos que lográbamos una mayor c
     Un coche se encuentra en una pista unidimensional, posicionado entre dos "montañas". El objetivo es alcanzar la cima de la montaña derecha; sin embargo, el motor del coche no es lo bastante potente como para alcanzar la cima de la montaña con un único impulso. Por ello, la única forma de lograrlo es conducir hacia delante y hacia atrás aumentando el impulso.
 \end{quote}
 
-\figura{Bitmap/Capitulo5/MountainCar_01}{width=0.7\textwidth}{fig:mountaincar_01}%
+\figura{Bitmap/DQNEnAccion/MountainCar_01}{width=0.7\textwidth}{fig:mountaincar_01}%
        {Entorno de simulación MountainCar, \citet{brockman2016openai}}
 
 Este problema fue descrito por primera vez por A. \citet{Moore90efficientmemory-based}.
