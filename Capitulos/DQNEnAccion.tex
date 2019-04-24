@@ -98,40 +98,53 @@ Pero por otro lado devuelve recompensas negativas hasta que alcanza el objetivo 
 
 Con este pensamiento en mente comenzamos a desarrollar las distintas posibilidades. A continuación hablaremos de cada uno de los prototipos desarrollados acompañados de las consiguientes reflexiones que desembocaron.
  
+\paragraph{Posición}
 Inicialmente, dado que el estado final se basa en la posición del coche, empezamos a desarrollar un prototipo cuya función de recompensa se basará en dicha posición, por ello decidimos que fuera "tal cual" la que devuelve el entorno. 
 
  RESULTADO:mainPosicionNoAbs
 
 Visto la poca diferencia entre los resultados entre esta y la original, nos dimos cuenta de que hacía falta hacer una serie de ajustes:
-- En primer lugar, dar una recompensa exageradamente alta al alcanzar la meta, no solo para que ese camino se refuerce más que con la recompensa original, para acelerar el aprendizaje, sino para además permitirnos distinguir más fácilmente (en la gráfica) las partidas que llegan a la meta de las que no.  
-- Después, nos percatamos de que en el planteamiento de Recompensa Binaria no se hace distinción entre derecha y izquierda, por lo que debíamos hacer los cálculos con la posición en valor absoluto, para así no dar preferencia a la derecha frente a la izquierda haciendo más difícil el balanceo.
-Para poder llevar a cabo esto, necesitábamos fijar el centro, el cual, según el entorno, es -0.5, por lo tanto debíamos sumarle 0.5 para corregir la desviación.
-- Por otro lado pensamos en darle una penalización en función del tiempo para dirigir el aprendizaje a una mayor presteza al igual que hacia la Recompensa Binaria. Pero esto último lo descartamos al ver los resultados.
 
+\begin{itemize}
+    \item En primer lugar, dar una recompensa exageradamente alta al alcanzar la meta, no solo para que ese camino se refuerce más que con la recompensa original, para acelerar el aprendizaje, sino para además permitirnos distinguir más fácilmente (en la gráfica) las partidas que llegan a la meta de las que no.  
+    \item Después, nos percatamos de que en el planteamiento de Recompensa Binaria no se hace distinción entre derecha y izquierda, por lo que consideramos hacer los cálculos con la posición en valor absoluto, para así no dar preferencia a la derecha frente a la izquierda con la intencion de favorecer el balanceo.
+     Para poder llevar a cabo esto, necesitábamos fijar el centro, el cual, según el entorno, es -0.5, por lo tanto debíamos sumarle 0.5 para corregir la desviación.
+    \item Por otro lado pensamos en darle una penalización en función del tiempo para dirigir el aprendizaje a una mayor presteza al igual que hacia la Recompensa Binaria. Pero esto último lo descartamos al ver los resultados.
+\end{itemize}
  RESULTADO: CapturaCambiandoRewardAPosicion.png
 
 La grafica representa claramente como la puntuación converge a un valor, esto se debe a que la penalización crece demasiado.
-Penealizacion inicial = 0.995, cada step Penalizacion = penalización * penalización inicial; 
-De esta forma la penalización del último Step es de 0.36695. Esto hace que las puntuaciones de los últimos Steps de la partida sean despreciables para el sistema, de tal forma que se optimicen solo las recompensas iniciales y desatiendan las de los ultimos, llevando a la convergencia. 
+Penealizacion inicial empieza en 1, sin penalización, y a cada Step esta se multiplica por 0.995, de forma que la penalización del último Step es de 0.36695. Esto hace que las puntuaciones de los últimos Steps de la partida sean despreciables para el sistema, de tal forma que se optimicen solo las recompensas iniciales y ignorando las de los ultimos. Así llegando a la convergencia. 
 Además nos dimos cuenta de que este tipo de penalización incumplía lo establecido de basar la recompensa únicamente en el estado, sin tener en cuenta factores externos como, en el caso de la penalización, el número de Steps que lleva la partida.
-Ante los inconvenientes de la penalización optamos por descartar ese método y en su lugar añadir una pequeña disminución de la recompensa según el número de pasos realizados para reforzar las soluciones rápidas frente a las lentas.
+Ante los inconvenientes de la penalización optamos por descartar ese método y en su lugar añadir una pequeña disminución de la recompensa, en caso de alcanzar la meta, según el número de pasos realizados al final del Episodio para reforzar las soluciones rápidas frente a las lentas.
 
 RESULTADOS: mainPosicion
 
-
-
-Por otro lado, dimos cuenta que para alcanzar la meta en el juego hacia falta coger impulso para tener suficiente velocidad como para subir la montaña, por esto decidimos abrir otra línea de investigación basada en la velocidad absoluta.
+\paragraph{Velocidad}
+Por otro lado, dado que para alcanzar la meta en el juego hace falta coger impulso para tener suficiente velocidad como para subir la montaña, decidimos abrir otra línea de investigación basada en la velocidad absoluta.
 
 RESULTADO: mainVelocidadTalcualNoAbs
 
 A diferencia de la posición, la velocidad devuelta por el entorno tiene unos valores muy pequeños, por lo que basar la recompensa en la velocidad bruta sería semejante a darle una recompensa constante, para cuando se alcance la meta darle una notablemente mayor, lo cual se asemeja a la Recompensa Binaria. Por ello decidimos multiplicarla por 100, haciéndola más visibles y relevantes para la recompensa. 
+
 Se puede ver como alcanza la meta más rápido, sufre caídas debido al overfitting, aun siendo caídas menores que las de posición nos parecía preocupante, por lo que probamos a cambiar la función de optimización de Adam a Adadelta.
 
 RESULTADO: main3.2 y  
 
-Pensándolo como humano, cuando encuentras un entorno nuevo necesitas reconocer el objetivo, sin la modificación el objetivo es indistinguible, no buscas alcanzar el final del juego, sino alcanzar objetivos pequeños, ir a la derecha, saltar, correr… Basándonos en es
+Estos resultados nos parecieson suficientemente satisfactorios para este apartado.
 
- 
+\paragraph{Variantes}
+Nos planteamos otras aderezos para las soluciones ya planteadas para optimizar el aprendizaje. 
+Consideramos añadir pequeñas recompensas como dar una bonificacion extra al alcanzar cierta posición o al llevar una velocidad positiva.
+Algunas de estas fueron descartadas por la premisa de solo basarnos en el estado para definir la recompensa, pero otras pudimos llevarlas a cabo.
+
+ Dar bonus +10 cada vez que alcanza un multiplo de 0.1
+
+ Dar bonus al llevar velocidad positiva al pasar por 0
+
+ Dar bonus al superar su velocidad maxima al pasar por cero(se dedicaba a pasar muchas veces por cero)
+
+ Dar una bonificacion cada vez que supera mu mayor altura por 0.1, a primera vista puede parecer que de elementos externos al estado pero... teniendo en cuenta que se trata de solo posiciones de 0.1 , al final solo se recompensan 0, 0.1, 0.2... seria equivalente la primera propuesta pero alternando la ladera. 
 
 
 ((algoritmo de modificacion))
@@ -140,3 +153,8 @@ Pensándolo como humano, cuando encuentras un entorno nuevo necesitas reconocer 
 
 \subsubsection*{Otros enfoques}
 Hablar sobre randomwalks y transfer learning
+
+\paragraph{Randomwalks}
+A grandes rasgos Randomwalks, consiste en generar una gran memoria de partidas jugadas totalmente al azar para luego seleccionar los mejores resultados de entre estos para entrenar el agente. Por último, poner el agente en el entorno real.
+Este planteamiento ha resultado ser con diferencia el más rapido de todos, dado que al ahorarse el entrenamiento intermedio de todas las partidas se ahora gran parte del tiempo de ejecución.
+
