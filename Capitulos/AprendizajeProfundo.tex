@@ -84,7 +84,7 @@ Cuando hablamos de Aprendizaje por Refuerzo anteriormente, nos centramos en el m
 
 Tras conocer la posibilidad de aproximar las funciones-Q, se planteó la forma más eficiente de realizarlas sin tener que generar un modelo específico para cada problema. Es así como surgieron las \textit{Deep Q-Networks} o \textbf{DQNs}, como nos referiremos a ellas. 
 
-Como su nombre bien puede dar a entender, las DQNs resultan de una fusión entre el método de Q-Learning explicado anteriormente y una red neuronal profunda. Una DQN es una red neuronal multicapa que dado un estado "s" devuelve un vector de valores Q(s, · ; T ), donde T son los parámetros de la red. Esto significa que nuestra red es capaz de calcular múltiples valores-Q de forma dinámica para todas las acciones posibles en un estado, terminando así con la intratabilidad que suponía el tamaño de la tabla-Q en problemas de Q-Learning.
+Como su nombre bien puede dar a entender, las DQNs resultan de una fusión entre el método de Q-Learning explicado anteriormente y una red neuronal profunda. Una DQN es una red neuronal multicapa que dado un estado "s" devuelve un vector de valores Q(s, · ; T ), donde T son los parámetros de la red. Esto significa que nuestra red es capaz de calcular múltiples valores-Q de forma dinámica para todas las acciones posibles en un estado, terminando así con la intratabilidad que suponía la utilización de la tabla-Q en problemas de Q-Learning.
 
 Sin embargo, ya que cualquier pequeño cambio en los parámetros de entrada modificará los resultados de la red, los valores-Q se recalcularán constantemente y podrían darse situaciones en las que el agente sea inducido a error durante su aprendizaje. Al tener multitud de estados similares con diferentes valores-Q, es muy posible que el agente ignore soluciones similares, aprendiendo mucho más despacio o repitiendo los mismos caminos constantemente. Con el fin de arreglar esta inestabilidad, se estudian varios métodos, de los cuales explicaremos los dos más relevantes.
 
@@ -103,3 +103,5 @@ Como derivación de este método existe otro conocido como \textbf{Double Q-Netw
 
 \subsubsection{Experiencias pasadas}
 Otra manera de conseguir estabilidad es reduciendo las similitudes entre los estados de los que aprende nuestro agente, de forma que no sean estados relacionados y puedan ser representativos de distintos momentos dentro de nuestra ejecución. Para hacerlo recurriremos al \textit{Experience Replay} (reproductor de experiencias, también conocidas como valores-Q), al que nos referiremos como \textbf{replay}. Éste método consiste en almacenar todas las experiencias pasadas del agente al finalizar un episodio y tomar una muestra aleatoria de ellas. De esta forma conseguiremos casos no relacionados para optimizar el aprendizaje de nuestro agente.
+
+Más adelante observaremos algunas variaciones de este método a lo largo de nuestras pruebas, además de poner en práctica lo explicado durante este capítulo.

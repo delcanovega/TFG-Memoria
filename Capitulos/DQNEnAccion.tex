@@ -6,29 +6,27 @@
 \section{CartPole}
 \label{sec:cartpoleDQN}
 
-\subsection{Reemplazar la tabla-Q (SimpleAgent)}
+\subsection{Reemplazar la tabla-Q: SimpleAgent}
 
-El primer problema que tratamos al trabajar con DQNs se corresponde al CartPole ya descrito en el punto \ref{cartpole-sec}, en el que jugamos con un carro que tiene un poste sobre él y su objetivo es moverse para así evitar que el poste se caiga.
+El primer problema que trataremos al trabajar con DQNs se corresponde con el de CartPole, ya descrito en el punto \ref{cartpole-sec}, en el que jugamos con un carro, cuyo objetivo es moverse a derecha o izquierda para evitar que el poste vertical que hay sobre él se caiga.
 
-Como primer paso para la resolución del probelma utilizando DQNs, se sustituyó la taba-Q y su consecuente discretización de estados (con los probemas y limitaciones que ésto traía) por una red neuronal simple, la cual únicamente interaccionaba con el entorno y, después de ejecutar cada movimiento, aplicaba la ecuación de Bellman para entrenar la red e intentar que el agente aprendiese a jugar.
+Como primer paso para la resolución del problema, en este caso utilizando DQNs, se sustituyó la tabla-Q y su consecuente discretización de estados por una red neuronal simple, abandonando por fin los problemas y limitaciones que habíamos observado anteriormente. La red neuronal únicamente interaccionaba con el entorno y, después de ejecutar cada movimiento, se aplicaba la ecuación de Bellman para entrenar la red e intentar que el agente aprendiese a jugar.
 
-El resultado fue nefasto como podemos apreciar en la imagen \ref{fig:CartPole-SimpleAgent}, ya que la red no lograba aprender a jugar de ninguna manera debido a la falta de información usada para el entrenamiento.
+El resultado fue nefasto, como podemos apreciar en la imagen \ref{fig:CartPole-SimpleAgent}. El agente no lograba aprender a jugar de ninguna manera, debido a la falta de información usada para el entrenamiento. Fue por ello que necesitábamos avanzar un paso más en pos de mejorar la eficiencia de nuestro agente.
 
 \figura{Bitmap/DQNEnAccion/Results-SimpleAgent.png}{width=0.6\textwidth}{fig:CartPole-SimpleAgent}{Resultados del SimpleAgent}
 
-\subsection{Añadir memoria al agente (BatchAgent)}
+\subsection{Añadir memoria al agente: BatchAgent}
 
-Con la intención de proporcionar a la red neuronal más información con la que entrenar, añadimos una memoria en la cual guardar todos los datos necesarios para la perfecta representación de lo sucedido en cada paso de ejecución.
+Con la intención de proporcionar a la red neuronal más datos con los que entrenar, decidimos añadir una memoria, siguiendo la idea del método de \textit{replay} visto anteriormente. En ella guardamos todos los datos necesarios para la perfecta representación de lo sucedido en pasos de ejecución anteriores, lo que se traduce en: \textbf{estado-actual}, \textbf{acción-tomada}, \textbf{recompensa}, \textbf{estado-siguiente} y \textbf{finalizado}.
 
-De este modo, guardamos información referente al \textbf{estado-actual}, \textbf{acción-tomada}, \textbf{recompensa}, \textbf{estado-siguiente} y \textbf{finalizado}.
-
-Así, después de la ejecución de cada acción y con la información proporcionada por el entorno en este acto, guardamos todos estos valores en la memoria para posteriormente ser utilizados en el entrenamiento de la red.
+Tras la ejecución de cada acción, y con la información proporcionada por el entorno en este acto, guardamos todos estos valores en la memoria para posteriormente ser utilizados en el entrenamiento de la red.
 
 Siguiendo este proceso y con toda la información guardada, al completarse un episodio se cogia un conjunto ($batch$) de los últimos n pasos guardados en la memoria y se entrenaba la red con dicho conjunto, con la intención de hacerle llegar una mayor información.
 
 El problema encontrado con esta solución era la consecución de los pasos tomados para el entrenamiento, ya que al ser consecutivos la información aportada por cada uno de ellos era muy similar, lo que conllevaba que la red aprendiese, pero no lo suficiente para la resolución del problema.
 
-\subsection{Romper la cohesión de la memoria (RandomBatchAgent)}
+\subsection{Romper la cohesión de la memoria: RandomBatchAgent}
 
 Debido a las limitaciones que tenia el entrenamiento cogiendo los últimos n pasos de la memoria como si de una ventana se tratase, decidimos cambiar el conjunto de datos proporcionado en el entrenamiento de la red de forma que los distintos pasos selelccionados no fueran consecutivos, si no seleccionados de manera aleatoria y no repetidos entre todos los guardados en la memoria, evitando así la falta de información que la consecución de pasos conllevaba.
 
@@ -36,7 +34,7 @@ El resultado fue notoriamente mejor como muestra la imagen \ref{fig:CartPole-Ran
 
 \figura{Bitmap/DQNEnAccion/Results-RandomBatchAgent.png}{width=0.6\textwidth}{fig:CartPole-RandomBatchAgent}{Resultados del RandomBatchAgent}
 
-\subsection{Estabilizar la red}
+\subsection{Estabilizar la red: DoubleAgent}
 
 Lograda la resolución del problema, pero aún con la gran diferencia de los resultados entre distintas simulaciones, y siguiendo las soluciones consideradas en el capítulo anterior vamos a optar por el uso de dos redes diferentes. Con esto esperamos conseguir estabilizar los resultados obtenidos.
 
