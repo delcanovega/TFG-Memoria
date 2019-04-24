@@ -32,7 +32,7 @@ El problema encontrado con esta solución era la consecución de los pasos tomad
 
 Debido a las limitaciones que tenia el entrenamiento cogiendo los últimos n pasos de la memoria como si de una ventana se tratase, decidimos cambiar el conjunto de datos proporcionado en el entrenamiento de la red de forma que los distintos pasos selelccionados no fueran consecutivos, si no seleccionados de manera aleatoria y no repetidos entre todos los guardados en la memoria, evitando así la falta de información que la consecución de pasos conllevaba.
 
-El resultado fue notoriamente mejor como muestra la imagen \ref{fig:CartPole-RandomBatchAgent}, incluso logrando en algunas simulaciones la resolución del problema y consiguiendo puntuaciones más altas, pero aun así entre unas simulaciones y otras los resultados eran muy dispares, de modo que en allgunas de ellas encontraba un camino bueno y lo reforzaba hasta el punto de lograr la resolución del problema, como que en otras de no encontrarse ese buen camino, la red no lograba aprender o suficiente, obteniendo mucha volatibilidad en los resultados y un mejor aprendizaje.
+El resultado fue notoriamente mejor como muestra la imagen \ref{fig:CartPole-RandomBatchAgent}, incluso logrando en algunas simulaciones la resolución del problema y consiguiendo puntuaciones más altas, pero aun así entre unas simulaciones y otras los resultados eran muy dispares, de modo que en algunas de ellas encontraba un camino bueno y lo reforzaba hasta el punto de lograr la resolución del problema, como que en otras de no encontrarse ese buen camino, la red no lograba aprender o suficiente, obteniendo mucha volatibilidad en los resultados y un mejor aprendizaje.
 
 \figura{Bitmap/Capitulo5/Results-RandomBatchAgent.png}{width=0.6\textwidth}{fig:CartPole-RandomBatchAgent}{Resultados del RandomBatchAgent}
 
@@ -81,13 +81,58 @@ Modificando el agente para usar la siguiente red e hiperparámetros:
 $$ alpha = 0.0001$$
 $$ gamma = 0.95$$
 $$ epsilon = 0.5$$
-$$  $$
+$$ Hiden layer size = 24$$
+$$ Minibatch size = 32 $$
 
 Obteniendo resultados... 
 
-((Grafica de resultados))
+((Grafica de resultados(laFuerzaBrutaSiempreGana.png)))
 
 \subsubsection*{Función de recompensa}
+Como pudimos ver estas modificaciones no eran suficiente para recibir los resultados deseados.
+Tras investigar las distintas posibilidades para acelerar la curva de aprendizaje, pusimos en el punto de mira la función de recompensa. 
+
+Como ya explicamos antes, el entorno devuelve -1 si no alcanza la meta y en el caso contrario 0 y termina la ejecución. 
+Por un lado esta recompensa guiar al jugador a completar el objetivo con la mayor brevedad posible, cuanto antes complete el objetivo menos baja será su recompensa final.
+Pero por otro lado devuelve recompensas negativas hasta que alcanza el objetivo final, que se traduce en probar descartando caminos hasta alcanzar uno que logre el objetivo. Esto en teoría no suena tan mal, de no ser que puede tardar varias horas en encontrar uno de los caminos correctos. Por ello decidimos orientarnos a una recompensa no binaria, alejándonos del meta o no-meta y basándonos en parámetros como la posición o la velocidad, para así tener una medida para evaluar no solo los episodios acertados sino también de los fallidos. Esto permitiría distinguir entre una ejecución en la que coche no se mueve y una en la que el coche casi llega a alcanzar la meta, mientras que con el método de Recompensa Binario serian indistinguibles. De esta forma el sistema tendrá acceso a recompensas de las que pueda aprender para llegar antes de lograr el camino a la meta. 
+
+Con este pensamiento en mente comenzamos a desarrollar las distintas posibilidades. A continuación hablaremos de cada uno de los prototipos desarrollados acompañados de las consiguientes reflexiones que desembocaron.
+ 
+Inicialmente, dado que el estado final se basa en la posición del coche, empezamos a desarrollar un prototipo cuya función de recompensa se basará en dicha posición, por ello decidimos que fuera "tal cual" la que devuelve el entorno. 
+
+ RESULTADO:mainPosicionNoAbs
+
+Visto la poca diferencia entre los resultados entre esta y la original, nos dimos cuenta de que hacía falta hacer una serie de ajustes:
+- En primer lugar, dar una recompensa exageradamente alta al alcanzar la meta, no solo para que ese camino se refuerce más que con la recompensa original, para acelerar el aprendizaje, sino para además permitirnos distinguir más fácilmente (en la gráfica) las partidas que llegan a la meta de las que no.  
+- Después, nos percatamos de que en el planteamiento de Recompensa Binaria no se hace distinción entre derecha y izquierda, por lo que debíamos hacer los cálculos con la posición en valor absoluto, para así no dar preferencia a la derecha frente a la izquierda haciendo más difícil el balanceo.
+Para poder llevar a cabo esto, necesitábamos fijar el centro, el cual, según el entorno, es -0.5, por lo tanto debíamos sumarle 0.5 para corregir la desviación.
+- Por otro lado pensamos en darle una penalización en función del tiempo para dirigir el aprendizaje a una mayor presteza al igual que hacia la Recompensa Binaria. Pero esto último lo descartamos al ver los resultados.
+
+ RESULTADO: CapturaCambiandoRewardAPosicion.png
+
+La grafica representa claramente como la puntuación converge a un valor, esto se debe a que la penalización crece demasiado.
+Penealizacion inicial = 0.995, cada step Penalizacion = penalización * penalización inicial; 
+De esta forma la penalización del último Step es de 0.36695. Esto hace que las puntuaciones de los últimos Steps de la partida sean despreciables para el sistema, de tal forma que se optimicen solo las recompensas iniciales y desatiendan las de los ultimos, llevando a la convergencia. 
+Además nos dimos cuenta de que este tipo de penalización incumplía lo establecido de basar la recompensa únicamente en el estado, sin tener en cuenta factores externos como, en el caso de la penalización, el número de Steps que lleva la partida.
+Ante los inconvenientes de la penalización optamos por descartar ese método y en su lugar añadir una pequeña disminución de la recompensa según el número de pasos realizados para reforzar las soluciones rápidas frente a las lentas.
+
+RESULTADOS: mainPosicion
+
+
+
+Por otro lado, dimos cuenta que para alcanzar la meta en el juego hacia falta coger impulso para tener suficiente velocidad como para subir la montaña, por esto decidimos abrir otra línea de investigación basada en la velocidad absoluta.
+
+RESULTADO: mainVelocidadTalcualNoAbs
+
+A diferencia de la posición, la velocidad devuelta por el entorno tiene unos valores muy pequeños, por lo que basar la recompensa en la velocidad bruta sería semejante a darle una recompensa constante, para cuando se alcance la meta darle una notablemente mayor, lo cual se asemeja a la Recompensa Binaria. Por ello decidimos multiplicarla por 100, haciéndola más visibles y relevantes para la recompensa. 
+Se puede ver como alcanza la meta más rápido, sufre caídas debido al overfitting, aun siendo caídas menores que las de posición nos parecía preocupante, por lo que probamos a cambiar la función de optimización de Adam a Adadelta.
+
+RESULTADO: main3.2 y  
+
+Pensándolo como humano, cuando encuentras un entorno nuevo necesitas reconocer el objetivo, sin la modificación el objetivo es indistinguible, no buscas alcanzar el final del juego, sino alcanzar objetivos pequeños, ir a la derecha, saltar, correr… Basándonos en es
+
+ 
+
 
 ((algoritmo de modificacion))
 
