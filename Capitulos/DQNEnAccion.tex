@@ -20,23 +20,25 @@ El resultado fue nefasto, como podemos apreciar en la imagen \ref{fig:CartPole-S
 
 Con la intención de proporcionar a la red neuronal más datos con los que entrenar, decidimos añadir una memoria, siguiendo la idea del método de \textit{replay} visto anteriormente. En ella guardamos todos los datos necesarios para la perfecta representación de lo sucedido en pasos de ejecución anteriores, lo que se traduce en: \textbf{estado-actual}, \textbf{acción-tomada}, \textbf{recompensa}, \textbf{estado-siguiente} y \textbf{finalizado}.
 
-Tras la ejecución de cada acción, y con la información proporcionada por el entorno en este acto, guardamos todos estos valores en la memoria para posteriormente ser utilizados en el entrenamiento de la red.
+Tras la ejecución de cada acción, y con la información proporcionada por el entorno en ese momento, guardamos todos estos valores en la memoria para ser utilizados posteriormente. Al completarse un episodio, ya contábamos con un conjunto ($batch$) de los últimos n pasos guardados en la memoria y se entrenaba la red con dicho conjunto, con la intención de hacerle llegar un mayor volumen de información.
 
-Siguiendo este proceso y con toda la información guardada, al completarse un episodio se cogia un conjunto ($batch$) de los últimos n pasos guardados en la memoria y se entrenaba la red con dicho conjunto, con la intención de hacerle llegar una mayor información.
+El problema observado en esta solución era la secuencia que formaban los pasos tomados para el entrenamiento, ya que al ser consecutivos la información aportada por cada uno de ellos era muy similar. Investigando una posible solución, nos dimos cuenta de que el problema se trataba de uno ya conocido que mencionamos en el capítulo anterior. La memoria de estados consecutivos proveía de más información a la red pero las similitudes entre ellos provocaban que el agente aprendiese muy lentamente, de forma insuficiente para la resolución del problema, tal y como se puede ver en la imagen \ref{fig:CartPole-BatchAgent}.
 
-El problema encontrado con esta solución era la consecución de los pasos tomados para el entrenamiento, ya que al ser consecutivos la información aportada por cada uno de ellos era muy similar, lo que conllevaba que la red aprendiese, pero no lo suficiente para la resolución del problema.
+\figura{Bitmap/DQNEnAccion/Results-BatchAgent.png}{width=0.6\textwidth}{fig:CartPole-BatchAgent}{Resultados del BatchAgent}
 
 \subsection{Romper la cohesión de la memoria: RandomBatchAgent}
 
-Debido a las limitaciones que tenia el entrenamiento cogiendo los últimos n pasos de la memoria como si de una ventana se tratase, decidimos cambiar el conjunto de datos proporcionado en el entrenamiento de la red de forma que los distintos pasos selelccionados no fueran consecutivos, si no seleccionados de manera aleatoria y no repetidos entre todos los guardados en la memoria, evitando así la falta de información que la consecución de pasos conllevaba.
+Debido a las limitaciones que que observamos tomando los últimos n pasos de la memoria, como si de una ventana se tratase, decidimos utilizar el método de \textit{replay} ya explicado. La memoria seguía conteniendo los n pasos consecutivos de las ejecuciones anteriores, pero el conjunto de datos seleccionado para el entrenamiento tomaba los pasos de manera aleatoria, provocando que no fueran consecutivos ni repetidos. Con esta solución, el agente debería tener una muestra más amplia respecto a los estados posibles y sería mucho más fácil que encontrase una solución con prontitud.
 
-El resultado fue notoriamente mejor como muestra la imagen \ref{fig:CartPole-RandomBatchAgent}, incluso logrando en algunas simulaciones la resolución del problema y consiguiendo puntuaciones más altas, pero aun así entre unas simulaciones y otras los resultados eran muy dispares, de modo que en algunas de ellas encontraba un camino bueno y lo reforzaba hasta el punto de lograr la resolución del problema, como que en otras de no encontrarse ese buen camino, la red no lograba aprender o suficiente, obteniendo mucha volatibilidad en los resultados y un mejor aprendizaje.
+El resultado fue notoriamente mejor, como muestra la imagen \ref{fig:CartPole-RandomBatchAgent}. El agente consiguió incluso la resolución del problema y puntuaciones mucho más altas en algunas simulaciones. Sin embargo, entre unas simulaciones y otras los resultados eran muy dispares, desde encontrar rápidamente y reforzar un camino ``bueno" hasta lograr la resolución del problema, hasta no encontrar nunca un camino válido. En éste último caso se debía principalmente a que el agente no lograba aprender lo suficiente en el número de episodios que le permitíamos.
+
+El problema del volumen de datos estaba solucionado ya que en varias ocasiones el agente había conseguido aprender una solución, y en las que no, al menos daba la impresión de que iba por buen camino. No obstante, la volatilidad de los resultados nos daba a entender que el modelo propuesto aún no estaba completo.
 
 \figura{Bitmap/DQNEnAccion/Results-RandomBatchAgent.png}{width=0.6\textwidth}{fig:CartPole-RandomBatchAgent}{Resultados del RandomBatchAgent}
 
 \subsection{Estabilizar la red: DoubleAgent}
 
-Lograda la resolución del problema, pero aún con la gran diferencia de los resultados entre distintas simulaciones, y siguiendo las soluciones consideradas en el capítulo anterior vamos a optar por el uso de dos redes diferentes. Con esto esperamos conseguir estabilizar los resultados obtenidos.
+El principal inconveniente que mostraba nuestro agente hasta el momento se debía a la gran diferencia entre las ejecuciones, dando unos resultados que era necesario estabilizar. Tomando como referencia las soluciones consideradas en el capítulo anterior, optamos por el uso de dos redes diferentes. 
 
 Tras la implementación de este método, comprobamos que lográbamos una mayor consistencia en los datos entre unas simulaciones y otras, obteniendo resultados menos dispares que con el entrenamiento por conjunto aleatorio como podemos observar en la imagen \ref{fig:CartPole-DoubleAgent}.
 
