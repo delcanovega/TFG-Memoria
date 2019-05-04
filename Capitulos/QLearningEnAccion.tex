@@ -19,27 +19,53 @@ En busca de este objetivo, OpenAI sigue tres caminos:
     \item \textbf{Herramientas y plataformas} mediante las cuales facilitar la labor de investigación y pruebas del Aprendizaje Automático.
 \end{itemize}
 
-Es nuestra investigación nos serviremos de una de estas plataformas, \textbf{OpenAI Gym}, para experimentar y descubrir los puntos fuertes y débiles de las distintas técnicas y algoritmos de aprendizaje. 
+Es nuestra investigación nos serviremos de una de estas plataformas, \textbf{OpenAI Gym}, para experimentar y descubrir los puntos fuertes y débiles de las distintas técnicas y algoritmos de aprendizaje.
 
-Gym es un conjunto de herramientas para desarrollar y comparar algoritmos de aprendizaje de refuerzo. En él los agentes son capaces de aprender cualquier cosa, desde caminar hasta jugar a juegos como Pong o Pinball.
+\subsection{OpenAI Gym}
+\label{sec:openai}
+Gym es un conjunto de herramientas para desarrollar y comparar algoritmos de aprendizaje de refuerzo. A través de sus diferentes entornos los agentes son capaces de aprender cualquier cosa, desde caminar hasta jugar a juegos como Pong o Pinball.
 
-Para ello la librería aporta al usuario una interfaz sencilla, a través de la cual se le provee un entorno de simulación. En nuestro caso, el algoritmo que proporcionaremos será el agente que interaccionará con el entorno para aprender de él e intentar lograr unos objetivos.
+Para ello la librería aporta al usuario una interfaz sencilla, a través de la cual se le provee un entorno de simulación. Un ejemplo de esto puede verse en el listing \ref{code:gym_api}. En nuestro caso, el algoritmo que proporcionaremos será el agente que interaccionará con el entorno para aprender de él e intentar lograr unos objetivos.
+
+\begin{minipage}{0.9\linewidth}%
+    \begin{lstlisting}[frame=tb, language=Python, caption=Creación y renderizado del entorno CartPole, label=code:gym_api]
+    import gym
+    
+    env = gym.make('CartPole-v0')
+    env.reset()
+    
+    for _ in range(1000):
+        # Muestra el estado actual del entorno
+        env.render()
+        # Toma una accion aleatoria
+        env.step(env.action_space.sample())
+    
+    env.close()
+    \end{lstlisting}%
+\end{minipage}
+
+Todos los entornos respetan la estructura definida en la sección de Problemas de Decisión de Markov \ref{sec:mdp}. Cada vez que interaccionamos con un entorno a través de \texttt{env.step()} cuatro elementos nos son devueltos:
+\begin{itemize}
+    \item \textbf{Observación} (objeto): Consiste en un array que contiene la información necesaria para describir el estado actual (tras aplicar la última acción).
+    \item \textbf{Recompensa} (float): Refuerzo para el agente calculado por la función de recompensa.
+    \item \textbf{Fin} (boolean): Señal que indica si la simulación ha concluido,en la mayoría de los entornos puede deberse a dos motivos: que el agente haya logrado su objetivo, o que haya fracasado.
+    \item \textbf{Info} (diccionario): Información de diagnóstico útil para la depuración del agente. No obstante, esta información no debe ser usada por el agente para aprender.
+\end{itemize}
 
 \section{CartPole}
 \label{cartpole-sec}
+La descripción del primer problema que afrontaremos con técnicas de Aprendizaje por Refuerzo es la siguiente:
+
 \begin{quote}
     Un mástil está unido por una bisagra a un carro, el cual se mueve a lo largo de una pista sin rozamiento. El sistema es controlado aplicando una fuerza de +1 o -1 al carro. El péndulo (mástil) comienza en posición vertical, el objetivo es prevenir que caiga. Una recompensa de +1 es otorgada por cada \textit{timestep} que el mástil permanece erguido. El episodio finaliza cuando el mástil se encuentra desplazado más de 15 grados de su posición vertical, o el carro se mueve más de 2.4 unidades del centro.
 \end{quote}
 
-Este es el enunciado del primer problema que resolveremos mediante técnicas de Aprendizaje por Refuerzo. La implementación del problema nos viene dada como parte de la librería \textit{OpenAI Gym}. Una vez importado el problema, dispondremos de un entorno con el que interactuar y nuestro objetivo será crear un agente que interaccione con el mismo.
-
-Nuestro conjunto de acciones, como se indica en el enunciado, tiene dos elementos: Aplicar fuerza hacia la derecha o aplicar fuerza hacia la izquierda. El agente deberá decidir cuál de estas dos acciones tomar y se lo comunicará al entorno. Éste responderá con cuatro elementos:
+Nuestro conjunto de acciones, como se indica en el enunciado, tiene dos elementos: Aplicar fuerza hacia la derecha o aplicar fuerza hacia la izquierda. El agente deberá decidir cuál de estas dos acciones tomar y se lo comunicará al entorno. Éste responderá con los elementos descritos en la sección \label{sec:openai}. Su contenido se especifica a continuación:
 
 \begin{itemize}
-    \item \textbf{Observación} (objeto): Consiste en un array que contiene la información necesaria para describir el estado actual (tras aplicar la última acción). Los valores posibles pueden verse en la tabla \ref{obs-cartpole}.
-    \item \textbf{Recompensa} (float): Refuerzo para el agente, +1.0 mientras la simulación continúe.
-    \item \textbf{Fin} (boolean): Señal que indica si la simulación ha concluido, bien porque el mástil ha caído o porque lo hemos mantenido en pie durante el tiempo suficiente.
-    \item \textbf{Info} (diccionario): Información de diagnóstico útil para la depuración del agente. No obstante, esta información no debe ser usada por el agente para aprender.
+    \item \textbf{Observación} (objeto): Los rangos de valores para el array pueden verse en la tabla \ref{obs-cartpole}.
+    \item \textbf{Recompensa} (float): +1.0 mientras la simulación continúe.
+    \item \textbf{Fin} (boolean): La señal cambiará a \texttt{True} si el agente no consigue mantener el mástil erguido (como se indica en el enunciado), o por el contrario si se mantiene en pie el tiempo bastante (por defecto 200 \textit{timesteps}).
 \end{itemize}
 \begin{table}[]
     \centering
