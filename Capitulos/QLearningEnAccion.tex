@@ -1,8 +1,6 @@
 \chapter{Q-Learning en acción}
 \label{cap:q-learning}
 
-En el que descubriremos un aliado en la búsqueda de la AGI, y pondremos a prueba las capacidades del Aprendizaje por Refuerzo.
-
 \chapterquote{Si no tienes esperanza, no encontrarás lo que está más allá de tus esperanzas}{Clemente de Alejandría}
 
 \section{OpenAI}
@@ -25,7 +23,7 @@ Es nuestra investigación nos serviremos de una de estas plataformas, \textbf{Op
 \label{sec:openai}
 Gym es un conjunto de herramientas para desarrollar y comparar algoritmos de aprendizaje de refuerzo. A través de sus diferentes entornos los agentes son capaces de aprender cualquier cosa, desde caminar hasta jugar a juegos como Pong o Pinball.
 
-Para ello la librería aporta al usuario una interfaz sencilla, a través de la cual se le provee un entorno de simulación. Un ejemplo de esto puede verse en el listing \ref{code:gym_api}. En nuestro caso, el algoritmo que proporcionaremos será el agente que interaccionará con el entorno para aprender de él e intentar lograr unos objetivos.
+Para ello la librería aporta al usuario una interfaz sencilla, a través de la cual se le provee un entorno de simulación. En nuestro caso, el algoritmo que proporcionaremos será el agente que interaccionará con el entorno para aprender de él e intentar lograr unos objetivos.
 
 \begin{minipage}{0.9\linewidth}%
     \begin{lstlisting}[frame=tb, language=Python, caption=Creación y renderizado del entorno CartPole, label=code:gym_api]
@@ -44,17 +42,24 @@ Para ello la librería aporta al usuario una interfaz sencilla, a través de la 
     \end{lstlisting}%
 \end{minipage}
 
+Un ejemplo mínimo del uso de la librería puede verse en el fragmento de código \ref{code:gym_api}. La operación \texttt{gym.make()} crea una instancia del entorno especificado. No debemos preocuparnos por las reglas que rigen su funcionamiento (leyes físicas, acciones disponibles, resultados desencadenados por esas acciones...) ya que todo ello se hace automáticamente. La instrucción \texttt{env.reset()} devuelve el entorno a su estado inicial. Más adelante encontramos un bucle, en el que dos acciones ocurren en cada iteración. Primero el estado actual nos es mostrado a través de una interfaz gráfica a través de la función \texttt{env.render()}, como puede comprobarse en la imagen \ref{fig:cartpole_00}. A continuación una acción aleatorio es escogida del conjunto de acciones posibles mediante \texttt{env.action\_space.sample()} para después ser tomada como decisión en \texttt{env.step(action)}.
+
 Todos los entornos respetan la estructura definida en la sección de Problemas de Decisión de Markov \ref{sec:mdp}. Cada vez que interaccionamos con un entorno a través de \texttt{env.step()} cuatro elementos nos son devueltos:
 \begin{itemize}
-    \item \textbf{Observación} (objeto): Consiste en un array que contiene la información necesaria para describir el estado actual (tras aplicar la última acción).
-    \item \textbf{Recompensa} (float): Refuerzo para el agente calculado por la función de recompensa.
+    \item \textbf{Observación} (objeto): Consiste en un array que contiene la información necesaria para describir el estado actual.
+    \item \textbf{Recompensa} (float): Refuerzo para el agente proporcionado por el entorno.
     \item \textbf{Fin} (boolean): Señal que indica si la simulación ha concluido,en la mayoría de los entornos puede deberse a dos motivos: que el agente haya logrado su objetivo, o que haya fracasado.
     \item \textbf{Info} (diccionario): Información de diagnóstico útil para la depuración del agente. No obstante, esta información no debe ser usada por el agente para aprender.
 \end{itemize}
 
+Nuestro objetivo consistirá en que el agente aprenda por sí mismo cuál es la acción que más le conviene tomar en cada situación, buscando maximizar la recompensa.
+
 \section{CartPole}
 \label{cartpole-sec}
-La descripción del primer problema que afrontaremos con técnicas de Aprendizaje por Refuerzo es la siguiente:
+CartPole es uno de los problemas introductorios al Aprendizaje Automático mas famosos. Fue introducido por primera vez en \citet{BartoSA83} y su descripción en OpenAI es la siguiente:
+
+\figura{Bitmap/QLearningEnAccion/cartpole_00}{width=0.7\textwidth}{fig:cartpole_00}%
+       {Entorno CartPole, \citet{BartoSA83}}
 
 \begin{quote}
     Un mástil está unido por una bisagra a un carro, el cual se mueve a lo largo de una pista sin rozamiento. El sistema es controlado aplicando una fuerza de +1 o -1 al carro. El péndulo (mástil) comienza en posición vertical, el objetivo es prevenir que caiga. Una recompensa de +1 es otorgada por cada \textit{timestep} que el mástil permanece erguido. El episodio finaliza cuando el mástil se encuentra desplazado más de 15 grados de su posición vertical, o el carro se mueve más de 2.4 unidades del centro.
@@ -65,7 +70,7 @@ Nuestro conjunto de acciones, como se indica en el enunciado, tiene dos elemento
 \begin{itemize}
     \item \textbf{Observación} (objeto): Los rangos de valores para el array pueden verse en la tabla \ref{obs-cartpole}.
     \item \textbf{Recompensa} (float): +1.0 mientras la simulación continúe.
-    \item \textbf{Fin} (boolean): La señal cambiará a \texttt{True} si el agente no consigue mantener el mástil erguido (como se indica en el enunciado), o por el contrario si se mantiene en pie el tiempo bastante (por defecto 200 \textit{timesteps}).
+    \item \textbf{Fin} (boolean): La señal cambiará a \texttt{True} si el agente no consigue mantener el mástil erguido (como se indica en el enunciado), o por el contrario si se mantiene en pie durante suficiente tiempo (por defecto 200 \textit{timesteps}).
 \end{itemize}
 \begin{table}[]
     \centering
@@ -84,24 +89,38 @@ Nuestro conjunto de acciones, como se indica en el enunciado, tiene dos elemento
 Como podemos ver a través de las observaciones, este es uno de esos problemas en los que el número de estados distintos es potencialmente infinito, debido a que estamos tratando con valores continuos. Por ello tendremos que encontrar una buena \textbf{función de discretización} que simplifique la representación del estado y nos permita trabajar con un número óptimo de estados. Por suerte para nosotros, disponer de un número tan limitado de acciones posibles disminuye la complejidad del problema.
 
 \subsection{Discretizando el estado}
-A la hora de discretizar una observación, una de las mejores formas de hacerlo es a través de una simplificación de la misma. Este acercamiento es una adaptación del \textit{Constraint Relaxation} que se aplica en muchos problemas de satisfacción de restricciones. De esta forma podemos comprender el problema desde un punto de partida mucho más sencillo, para después pulir la fórmula y tener en cuenta más variables. Además, podemos ir evaluando el rendimiento de nuestro agente a lo largo del camino, y así poder comprobar si las modificaciones que vamos añadiendo realmente mejoran su comportamiento o simplemente añaden ruido.
+A la hora de discretizar una observación, una de las mejores formas de hacerlo es a través de una simplificación de la misma. Este acercamiento es una adaptación del \textit{Constraint Relaxation} (\citet{rardin1998optimization}) que se aplica en muchos problemas de satisfacción de restricciones. De esta forma podemos comprender el problema desde un punto de partida mucho más sencillo, para después pulir la fórmula y tener en cuenta más variables. Además, podemos ir evaluando el rendimiento de nuestro agente a lo largo del camino, y así poder comprobar si las modificaciones que vamos añadiendo realmente mejoran su comportamiento o simplemente añaden ruido.
 
 Centrémonos por un momento en el objetivo más básico del problema: Mantener el mástil en pie. Podemos dividir el problema en dos estados muy simples, uno en el que el mástil está cayendo hacia la derecha y otro en el cae hacia la izquierda, como podemos ver en la Figura \ref{fig:cartpole_01}. Esto coincide con nuestras dos acciones disponibles y, de forma algo ingenua, podemos considerar esto un punto de partida válido.
 
 \figura{Bitmap/QLearningEnAccion/cartpole_01}{width=0.7\textwidth}{fig:cartpole_01}%
-       {Simplificación de estados}
+       {Simplificación de estados, fuente propia}
 
-Por supuesto, esta discretización es demasiado ingenua para resolver el problema de una forma eficiente; es necesario probar otras divisiones de estados y tener en cuenta las demás observaciones. Para ello creamos una función parametrizable, la cual decide en cuántos estados dividir cada observación. Así podemos decidir a qué observaciones damos más importancia, creando más o menos estados en función a éstas, como podemos apreciar en la Figura \ref{fig:cartpole_02}.
+Por supuesto, esta discretización es demasiado ingenua para resolver el problema de una forma eficiente; es necesario probar otras divisiones de estados y tener en cuenta las demás observaciones. Puesto que experimentar manualmente cuál de las cuatro observaciones es más descriptiva (y por tanto, hace que nuestro agente diferencie situaciones mejor), crearemos una función parametrizable, la cual decide en cuántos estados dividir cada observación. Así podemos decidir de una forma sencilla a qué observaciones damos más importancia, creando más o menos estados distintos en función a éstas, como podemos apreciar en la Figura \ref{fig:cartpole_02}.
 
 \figura{Bitmap/QLearningEnAccion/cartpole_02}{width=0.7\textwidth}{fig:cartpole_02}%
-       {División de las observaciones}
+       {División de las observaciones, fuente propia}
 
-Este aumento en el número de estados permite que nuestro agente sea capaz de especializarse más en acciones concretas. Pero esta mejora viene con un precio a pagar: Cuantos más estados distintos tengamos, más tiempo tardará en visitarlos todos (en repetidas ocasiones) durante su etapa de entrenamiento. Esto quiere decir que nuestro agente tardará más en tener un buen rendimiento. Es importante entonces que evaluemos el problema al que nos enfrentamos para encontrar el equilibrio ideal y así poder ahorrar recursos de memoria y tiempo.
+Este aumento en el número de estados permite que nuestro agente sea capaz de especializarse más en situaciones concretas. Pero esta mejora viene con un precio a pagar: Cuantos más estados distintos tengamos más ocuparán en memoria, llegando al punto de quedarnos sin ella; y más tiempo tardará en visitarlos todos los estados (en repetidas ocasiones) durante su etapa de entrenamiento. Esto quiere decir que nuestro agente tardará más en tener un buen rendimiento. Es importante entonces que evaluemos el problema al que nos enfrentamos para encontrar el equilibrio ideal y así poder ahorrar recursos de memoria y tiempo.
 
 \subsection{Resultados}
 \begin{quote}
     CartPole define como solucionado el problema al obtener una recompensa media de 195.0 durante 100 episodios consecutivos.
 \end{quote}
+
+Para nuestra implementación usamos los siguientes hiperparámetros explicados en la sección \ref{sec:mdp} y configuración de estados (\ref{code:cartpole_rl}). Es común establecer un mínimo de exploración para que, pese a encontrarnos en un estado muy avanzado de la simulación, siempre tener una pequeña probabilidad de ir a parar a un estado nunca visitado que pueda mejorar nuestro resultado.
+
+\begin{minipage}{0.9\linewidth}%
+    \begin{lstlisting}[frame=tb, language=Python, caption=Hiperparámetros y configuración de estados, label=code:cartpole_rl]
+    LEARNING_RATE = 0.1     # Alpha
+    DISCOUNT_FACTOR = 1.0   # Gamma
+    EXPLORATION = 0.5       # Epsilon (initial)
+    MIN_EXPLORATION = 0.01  # Epsilon (final)
+
+    # (cart_pos, cart_vel, pole_angle, pole_vel)
+    STATE_CONFIGURATION = (1, 1, 3, 6)
+    \end{lstlisting}%
+\end{minipage}
 
 Para realizar las mediciones, creamos una cola con una longitud máxima de 100 elementos. En ella añadimos el resultado de cada simulación, de forma que el resultado número 101 elimina el número 1. De esta forma podemos calcular la media sobre la estructura de datos y comprobar si el problema se consideraría resuelto por OpenAI Gym. Además dibujaremos esta media de la estructura tras cada episodio en una gráfica, con el fin de que los resultados sean más fáciles de apreciar y analizar. Las gráficas resultantes tienen variaciones tras cada ejecución, pero el caso más común es el mostrado en la Figura \ref{fig:cartpole_03}.
 
@@ -115,9 +134,10 @@ En dicha gráfica se pueden apreciar tres etapas distintas en el rendimiento del
     \item A partir del episodio 300: el agente alcanza su meta y el algoritmo comienza a estabilizarse.
 \end{itemize}
 
-Cabe destacar que estos resultados han sido obtenidos con una configuración en la discretización de \texttt{(1, 1, 3, 6)}. ¿Por qué optamos por esta configuración? Mientras probábamos distintas configuraciones descubrimos que el principal motivo de finalización de una simulación era la caída del mástil. En la mayoría de las ocasiones el mástil cae mucho antes de que el carro alcance los límites laterales. Esto nos permite ignorar las dos primeras observaciones (posición del carro y velocidad del carro) reduciendo notablemente la dimensionalidad del problema.
+Cabe destacar que estos resultados han sido obtenidos con una configuración en la discretización de \texttt{(1, 1, 3, 6)}. Utilizar unos para las observaciones de la velocidad y posición del carro quiere decir que ignoramos las mismas. Aunque esto pueda parecer curioso, durante nuestras simulaciones descubrimos que el principal motivo de finalización de un episodio era la caída del mástil. En la mayoría de las ocasiones el mástil cae mucho antes de que el carro alcance los límites laterales. Esto nos permite ignorar las dos primeras observaciones (posición del carro y velocidad del carro) reduciendo notablemente la dimensionalidad del problema. De esta forma, contamos con un espacio dimensional bastante reducido ($1*1*3*6=18$ estados).
 
-De esta forma, contamos con un espacio dimensional bastante reducido ($1*1*3*6=18$ estados). Si por el contrario hubiésemos optado por un número mayor de estados, la primera fase descrita arriba se alargaría considerablemente, pero a cambio podríamos esperar una mayor estabilidad del agente en la tercera fase.
+\subsubsection{Otras configuraciones}
+¡¡¡TODO!!!
 
 \section{Los límites del Aprendizaje por Refuerzo}
 A lo largo de este capítulo hemos introducido el \textit{Aprendizaje por Refuerzo} como método de aprendizaje, las ventajas que tiene sobre otros métodos, sus mecánicas y elementos, algunos de sus algoritmos... Pero también hemos dejado entrever ciertos problemas.
