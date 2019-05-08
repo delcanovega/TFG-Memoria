@@ -1,29 +1,27 @@
 \chapter{Aprendizaje por Refuerzo}
 \label{cap:reinforcementLearning}
 
-En el que estudiaremos cómo un agente puede aprender a través del éxito y el fracaso, mediante recompensas y penalizaciones.
-
 \chapterquote{El comportamiento es modelado y mantenido por sus consecuencias}{B. F. Skinner}
 
 \section{¿Por qué Aprendizaje por Refuerzo?}
-Como muchos otros campos pertenecientes a la rama de Inteligencia Artificial, el Aprendizaje por Refuerzo se inspira en estudios sobre el comportamiento en humanos y animales. De esta forma toma su base en la psicología conductista, en la que un algoritmo decide si una acción tomada ha sido positiva o negativa, y la refuerza consecuentemente.
+Como muchos otros campos pertenecientes a la rama de Inteligencia Artificial, el Aprendizaje por Refuerzo \citep{Watkins1992} se inspira en estudios sobre el comportamiento en humanos y animales. De esta forma toma su base en la psicología conductista \citep{Skinner1953}, en la que un algoritmo decide si una acción tomada ha sido positiva o negativa, y la refuerza consecuentemente.
 
 Pero antes de profundizar en ello, analicemos por qué es el Aprendizaje por Refuerzo una opción interesante y por qué será la que utilicemos en nuestro proyecto.
 
-Echemos un vistazo a las técnicas de aprendizaje vistas en la sección anterior. ¿Qué es lo que necesita cada una de ellas para triunfar? Empecemos por el \textit{Aprendizaje No Supervisado}: Este es quizá el caso más sencillo, ya que lo único que necesitaremos es algo de lo que vivimos rodeados, \textbf{información}. En internet disponemos de grandes cantidades de ella. Podemos servirnos de las APIs de servicios de música, series, entretenimiento, organismos públicos... En la mayoría de los casos, no es necesario tratar la información antes de alimentarla a nuestro algoritmo. Sin embargo, el \textit{Aprendizaje Supervisado} presenta un grave problema aceptando los datos para su entrenamiento. A la hora de presentar nueva información necesitamos que esté correctamente clasificada y, aunque en internet hay conjuntos de entrenamiento de gran calidad y variedad, podría darse el caso de que ninguno se adapte a nuestras necesidades. En esta situación podríamos construir uno nosotros mismos, pero la tarea sería larga y tediosa.
+Echemos un vistazo a las técnicas de aprendizaje vistas en la sección anterior. ¿Qué es interesante de cada una de ellas? Empecemos por el \textit{Aprendizaje No Supervisado}: este es quizá el caso más sencillo, ya que lo único que necesitaremos es algo de lo que vivimos rodeados, \textbf{información}. En internet disponemos de grandes cantidades de ella. Podemos servirnos de las APIs de servicios de música, series, entretenimiento, organismos públicos... En la mayoría de los casos, únicamente tendremos que normalizar y limpiar la información antes de alimentarla a nuestro algoritmo. Sin embargo, el \textit{Aprendizaje Supervisado} presenta un grave problema aceptando los datos para su entrenamiento. A la hora de presentar nueva información necesitamos que esté correctamente clasificada y, aunque en internet hay conjuntos de entrenamiento de gran calidad y variedad, podría darse el caso de que ninguno se adapte a nuestras necesidades. En esta situación podríamos construir uno nosotros mismos, pero la tarea sería larga y tediosa.
 
 El caso del \textit{Aprendizaje por Refuerzo} es distinto. El agente no necesita grandes cantidades de casos de prueba, sino un entorno con el que interactuar por sí mismo, de forma que los casos de prueba se generan de forma automática. La forma más rápida de hacernos con un entorno en el que soltar nuestro agente y verlo actuar es, claramente, simulándolo. Una simulación es la forma más sencilla de controlar las condiciones y el progreso de nuestro experimento, además de quitarnos otros problemas que podrían darse en un entorno real: variables que no se tuvieron en cuenta, cambios inesperados en dicho entorno, o cualquier tipo de error no controlado... El mundo real.
 
-Un dominio muy interesante sobre el que realizar simulaciones de Aprendizaje por Refuerzo son los videojuegos. Durante los últimos años han tenido bastante éxito debido a varios motivos, entre ellos porque son entornos controlados y reproducibles, de forma que no habrá ninguna diferencia en nuestras pruebas más allá de las propias acciones que realice nuestro agente sobre la simulación, disponiendo así de unos resultados fiables y fácilmente comparables. Además, los videojuegos resultan ser un dominio accesible, de diversa complejidad y ya preparados para nuestro tipo de agente: Muchos de ellos disponen de un sistema de puntuación que sirve perfectamente como refuerzo, ya sea por recolección de objetos, número de enemigos derrotados, tiempo... De esta forma, nuestro agente podrá utilizar sus experiencias pasadas para decidir cuál es la mejor decisión a tomar en cada nueva partida.
+Un dominio muy interesante sobre el que realizar simulaciones de Aprendizaje por Refuerzo son los videojuegos \citep{Rodriguez2018}. Durante los últimos años han tenido bastante éxito debido a varios motivos, entre ellos porque son entornos controlados y reproducibles, de forma que no habrá ninguna diferencia en nuestras pruebas más allá de las propias acciones que realice nuestro agente sobre la simulación, disponiendo así de unos resultados fiables y fácilmente comparables. Además, los videojuegos resultan ser un dominio accesible, de diversa complejidad y ya preparados para nuestro tipo de agente: muchos de ellos disponen de un sistema de puntuación que sirve perfectamente como refuerzo, ya sea por recolección de objetos, número de enemigos derrotados, tiempo... De esta forma, nuestro agente podrá utilizar sus experiencias pasadas para decidir cuál es la mejor decisión a tomar en cada nueva partida.
 
-Pero hay mucho más. En la próximas secciones describiremos los distintos componentes de nuestros problemas, además de cuestiones más complejas: Cómo definir la interacción entre agente y entorno, cómo representar el entorno de una forma eficiente o cómo discernir si una acción tomada ha sido buena o mala.
+Pero hay mucho más. En la próximas secciones describiremos los distintos componentes de nuestros problemas y las técnicas usadas sobre los diferentes dominios para su resolución, además de cuestiones más complejas: cómo definir la interacción entre agente y entorno, cómo representar el entorno de una forma eficiente o cómo discernir si una acción tomada ha sido buena o mala.
 
 \section{Elementos del Aprendizaje por Refuerzo}
 A lo largo de este capítulo el término ``agente'' ha aparecido en repetidas ocasiones. Un \textbf{agente} no es más que el sujeto de nuestro experimento. Si nos encontrásemos en el mundo real, un agente podría ser un ratón intentando salir de un laberinto. En nuestro contexto software, llamamos agente a un programa capaz de interactuar con el \textbf{entorno}, aprender de él y \textbf{tomar decisiones}.
 
-El \textit{entorno} es el otro elemento fundamental del Aprendizaje por Refuerzo. Es lo que proporciona información al agente, quien la usará para tomar una decisión. Esta decisión, en forma de acción, provocará cambios en el entorno, los cuales servirán para que el entorno proporcione la recompensa consecuente al agente.
+El \textbf{entorno} es el otro elemento fundamental del Aprendizaje por Refuerzo. Es lo que proporciona información al agente, quien la usará para tomar una decisión. Esta decisión, en forma de acción, provocará cambios en el entorno, los cuales servirán para que el entorno proporcione la recompensa consecuente al agente.
 
-Más allá del agente y el entorno, existen cuatro subelementos en un sistema de Aprendizaje por Refuerzo: Una \textit{política}, una \textit{recompensa}, una \textit{función de utilidad} y un \textit{modelo} del entorno.
+Más allá del agente y el entorno, existen cuatro subelementos en un sistema de Aprendizaje por Refuerzo: una \textit{política}, una \textit{recompensa}, una \textit{función de utilidad} y un \textit{modelo} del entorno.
 
 La \textbf{política} define la forma en la que el agente afronta un determinado problema. Por ejemplo, si nos encontrásemos a un enemigo en un videojuego una política válida sería enfrentarnos a él. Huir podría ser otra política perfectamente válida. Generalizando esto, la política es una función que asocia el estado en que se encuentra el entorno y la acción que tomará el agente.
 
@@ -33,75 +31,69 @@ Pero la recompensa no es suficiente para lograr un comportamiento óptimo por pa
 
 Dependiendo del problema que afrontemos tendremos que ajustar la importancia que damos a la recompensa y a la utilidad, para que nuestro agente sea capaz de lograr buenos resultados.
 
-Llegamos al último elemento por definir, el \textbf{modelo}. El modelo es el encargado de simular cómo se comportaría el entorno al tomar una decisión. A través de él podemos planificar, es decir, decidir cuál de todas las acciones posibles nos beneficia más. No todos los problemas usan un modelo, también existen aquellos \textit{libres de modelo} en los cuales el agente depende únicamente de la prueba y error. 
-
-\subsection{Problemas de Decisión de Markov}
-\label{sec:mdp}
-El Proceso de Decisión de Markov (MDP), llamado así por el matemático ruso Andrei Markov, es un modelo matemático mediante el cual podemos modelar la resolución de cierta clase de problemas relacionados con la toma de decisiones. Para comprender mejor cómo funciona, definiremos los elementos que componen nuestro MDP:
-
-\begin{itemize}
-    \item \textbf{S}: Conjunto de estados finitos en los que nos podemos encontrar en un determinado momento.
-    \item \textbf{A}: Conjunto de acciones que pueden ser tomadas.
-    \item \textbf{Modelo de transición}: Función que define el estado futuro (\textbf{s'}) basándose en el estado actual (\textbf{s}) y la acción tomada en dicho estado (\textbf{a}). El modelo de transición se representa mediante la función \textbf{P(s, a, s’)}.
-    \item \textbf{Recompensa}: “Puntuación” positiva o negativa que se obtiene al tomar una acción en un determinado estado. Se representa mediante la función \textbf{R(r | s, a)}.
-\end{itemize}
-
-Podemos relacionar todos estos elementos de modo que para un estado actual (\textbf{s}) se toma determinada acción (\textbf{a}), llevándonos así a un estado siguiente (\textbf{s'}) definido en el modelo de transición, y obteniendo una recompensa (\textbf{r}) asociada a la toma de dicha decisión en ese estado. Cabe destacar que el MDP relaciona estos elementos de forma que, para obtener los resultados futuros, sólo se toma en cuenta el estado inmediatamente anterior junto la última acción escogida; es decir, no se guarda memoria de las transiciones anteriores. Podemos representar gráficamente estos elementos en la figura \ref{fig:mdp-diagram}.
+Llegamos al último elemento por definir, el \textbf{modelo}. El modelo es una representación del entorno que el agente construye y mediante la cual es capaz de aprender optimizar la política, así como a predecir las transiciones y recompensas obtenidas. No todos los agentes usan un modelo, también existen aquellos \textit{libres de modelo} en los cuales el agente depende únicamente de la prueba y error. 
 
 \figura{Bitmap/AprendizajePorRefuerzo/MDP-Diagram}{width=0.6\textwidth}{fig:mdp-diagram}{Diagrama de un MDP}
 
-Pongamos el ejemplo de un laberinto, como podemos ver representado en la figura \ref{fig:mdp-01}. Nuestro conjunto de \textbf{estados} serían todas las posibles posiciones dentro del laberinto donde podemos situarnos, las \textbf{acciones} serían las direcciones en las que nos podemos mover en cada posición del laberinto, nuestro \textbf{modelo de transición} estaría definido de modo que si nos encontramos en una posición [x, y] y decidimos tomar la acción de movernos hacia arriba, nuestra siguiente posición (estado) sería [x, y+1], de modo que podríamos definir la \textbf{recompensa} como una puntuación de +1 si consigo moverme a una posición buena dentro del laberinto, 0 si me choco contra una pared y +100 si consigo encontrar la salida.
+Podemos apreciar la relación de estos elementos en la figura \ref{fig:mdp-diagram}.
+
+\subsection{Problemas de Decisión de Markov}
+
+El Proceso de Decisión de Markov \citep{Puterman1994}, al cual nos referiremos como $MDP$,  llamado así por el matemático ruso Andrei Markov, es un modelo matemático mediante el cual podemos modelar la resolución de cierta clase de problemas relacionados con la toma de decisiones. Para comprender mejor cómo funciona, definiremos los elementos que componen nuestro MDP:
+
+\begin{itemize}
+    \item \textbf{S}: conjunto de estados finitos en los que nos podemos encontrar en un determinado momento.
+    \item \textbf{A}: conjunto de acciones que pueden ser tomadas.
+    \item \textbf{Modelo de transición}: función que define el estado futuro (\textbf{s'}) basándose en el estado actual (\textbf{s}) y la acción tomada en dicho estado (\textbf{a}). Es representado mediante la función \textbf{P(s, a, s’)}. El modelo de transición puede ser de dos tipos:
+    \begin{itemize}
+        \item Determinista: ejecutar una acción en un estado determinado siempre lleva al mismo estado siguiente.
+        \item Probabilista: representa la probabilidad de que un estado siguiente sea alcanzado si se toma una acción en un estado.
+    \end{itemize}
+    \item \textbf{Recompensa}: “puntuación” positiva o negativa que se obtiene al tomar una acción en un determinado estado. Se representa mediante la función \textbf{R(r | s, a)}.
+\end{itemize}
+
+Podemos relacionar todos estos elementos de modo que para un estado actual (\textbf{s}) se toma determinada acción (\textbf{a}), llevándonos así a un estado siguiente (\textbf{s'}) definido en el modelo de transición, y obteniendo una recompensa (\textbf{r}) asociada a la toma de dicha decisión en ese estado. Cabe destacar que el MDP relaciona estos elementos de forma que, para obtener los resultados futuros, sólo se toma en cuenta el estado inmediatamente anterior junto la última acción escogida; es decir, no se guarda memoria de las transiciones anteriores. 
+
+Pongamos el ejemplo de un laberinto, como podemos ver representado en la figura \ref{fig:mdp-01}. Nuestro conjunto de \textbf{estados} serían todas las posibles posiciones dentro del laberinto donde podemos situarnos, las \textbf{acciones} serían las direcciones en las que nos podemos mover en cada posición del laberinto, nuestro \textbf{modelo de transición} estaría definido de modo que si nos encontramos en una posición [x, y] y decidimos tomar la acción de movernos hacia arriba, nuestra siguiente posición (estado) sería [x, y+1], de modo que podríamos definir la \textbf{recompensa} como una puntuación de +100 si consigo llegar a la salida, 0 si consigo moverme a una posición buena dentro del laberinto, o -1 si me choco contra una pared.
 
 \figura{Bitmap/AprendizajePorRefuerzo/MDP-Maze.png}{width=0.6\textwidth}{fig:mdp-01}{MDP como laberinto}
 
-Visto este ejemplo, podemos generalizar la idea de un MDP como la relación que existe entre un agente que toma decisiones sobre un entorno, por las cuales recibe recompensas.
+El hecho de que un agente tome una acción y haga cambiar el estado del entorno lo llamamos \textbf{paso}. Un paso está compuesto por el estado en el que el agente se encuentre, la acción tomada y la recompensa obtenida: $$paso = (estado, accion, recompensa)$$
 
-El hecho de que un agente tome una acción y haga cambiar el estado del entorno lo llamamos \textbf{paso}. Un paso está compuesto por el estado en el que el agente se encuentre, la acción tomada y la recompensa obtenida:
 
-\begin{equation}
-    paso = (estado, accion, recompensa)
-\end{equation}
-
-Los pasos se suceden hasta que el entorno llega a un estado de “finalizado”, de forma que todos los pasos recorridos hasta dicho estado componen un \textbf{episodio}. Un entorno puede llegar a su estado “finalizado” si perdemos el juego (Game Over) o, si por el contrario, lo ganamos. Podemos diferenciar 2 tipos de entornos y sus diferentes objetivos para conseguir ganar:
+Los pasos se suceden hasta que el entorno llega a un estado de “finalizado”, de forma que todos los pasos recorridos hasta dicho estado componen un \textbf{episodio}. Un entorno puede llegar a su estado “finalizado” si perdemos el juego o, si por el contrario, lo ganamos. Podemos diferenciar 2 tipos de entornos y sus diferentes objetivos para conseguir ganar:
 
 \begin{itemize}
-    \item \textbf{Entornos finitos}: Finalizan cuando el agente obtiene una determinada recompensa, es decir, conocemos el estado final al que deseamos llegar. Un ejemplo de entorno finito sería el laberinto antes planteado.
-    \item \textbf{Entornos infinitos}: Son aquellos entornos que carecen de un estado “ganado”. El objetivo que se plantea en este caso es el de mantenerse de forma infinita en un estado bueno. Dicho de una forma mucho más simple, el agente debe aprender a no perder. Un ejemplo de entorno infinito podría ser el problema del CartPole que se detallará más adelante.
+    \item \textbf{Entornos finitos}: finalizan cuando el agente consigue alcanzar un estado objetivo o si el número de pasos que componen cada episodio hasta alcanzarlo es limitado. Un ejemplo de entorno finito sería el laberinto antes planteado, en el cual se plantea el objetivo de llegar a la salida.
+    \item \textbf{Entornos infinitos}: son aquellos entornos que carecen de un estado objetivo. De este modo, el objetivo que se plantea en este caso es el de mantenerse de forma infinita en un estado bueno. Dicho de una forma mucho más simple, el agente debe aprender a no perder. Un ejemplo de entorno infinito podría ser el problema del CartPole que se detallará más adelante.
 \end{itemize}
 
-Pero, ¿cómo sabemos o cómo decidimos qué acción es mejor tomar en cada estado? Éste es el objetivo de nuestro MDP, el de encontrar una \textbf{política} óptima que nos ayude a tomar buenas decisiones acerca de qué acciones tomar en cada momento basándonos en el estado actual y conseguir maximizar nuestra “recompensa futura” (\textit{future return}).
+Pero, ¿cómo sabemos o cómo decidimos qué acción es mejor tomar en cada estado? Éste es el objetivo de nuestro agente, el de encontrar una política óptima que nos ayude a tomar buenas decisiones acerca de qué acciones tomar en cada momento basándonos en el estado actual y conseguir maximizar nuestra “recompensa futura” (\textit{future return}).
 
-Entendemos como \textbf{recompensa futura} las consecuencias futuras a largo plazo de las acciones tomadas por el agente. De este modo, el objetivo de nuestro MDP es optimizar su política para buscar obtener una mayor recompensa a la larga, aunque eso conlleve obtener recompensas inmediatas más pequeñas. Este concepto se conoce como \textbf{recompensas retrasadas}, ya que no las obtendremos instantáneamente tras ejecutar una acción, si no después de la sucesión de una serie de acciones.
+Entendemos como \textbf{recompensa futura} la recompensa a largo plazo que el agente puede acumular siguiendo su política a partir del estado actual. De este modo, el objetivo de nuestro agente es optimizar su política para buscar obtener una mayor recompensa a la larga, aunque eso conlleve obtener recompensas inmediatas más pequeñas. Este concepto se conoce como \textbf{recompensas retrasadas}, ya que no las obtendremos instantáneamente tras ejecutar una acción, sino después de la sucesión de una serie de acciones.
 
-Gracias a esto, conseguimos que nuestra política aprenda a pensar no solo en qué acción tomar en este momento, si no en que acción tomar después de la misma. Un escollo que podemos encontrar de esta manera es el de que nuestra política piense demasiado a largo plazo y le lleve infinitos pasos encontrar una recompensa que le merezca la pena, de modo que nuestra recompensa futura diverge. Para evitar que esto suceda, introduciremos las llamadas penalizaciones.
+Gracias a esto, conseguimos que nuestra política aprenda a pensar no solo en qué acción tomar en este momento, sino en qué acción tomar después de la misma. De esta manera, un inconveniente que podemos encontrar es que nuestra política piense demasiado a largo plazo y le lleve infinitos pasos encontrar una recompensa que le merezca la pena, de modo que nuestra recompensa futura diverge. Para evitar que esto suceda, introduciremos los factores de descuento.
 
-Una \textbf{penalización} es un pequeño valor que se descuenta de la recompensa, con el fin de evitar que, como acabamos de ver, nuestra política tome demasiados episodios antes de encontrar una recompensa positiva. Teniendo esto en cuenta, podemos definir nuestra función de recompensa como:
+Un \textbf{factor de descuento} es un pequeño valor que se descuenta de la recompensa con el fin de evitar que, como acabamos de ver, nuestra política tome demasiados episodios antes de encontrar una recompensa positiva, de forma que se equilibre la búsqueda de recompensas cercanas en el tiempo y se maximice la recompensa total, del mismo modo que evite que la recompensa futura tienda a infinito en los entornos infinitos. Teniendo esto en cuenta, podemos definir nuestra función de recompensa como:
 
-\begin{equation}
-    R_{t} = \sum^{T}_{k = 0} \gamma^{t}r_{t + k + 1}
-\end{equation}
+$$R_{t} = \sum^{T}_{k = 0} \gamma^{t}r_{t + k + 1}$$
 
-El factor de penalización, \( \gamma \), representa cuánto se descuenta de la recompensa en cada paso, y su valor siempre se encuentra entre 0 y 1, de forma que valores más altos corresponden a una penalización menor. Los factores de penalización más comúnmente usados se encuentran entre 0,97 y 0,99.
-
+El factor de descuento, \( \gamma \), representa cuánto se descuenta de la recompensa en cada paso, y su valor siempre se encuentra entre 0 y 1, de forma que valores más altos corresponden a una penalización menor. Los factores de descuento más comúnmente usados se encuentran entre 0,97 y 0,99.
 
 \section{Q-Learning}
 Hasta ahora hemos hablado de muchos conceptos y elementos: agente, entorno, recompensa, política... Llega el momento de aplicarlos de manera conjunta para conseguir una técnica de aprendizaje tangible. \textbf{Q-Learning} es una técnica de Aprendizaje por Refuerzo que tiene como objetivo enseñar al agente qué acción es mejor tomar en cada circunstancia. Se trata de un algoritmo \textit{off-policy} (sin política) con \textit{diferenciación temporal} que busca encontrar una función acción-utilidad que nos dirá cómo de bueno es ejecutar una acción es un determinado estado. Al final de la sección, explicaremos a un nivel más técnico cómo aplicar este algoritmo.
 
 La primera etiqueta que hemos usado ha sido \textbf{\textit{off-policy}}, ¿qué significa esto? El algoritmo de Q-Learning cuenta con una tabla-Q con los estados posibles contemplados a partir del MDP, en la que se van almacenando las sumas de las posibles recompensas futuras. También conocidas como \textbf{valores-Q}, se predicen o actualizan usando el valor-Q del estado futuro $s'$ y la acción $a'$ que más utilidad produzca. De este modo, el algoritmo no necesita una política para aprender ya que se basa en la prueba y error mediante la ejecución de acciones en determinado estado, aprendiendo así en base al valor de los pares acción-estado. Siendo $Q(s, a)$ el valor de aplicar una acción $a$ en el estado $s$, los valores devueltos por nuestra función-Q serán la utilidad máxima alcanzable de forma:
 
-\begin{equation}
-    U(s) = \max_{a}Q(s, a)
-\end{equation}
+$$U(s) = \max_{a}Q(s, a)$$
 
 Con \textbf{diferenciación temporal} hacemos referencia al hecho de que, en busca de un aprendizaje correcto, nuestro agente tendrá que tener en cuenta tanto las recompensas directas como aquellas que pueden llegar con retardo, como anticipamos en la sección anterior. Reformulando esto, el agente deberá predecir el resultado de la recompensa final mediante la ejecución secuencial de distintas acciones. Para poder hacerlo, debemos encontrar un equilibrio entre las recompensas inmediatas y las futuras. Como podemos imaginar, potenciar la importancia de las recompensas directas puede perjudicar el valor de las futuras.
 
 Este balance está muy relacionado con el problema de \textbf{Exploración vs. Explotación}. Nuestro agente contará con un hiperparámetro \textit{exploración}, el cual determina con qué frecuencia el agente decide tomar una acción aleatoria (exploración) en lugar de aquella que le proporcione el valor más prometedor (explotación), con la esperanza de encontrar un nuevo estado en el que nunca haya estado y que pueda resultar más beneficioso. En otras palabras, el agente decide si sacar provecho de lo ya aprendido o arriesgarse e intentar aprender algo mejor.
 
-Existen varias fórmulas para calcular la utilidad de los estados. Uno de los métodos más utilizados es a través de la \textbf{Ecuación de Bellman}, que nos indica que la máxima recompensa futura de tomar una acción es la suma de la recompensa actual y la máxima recompensa futura del siguiente episodio, permitiéndonos así obtener una relación entre valores-Q.
+Existen varias fórmulas para calcular la utilidad de los estados. Uno de los métodos más utilizados es a través de la \textbf{Ecuación de Bellman} \citep{Baird1995}, que nos indica que la máxima recompensa futura de tomar una acción es la suma de la recompensa actual y la máxima recompensa futura del siguiente episodio, permitiéndonos así obtener una relación entre valores-Q.
 
-\begin{equation}
-    Q^*(s_{t}, a_{t}) = r_{t} + \gamma\ max_{a'}\ Q^*(s_{t+1}, a')
-\end{equation}
+$$Q^*(s_{t}, a_{t}) = r_{t} + \gamma\ max_{a'}\ Q^*(s_{t+1}, a')$$
 
 De este modo, podemos calcular el valor-Q para un par estado-acción, del mismo modo que con cada nuevo episodio podremos actualizar valores-Q previamente calculados con nueva información obtenida.
 
@@ -109,8 +101,6 @@ Q-Learning cuenta con tres hiperparámetros, dos de los cuales ya hemos visto: l
 
 Podemos relacionar este nuevo hiperparámetro tasa de aprendizaje ($\alpha$) y la ecuación antes propuesta del siguiente modo:
 
-\begin{equation}
-    Q^*(s_{t}, a_{t}) = (1-\alpha ) Q(s_{t}, a_{t}) + \alpha [r(s_{t}, a_{t}) + \gamma\ max_{a'}\ Q^*(s_{t+1}, a')]
-\end{equation}
+$$Q^*(s_{t}, a_{t}) = (1-\alpha ) Q(s_{t}, a_{t}) + \alpha [r(s_{t}, a_{t}) + \gamma\ max_{a'}\ Q^*(s_{t+1}, a')]$$
 
-Llegados a este punto, podemos observar cómo se crea la tabla-Q que relacionará los pares estado-acción con su correspondiente valor-Q. También nos encontramos con que esta tabla crece alarmantemente rápido para problemas con un pequeño grado de complejidad, haciendo excesivamente costoso el hecho de visitar todas las experiencias recogidas, así como de actualizarlas, volviéndose el problema de esta forma inmanejable desde un punto de vista computacional.
+Llegados a este punto, podemos observar cómo se crea la tabla-Q que relacionará los pares estado-acción con su correspondiente valor-Q. En consecuencia, nos encontramos con que esta tabla crece alarmantemente rápido porque tiene que almacenar todas las combinaciones estado-acción, obteniendo que el número de posibles estados puede ser inabarcable incluso para problemas con un pequeño grado de complejidad, haciendo excesivamente costoso el hecho de visitar todas las experiencias recogidas, así como de actualizarlas, volviéndose el problema de esta forma inmanejable desde un punto de vista computacional.
