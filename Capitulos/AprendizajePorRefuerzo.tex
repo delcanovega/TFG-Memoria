@@ -3,7 +3,21 @@
 
 \chapterquote{El comportamiento es modelado y mantenido por sus consecuencias}{B. F. Skinner}
 
-\section{¿Por qué Aprendizaje por Refuerzo?}
+
+\section{Aprendiendo a aprender}
+
+Una de las funciones humanas de las que necesitaremos dotar a nuestra máquina en busca de este \textit{rendimiento ideal} es el \textbf{aprendizaje}.
+
+El campo del \textbf{Aprendizaje Automático} (o \textit{Machine Learning}) se encarga de esta tarea, a través de la generalización y la búsquedas de patrones en experiencias pasadas. En función del tipo de \textit{realimentación} obtenido existen diferentes técnicas de aprendizaje, diseñadas para distintos casos y objetivos:
+\begin{itemize}
+    \item \textbf{Aprendizaje Supervisado} (\textit{Supervised Learning}): El agente observa una serie de ejemplos de entradas y salidas, aprendiendo una función que es capaz de asignar a una entrada su salida correspondiente. Se llama \textbf{supervisado} porque esta serie de ejemplos, llamado conjunto de entrenamiento, deben estar correctamente clasificada desde un primer momento (es decir, supervisado por un humano). Podría decirse que el agente aprende en base a estas experiencias, hasta que llegado un punto es capaz de clasificar una entrada completamente nueva. La exactitud de esta clasificación dependerá del entrenamiento recibido; más adelante en el proyecto haremos uso de esta técnica de aprendizaje.
+    \item \textbf{Aprendizaje no Supervisado} (\textit{Unsupervised Learning}): A diferencia del supervisado, en el aprendizaje no supervisado los ejemplos no cuentan con una etiqueta que los clasifica inequívocamente. En su lugar el agente busca patrones en el conjunto de entrada, intentando extraer características comunes de sus elementos. Uno de los usos más comunes del Aprendizaje No Supervisado es la agrupación o \textbf{clustering}: La unión de ejemplos como grupos o \textit{clústeres} que comparten características comunes. Por ejemplo, la agrupación de películas con características similares, de modo que si a un usuario le resultan interesantes varias de un mismo \textit{clúster}, es muy probable que también disfrute de otros elementos de esa misma agrupación. Estas ideas se usan, por ejemplo, en algunos sistemas de recomendación.   
+    \item \textbf{Aprendizaje por Refuerzo} (\textit{Reinforcement Learning}): El agente aprende a partir de una serie de refuerzos: Recompensas si son positivos y penalizaciones en caso de ser negativos. Por ejemplo, cuando una mascota cumple una orden y recibe una galleta como recompensa; o un músico desafina en directo y recibe un abucheo por parte del público. Además el agente puede "pensar" a largo plazo, de forma que su comportamiento le permita conseguir una recompensa mayor en un futuro, así como adaptarse a entornos totalmente nuevos para él. Esta técnica de aprendizaje será el punto de partida de nuestro proyecto y explicaremos su funcionamiento a lo largo de este capítulo. 
+\end{itemize}
+
+
+\subsection{¿Por qué Aprendizaje por Refuerzo?}
+
 Como muchos otros campos pertenecientes a la rama de Inteligencia Artificial, el Aprendizaje por Refuerzo \citet{Watkins1992} se inspira en estudios sobre el comportamiento en humanos y animales. De esta forma toma su base en la psicología conductista \citet{Skinner1953}, en la que un algoritmo decide si una acción tomada ha sido positiva o negativa, y la refuerza consecuentemente.
 
 Pero antes de profundizar en ello, analicemos por qué es el Aprendizaje por Refuerzo una opción interesante y por qué será la que utilicemos en nuestro proyecto.
@@ -16,7 +30,9 @@ Un dominio muy interesante sobre el que realizar simulaciones de Aprendizaje por
 
 Pero hay mucho más. En la próximas secciones describiremos los distintos componentes de nuestros problemas y las técnicas usadas sobre los diferentes dominios para su resolución, además de cuestiones más complejas: cómo definir la interacción entre agente y entorno, cómo representar el entorno de una forma eficiente o cómo discernir si una acción tomada ha sido buena o mala.
 
+
 \section{Elementos del Aprendizaje por Refuerzo}
+
 A lo largo de este capítulo el término ``agente'' ha aparecido en repetidas ocasiones. Un \textbf{agente} no es más que el sujeto de nuestro experimento. Si nos encontrásemos en el mundo real, un agente podría ser un ratón intentando salir de un laberinto. En nuestro contexto software, llamamos agente a un programa capaz de interactuar con el \textbf{entorno}, aprender de él y \textbf{tomar decisiones}.
 
 El \textbf{entorno} es el otro elemento fundamental del Aprendizaje por Refuerzo. Es lo que proporciona información al agente, quien la usará para tomar una decisión. Esta decisión, en forma de acción, provocará cambios en el entorno, los cuales servirán para que el entorno proporcione la recompensa consecuente al agente.
@@ -36,6 +52,7 @@ Llegamos al último elemento por definir, el \textbf{modelo}. El modelo es una r
 \figura{Bitmap/AprendizajePorRefuerzo/MDP-Diagram}{width=0.6\textwidth}{fig:mdp-diagram}{Diagrama de un MDP}
 
 Podemos apreciar la relación de estos elementos en la figura \ref{fig:mdp-diagram}.
+
 
 \subsection{Problemas de Decisión de Markov}
 \label{sec:mdp}
@@ -81,7 +98,9 @@ $$R_{t} = \sum^{T}_{k = 0} \gamma^{t}r_{t + k + 1}$$
 
 El factor de descuento, \( \gamma \), representa cuánto se descuenta de la recompensa en cada paso, y su valor siempre se encuentra entre 0 y 1, de forma que valores más altos corresponden a una penalización menor. Los factores de descuento más comúnmente usados se encuentran entre 0,97 y 0,99.
 
+
 \section{Q-Learning}
+
 Hasta ahora hemos hablado de muchos conceptos y elementos: agente, entorno, recompensa, política... Llega el momento de aplicarlos de manera conjunta para conseguir una técnica de aprendizaje tangible. \textbf{Q-Learning} es una técnica de Aprendizaje por Refuerzo que tiene como objetivo enseñar al agente qué acción es mejor tomar en cada circunstancia. Se trata de un algoritmo \textit{off-policy} con \textit{diferenciación temporal} que busca encontrar una función acción-utilidad que nos dirá cómo de bueno es ejecutar una acción es un determinado estado. Los algoritmos \textit{off-policy} son capaces de encontrar una política óptima independientemente de las acciones tomadas por el agente, siempre que pase por todos los estados suficientes veces \citep{PooleMackworth17}.
 
 El algoritmo de Q-Learning cuenta con una tabla-Q con los estados posibles contemplados a partir del MDP, en la que se van almacenando las sumas de las posibles recompensas futuras. También conocidas como \textbf{valores-Q}, se predicen o actualizan usando el valor-Q del estado futuro $s'$ y la acción $a'$ que más utilidad produzca. Siendo $Q(s, a)$ el valor de aplicar una acción $a$ en el estado $s$, los valores devueltos por nuestra función-Q serán la utilidad máxima alcanzable de forma:
