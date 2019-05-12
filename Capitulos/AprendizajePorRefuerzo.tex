@@ -28,7 +28,26 @@ El caso del \textit{Aprendizaje por Refuerzo} es distinto. El agente no necesita
 
 Un dominio muy interesante sobre el que realizar simulaciones de Aprendizaje por Refuerzo son los videojuegos \citet{Rodriguez2018}. Durante los últimos años han tenido bastante éxito debido a varios motivos, entre ellos porque son entornos controlados y reproducibles, de forma que no habrá ninguna diferencia en nuestras pruebas más allá de las propias acciones que realice nuestro agente sobre la simulación, disponiendo así de unos resultados fiables y fácilmente comparables. Además, los videojuegos resultan ser un dominio accesible, de diversa complejidad y ya preparados para nuestro tipo de agente: muchos de ellos disponen de un sistema de puntuación que sirve perfectamente como refuerzo, ya sea por recolección de objetos, número de enemigos derrotados, tiempo... De esta forma, nuestro agente podrá utilizar sus experiencias pasadas para decidir cuál es la mejor decisión a tomar en cada nueva partida.
 
-Pero hay mucho más. En la próximas secciones describiremos los distintos componentes de nuestros problemas y las técnicas usadas sobre los diferentes dominios para su resolución, además de cuestiones más complejas: cómo definir la interacción entre agente y entorno, cómo representar el entorno de una forma eficiente o cómo discernir si una acción tomada ha sido buena o mala.
+Podemos ver el funcionamiento del aprendizaje por refuerzo en el siguiente pseudo-código:
+
+\begin{minipage}{0.9\linewidth}%
+    \begin{lstlisting}[frame=tb, caption=Pseudocódigo Aprendizaje por Refuerzo,   inputencoding=latin1, label=code:q-learning]
+    
+    Inicializar tabla-Q, estados y acciones
+    
+    Repetir (para cada episodio):
+        Inicializar estado-actual (s)
+        
+        Repetir (para cada paso del episodio):
+            Elegir una accion
+            Tomar la accion
+            Actualizar tabla-Q
+            estado-actual = estado-siguiente
+        Hasta que el episodio termine
+    \end{lstlisting}%
+\end{minipage}
+
+Pero hay mucho más. En las próximas secciones describiremos los distintos componentes de nuestros problemas y las técnicas usadas sobre los diferentes dominios para su resolución, además de cuestiones más complejas: cómo definir la interacción entre agente y entorno, cómo representar el entorno de una forma eficiente o cómo discernir si una acción tomada ha sido buena o mala.
 
 
 \section{Elementos del Aprendizaje por Refuerzo}
@@ -98,6 +117,24 @@ $$R_{t} = \sum^{T}_{k = 0} \gamma^{t}r_{t + k + 1}$$
 
 El factor de descuento, \( \gamma \), representa cuánto se descuenta de la recompensa en cada paso, y su valor siempre se encuentra entre 0 y 1, de forma que valores más altos corresponden a una penalización menor. Los factores de descuento más comúnmente usados se encuentran entre 0,97 y 0,99.
 
+Esta búsqueda del balance entre las recompensas cercanas y futuras está muy relacionado con el problema de \textbf{Exploración vs. Explotación}. Nuestro agente contará con un hiperparámetro \textit{exploración}, el cual determina con qué frecuencia el agente decide tomar una acción aleatoria (exploración) en lugar de aquella que le proporcione el valor más prometedor (explotación), con la esperanza de encontrar un nuevo estado en el que nunca haya estado y que pueda resultar más beneficioso. En otras palabras, el agente decide si sacar provecho de lo ya aprendido o arriesgarse e intentar aprender algo mejor.
+
+Siguiendo con esta idea, nuestra estrategia para equilibrar el dilema de la explotación vs. exploración se basa en el llamado \textbf{e-Greedy}. E-Greedy es una estrategia que implica tomar una decisión en cada paso para tomar la acción registrada por el agente con una mayor recompensa o tomar una acción al azar. La probabilidad de que el agente tome una acción aleatoria se rige por el parámeto \( \epsilon \). Podemos hacer un acercamiento de esta idea en el siguiente código:
+
+\begin{minipage}{0.9\linewidth}%
+    \begin{lstlisting}[frame=tb, language=Python, caption=Pseudocódigo e-Greedy, label=code:e_greedy]
+
+    import numpy as np
+    import random
+
+    if random.random() < epsilon:
+        # exploracion
+        random.randint(0, action_space - 1)
+    else:
+        # explotacion
+        action = np.argmax(q_table[discreted_state])
+    \end{lstlisting}%
+\end{minipage}
 
 \section{Q-Learning}
 
@@ -107,9 +144,7 @@ El algoritmo de Q-Learning cuenta con una tabla-Q con los estados posibles conte
 
 $$U(s) = \max_{a}Q(s, a)$$
 
-Con \textbf{diferenciación temporal} hacemos referencia al hecho de que, en busca de un aprendizaje correcto, nuestro agente tendrá que tener en cuenta tanto las recompensas directas como aquellas que pueden llegar con retardo, como anticipamos en la sección anterior. Reformulando esto, el agente deberá predecir el resultado de la recompensa final mediante la ejecución secuencial de distintas acciones. Para poder hacerlo, debemos encontrar un equilibrio entre las recompensas inmediatas y las futuras. Como podemos imaginar, potenciar la importancia de las recompensas directas puede perjudicar el valor de las futuras.
-
-Este balance está muy relacionado con el problema de \textbf{Exploración vs. Explotación}. Nuestro agente contará con un hiperparámetro \textit{exploración}, el cual determina con qué frecuencia el agente decide tomar una acción aleatoria (exploración) en lugar de aquella que le proporcione el valor más prometedor (explotación), con la esperanza de encontrar un nuevo estado en el que nunca haya estado y que pueda resultar más beneficioso. En otras palabras, el agente decide si sacar provecho de lo ya aprendido o arriesgarse e intentar aprender algo mejor.
+Con \textbf{diferenciación temporal} hacemos referencia al hecho de que, en busca de un aprendizaje correcto, nuestro agente tendrá que tener en cuenta tanto las recompensas directas como aquellas que pueden llegar con retardo, como anticipamos en la sección anterior. Reformulando esto, el agente deberá actualizar las estimaciones obtenidas en un momento Q(s, a) con el valor actualizado en pasos siguientes Q(s+k, a). Para poder hacerlo, debemos encontrar un equilibrio entre las recompensas inmediatas y las futuras. Como podemos imaginar, potenciar la importancia de las recompensas directas puede perjudicar el valor de las futuras.
 
 Existen varias fórmulas para calcular la utilidad de los estados. Uno de los métodos más utilizados es a través de la \textbf{Ecuación de Bellman} \citet{Baird1995}, que nos indica que la máxima recompensa futura de tomar una acción es la suma de la recompensa actual y la máxima recompensa futura del siguiente episodio, permitiéndonos así obtener una relación entre valores-Q.
 
@@ -123,4 +158,4 @@ Podemos relacionar este nuevo hiperparámetro tasa de aprendizaje ($\alpha$) y l
 
 $$Q^*(s_{t}, a_{t}) = (1-\alpha ) Q(s_{t}, a_{t}) + \alpha [r(s_{t}, a_{t}) + \gamma\ max_{a'}\ Q^*(s_{t+1}, a')]$$
 
-Llegados a este punto, podemos observar cómo se crea la tabla-Q que relacionará los pares estado-acción con su correspondiente valor-Q. En consecuencia, nos encontramos con que esta tabla crece alarmantemente rápido porque tiene que almacenar todas las combinaciones estado-acción, obteniendo que el número de posibles estados puede ser inabarcable incluso para problemas con un pequeño grado de complejidad, haciendo excesivamente costoso el hecho de visitar todas las experiencias recogidas, así como de actualizarlas, volviéndose el problema de esta forma inmanejable desde un punto de vista computacional.
+Llegados a este punto, podemos observar cómo se crea la tabla-Q que relacionará los pares estado-acción con su correspondiente valor-Q. En consecuencia, nos encontramos con que esta tabla crece alarmantemente rápido porque tiene que almacenar todas las combinaciones estado-acción y el número de posibles estados puede ser inabarcable incluso incluso para problemas con un pequeño grado de complejidad, haciendo excesivamente costoso el hecho de visitar todas las experiencias recogidas, así como de actualizarlas, volviéndose el problema de esta forma inmanejable desde un punto de vista computacional.
