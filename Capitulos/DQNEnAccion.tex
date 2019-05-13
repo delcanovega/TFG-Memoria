@@ -89,63 +89,96 @@ Obteniendo resultados...
 ((Grafica de resultados(laFuerzaBrutaSiempreGana.png)))
 
 \subsubsection*{Función de recompensa}
-Como pudimos ver estas modificaciones no eran suficiente para recibir los resultados deseados.
-Tras investigar las distintas posibilidades para acelerar la curva de aprendizaje, pusimos en el punto de mira la función de recompensa. 
-
+Observando la gráfica es apreciable que las modificaciones no son suficiente para recibir los resultados deseados.
+Durante nuestra investigación de las distintas posibilidades de acelerar la curva de aprendizaje, dimos con algunas propuestas interesantes que porponía \href{ https://medium.com/@ts1829/solving-mountain-car-with-q-learning-b77bf71b1de2}{sustituir la recompensa devuelta por el entorno} por una que fuera más significativa para el aprendizaje del agente. En esta nos inspiramos para desarrollar nuestros prototipos.
 Como ya explicamos antes, el entorno devuelve -1 si no alcanza la meta y en el caso contrario 0 y termina la ejecución. 
-Por un lado esta recompensa guiar al jugador a completar el objetivo con la mayor brevedad posible, cuanto antes complete el objetivo menos baja será su recompensa final.
-Pero por otro lado devuelve recompensas negativas hasta que alcanza el objetivo final, que se traduce en probar descartando caminos hasta alcanzar uno que logre el objetivo. Esto en teoría no suena tan mal, de no ser que puede tardar varias horas en encontrar uno de los caminos correctos. Por ello decidimos orientarnos a una recompensa no binaria, alejándonos del meta o no-meta y basándonos en parámetros como la posición o la velocidad, para así tener una medida para evaluar no solo los episodios acertados sino también de los fallidos. Esto permitiría distinguir entre una ejecución en la que coche no se mueve y una en la que el coche casi llega a alcanzar la meta, mientras que con el método de Recompensa Binario serian indistinguibles. De esta forma el sistema tendrá acceso a recompensas de las que pueda aprender para llegar antes de lograr el camino a la meta. 
+Por un lado, esta recompensa guía al jugador a completar el objetivo con la mayor brevedad posible, cuanto antes complete el objetivo, menos negativa será su recompensa final.
+Pero por otro lado devuelve recompensas negativas hasta que alcanza el objetivo final, que se traduce en probar descartando caminos hasta alcanzar uno que logre el objetivo. Esto en teoría no suena tan mal, de no ser que puede tardar varias horas en encontrar uno de los caminos correctos. 
+//Fuerza bruta 
+Por ello decidimos orientarnos a una recompensa no binaria, alejándonos del meta o no-meta y basándonos en parámetros como la posición o la velocidad, para así tener una medida para evaluar no solo los episodios acertados sino también de los fallidos. Esto permitiría distinguir entre una ejecución en la que coche no se mueve y una en la que el coche casi llega a alcanzar la meta, mientras que con el método de Recompensa Binario serían indistinguibles. De esta forma el sistema tendrá acceso a recompensas de las que pueda aprender para llegar antes de lograr el camino a la meta. 
 
-Con este pensamiento en mente comenzamos a desarrollar las distintas posibilidades. A continuación hablaremos de cada uno de los prototipos desarrollados acompañados de las consiguientes reflexiones que desembocaron.
- 
+//Recompensa envi vs modificado (centro, lejos)
+//Acumulados envi vs modificado
+
+Con este pensamiento en mente comenzamos a desarrollar las distintas posibilidades. A continuación, hablaremos de cada uno de los prototipos desarrollados acompañados de las consiguientes reflexiones que desembocaron.
+
+
+
 \paragraph{Posición}
-Inicialmente, dado que el estado final se basa en la posición del coche, empezamos a desarrollar un prototipo cuya función de recompensa se basará en dicha posición, por ello decidimos que fuera "tal cual" la que devuelve el entorno. 
+ Decidimos empezar por investigar las posibilidades de basar la recompensa en la posición del coche.
+ Dado que el estado final se basa en la posición del coche, nos pareció la opción más razonable por la que iniciar nuestra investigación. Nuestro primer prototipo basaba enteramente la función de recompensa en la posición tal y como la devuelve el entorno. 
 
  RESULTADO:mainPosicionNoAbs
 
-Visto la poca diferencia entre los resultados entre esta y la original, nos dimos cuenta de que hacía falta hacer una serie de ajustes:
+Visto la poca diferencia entre los resultados de esta y la original, nos dimos cuenta de que hacía falta hacer una serie de ajustes:
 
 \begin{itemize}
-    \item En primer lugar, dar una recompensa exageradamente alta al alcanzar la meta, no solo para que ese camino se refuerce más que con la recompensa original, para acelerar el aprendizaje, sino para además permitirnos distinguir más fácilmente (en la gráfica) las partidas que llegan a la meta de las que no.  
-    \item Después, nos percatamos de que en el planteamiento de Recompensa Binaria no se hace distinción entre derecha y izquierda, por lo que consideramos hacer los cálculos con la posición en valor absoluto, para así no dar preferencia a la derecha frente a la izquierda con la intencion de favorecer el balanceo.
-     Para poder llevar a cabo esto, necesitábamos fijar el centro, el cual, según el entorno, es -0.5, por lo tanto debíamos sumarle 0.5 para corregir la desviación.
+    \item En primer lugar, dimos una recompensa exageradamente alta al alcanzar la meta, no solo para que ese camino se refuerce más que con la recompensa original, para acelerar el aprendizaje, sino para además permitirnos distinguir más fácilmente (en la gráfica) las partidas que llegan a la meta de las que no.  
+    \item Después, nos percatamos de que en el planteamiento de Recompensa Binaria no se hace distinción entre derecha e izquierda, por lo que consideramos hacer los cálculos con la posición en valor absoluto, para así no dar preferencia a la derecha frente a la izquierda con la intención de favorecer el balanceo.
+     Para poder llevar a cabo esto, necesitábamos fijar el centro, el cual, según el entorno, es -0.5, por lo tanto, debíamos sumarle 0.5 para corregir la desviación.
     \item Por otro lado pensamos en darle una penalización en función del tiempo para dirigir el aprendizaje a una mayor presteza al igual que hacia la Recompensa Binaria. Pero esto último lo descartamos al ver los resultados.
 \end{itemize}
  RESULTADO: CapturaCambiandoRewardAPosicion.png
 
 La grafica representa claramente como la puntuación converge a un valor, esto se debe a que la penalización crece demasiado.
-Penealizacion inicial empieza en 1, sin penalización, y a cada Step esta se multiplica por 0.995, de forma que la penalización del último Step es de 0.36695. Esto hace que las puntuaciones de los últimos Steps de la partida sean despreciables para el sistema, de tal forma que se optimicen solo las recompensas iniciales y ignorando las de los ultimos. Así llegando a la convergencia. 
-Además nos dimos cuenta de que este tipo de penalización incumplía lo establecido de basar la recompensa únicamente en el estado, sin tener en cuenta factores externos como, en el caso de la penalización, el número de Steps que lleva la partida.
+Penalización inicial empieza en 1, sin penalización, y a cada Step esta se multiplica por 0.995, de forma que la penalización del último Step es de 0.36695. Esto hace que las puntuaciones de los últimos Steps de la partida sean despreciables para el sistema, de tal forma que se optimicen solo las recompensas iniciales e ignorando las de los últimos. Así llegando a la convergencia. 
+Además, nos dimos cuenta de que este tipo de penalización incumplía lo establecido de basar la recompensa únicamente en el estado, sin tener en cuenta factores externos como, en el caso de la penalización, el número de Steps que lleva la partida.
 Ante los inconvenientes de la penalización optamos por descartar ese método y en su lugar añadir una pequeña disminución de la recompensa, en caso de alcanzar la meta, según el número de pasos realizados al final del Episodio para reforzar las soluciones rápidas frente a las lentas.
 
 RESULTADOS: mainPosicion
 
 \paragraph{Velocidad}
-Por otro lado, dado que para alcanzar la meta en el juego hace falta coger impulso para tener suficiente velocidad como para subir la montaña, decidimos abrir otra línea de investigación basada en la velocidad absoluta.
+Por otro lado, dado que para alcanzar la meta en el juego hace falta coger impulso para tener suficiente fuerza como para subir la montaña, decidimos abrir otra línea de investigación basada en la velocidad absoluta.
 
 RESULTADO: mainVelocidadTalcualNoAbs
 
-A diferencia de la posición, la velocidad devuelta por el entorno tiene unos valores muy pequeños, por lo que basar la recompensa en la velocidad bruta sería semejante a darle una recompensa constante, para cuando se alcance la meta darle una notablemente mayor, lo cual se asemeja a la Recompensa Binaria. Por ello decidimos multiplicarla por 100, haciéndola más visibles y relevantes para la recompensa. 
+A diferencia de la posición, la velocidad devuelta por el entorno tiene unos valores muy pequeños, por lo que basar la recompensa en la velocidad bruta sería semejante a darle una recompensa constante, para cuando se alcance la meta darle una notablemente mayor, lo cual se asemeja a la Recompensa Binaria. Por ello decidimos multiplicarla por 100, haciéndola más visibles y relevantes para el agente. 
 
-Se puede ver como alcanza la meta más rápido, sufre caídas debido al overfitting, aun siendo caídas menores que las de posición nos parecía preocupante, por lo que probamos a cambiar la función de optimización de Adam a Adadelta.
+Se puede ver como alcanza el meta más rápido, pero sufre caídas debido al overfitting, aun siendo caídas menores que las de posición nos parecía preocupante, por lo que probamos a cambiar la función de optimización de Adam a Adadelta.
 
 RESULTADO: main3.2 y  
 
-Estos resultados nos parecieson suficientemente satisfactorios para este apartado.
+Comprendimos que la razón es que Adadelta funcionara mejor era que 
+https://machinelearningmastery.com/adam-optimization-algorithm-for-deep-learning/
+Estos resultados nos parecieron suficientemente satisfactorios para este apartado.
+
+Para poder comparar lo mejor posible los resultamos decidimos crear una serie de gráficas para cada ejemplo en el que no solo se viera mejor la evolución general de los resultados, sino que añadiera otros datos de interés como la recompensa original del entorno, la velocidad máxima la posición máxima alcanzada, así seríamos capaces de ver más claramente la evolución de los distintos modelos y permitirnos compararlos en estos campos más fácilmente.
+Además, facilitando el avistamiento de partidas “buenas” podíamos permitirnos bajar la recompensa "exagerada" que le dábamos al alcanzar la meta.
+
+RESULTADO :main3.2.GraficaMejorada
+RESULTADO :mainPosicion.GraficaMejorada
+
+Por último, decidimos añadir al agente una modificación para favorecer la convergencia de los resultados del sistema y reducir las caídas vistas en las gráficas.
+Esto lo conseguimos añadiendo un tercer modelo al agente, siendo su composición final de:
+\begin{itemize}
+ \item Modelo Mentor: se limitará a responder a los estímulos del entorno sin hacer replay de sus jugadas, es decir, sin aprender y simplemente almacenando en la memoria los estados por los que ha pasado y sus correspondientes recompensas.
+ \item Modelo Aprendiz: se dedicará a aprender, haciendo los replays de la batería de estados-recompensa que va generando el Modelo Mentor.
+ \item Modelo Best: será el mejor de los modelos encontrados hasta el momento. 
+\end{itemize}
+El desarrollo de la ejecución se divide en 3 fases:
+
+Primera fase, fase Inicial, durante los primeros episodios, equivalente a dos veces la periodicidad de las competiciones (COMP), el modelo mentor aprende del entorno tal y como hacen los agentes predecesores, jugando la partida y aprendiendo mediante backtracking. Mientras que los otros dos, Aprendiz y Best no hacen nada, se limitan a inicializarse.
+
+La segunda fase, fase de Competiciones, Mentor se limita a interactuar con el entorno, es decir, toma las decisiones que controlan al avatar durante la partida, y guarda los resultados obtenidos en la memoria. Por otro lado, Aprendiz comienza a entrenar con dicha memoria, aprendiendo de las acciones de Mentor.
+Cada COMP episodios, se produce una competición, que somete a Mentor y Aprendiz a una prueba, que no tiene repercusión alguna en la memoria y permite comparar los resultados para ver quien reacciona mejor en el entorno. La que salga victoriosa se copia sobre la vencida, y prosigue el proceso.
+Así, si Aprendiz aprende de las experiencias de Mentor, y es capaz de superarle en la prueba, pasará a ser Mentor, dejando una copia en Aprendiz para seguir desarrollándose. Por otro lado, si Aprendiz aprende “mal”, es decir, si los resultados de la prueba indican que Mentor es mejor que Aprendiz, Mentor trasmitirá su configuración de los pesos a Aprendiz para que este proceda a mejorarlo y aprenda de Mentor hasta la siguiente Competición.  
+
+Fase final, fase de Mantenimiento, es semejante a Competición, salvo que ahora Best guarda el mejor modelo que se haya generado durante la simulación. Cada 100 episodios, los tres modelos se pondrán a prueba con 100 partidas de testeo, que al igual que durante las competiciones normales, no tendrán ninguna repercusión en la memoria y por tanto serán invisibles para el entrenamiento. El mejor modelo se guardará en Best y se pondrá como Mentor, para así generar los mejores resultados posibles de los que Aprendiz pueda aprender.  
+
+RESULTADOS: 	main7SustituyendoModelPorBestEXT, main7SustituyendoModelPorBestEXT2, main7SustituyendoModelPorBestEXT4
 
 \paragraph{Variantes}
-Nos planteamos otras aderezos para las soluciones ya planteadas para optimizar el aprendizaje. 
-Consideramos añadir pequeñas recompensas como dar una bonificacion extra al alcanzar cierta posición o al llevar una velocidad positiva.
+Nos planteamos otros aderezos para las soluciones ya planteadas para optimizar el aprendizaje. 
+Consideramos añadir pequeñas recompensas como dar una bonificación extra al alcanzar cierta posición o al llevar una velocidad positiva.
 Algunas de estas fueron descartadas por la premisa de solo basarnos en el estado para definir la recompensa, pero otras pudimos llevarlas a cabo.
 
  Dar bonus +10 cada vez que alcanza un multiplo de 0.1
 
  Dar bonus al llevar velocidad positiva al pasar por 0
 
- Dar bonus al superar su velocidad maxima al pasar por cero(se dedicaba a pasar muchas veces por cero)
+ Dar bonus al superar su velocidad máxima al pasar por cero(se dedicaba a pasar muchas veces por cero)
 
- Dar una bonificacion cada vez que supera mu mayor altura por 0.1, a primera vista puede parecer que de elementos externos al estado pero... teniendo en cuenta que se trata de solo posiciones de 0.1 , al final solo se recompensan 0, 0.1, 0.2... seria equivalente la primera propuesta pero alternando la ladera. 
-
+ Dar una bonificación cada vez que supera mu mayor altura por 0.1, a primera vista puede parecer que de elementos externos al estado pero... teniendo en cuenta que se trata de solo posiciones de 0.1, al final solo se recompensan 0, 0.1, 0.2... sería equivalente la primera propuesta pero alternando la ladera. 
 
 ((algoritmo de modificacion))
 
@@ -157,4 +190,5 @@ Hablar sobre randomwalks y transfer learning
 \paragraph{Randomwalks}
 A grandes rasgos Randomwalks, consiste en generar una gran memoria de partidas jugadas totalmente al azar para luego seleccionar los mejores resultados de entre estos para entrenar el agente. Por último, poner el agente en el entorno real.
 Este planteamiento ha resultado ser con diferencia el más rapido de todos, dado que al ahorarse el entrenamiento intermedio de todas las partidas se ahora gran parte del tiempo de ejecución.
+
 
