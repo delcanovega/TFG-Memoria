@@ -48,11 +48,12 @@ La capa de entrada comienza recibiendo un conjunto de bits de distintos colores.
 
 Como ya hemos visto en este mismo capítulo, la neurona dispone de unos pesos para asignar a sus entradas y así producir una salida que nos resulte útil. Sin embargo, el proceso de asignar un valor óptimo a esos pesos no resulta para nada trivial, así que necesitamos un método que nos ayude a encontrar una configuración óptima de todas las neuronas de nuestra red.
  
-El método del \textbf{descenso de gradiente} (o \textit{gradient descent}) es un algoritmo de optimización que permite converger hacia el valor mínimo de una función de manera iterativa. En este caso, la función a minimizar es la de coste, que calcula la diferencia entre la salida estimada y la salida real, consiguiendo mejores resultados. Para identificar el mínimo de la función, el método del descenso del gradiente calcula la derivada parcial respecto a cada parámetro en el punto de evaluación. La derivada indica el valor y la dirección en los que se encuentra el mínimo más próximo. No obstante, uno de los problemas que surgen en este punto es que éste puede ser tanto un mínimo local como global, siendo posible que nunca lleguemos a unos valores óptimos.
+El método del \textbf{descenso de gradiente} (o \textit{gradient descent}) es un algoritmo de optimización que permite converger hacia el valor mínimo de una función de manera iterativa. En este caso, la función a minimizar es la de coste, que calcula la diferencia entre la salida estimada (\textit{y}) y la salida real (\textit{t}), consiguiendo mejores resultados. Para identificar el mínimo de la función, el método del descenso del gradiente calcula la derivada parcial respecto a cada parámetro (\textit{x}) en el punto de evaluación. La derivada indica el valor y la dirección en los que se encuentra el mínimo más próximo. No obstante, uno de los problemas que surgen en este punto es que éste puede ser tanto un mínimo local como global, siendo posible que nunca lleguemos a unos valores óptimos.
 
-% TODO formula descenso de gradiente
+El resultado de la derivada se resta a cada uno de los parámetros, multiplicando finalmente por el \textbf{ratio de aprendizaje} ($$\epsilon$$). Éste tiene un valor entre 0 y 1, e indica lo rápido que converge el algoritmo hasta un mínimo local. Es importante ver que el ratio influye mucho a la hora de utilizar el descenso de gradiente y es necesario escoger un valor adecuado para evitar problemas. Finalmente, la fórmula de la diferencia de gradiente quedaría expresada como la siguiente:
 
-El resultado de la derivada se resta a cada uno de los parámetros, multiplicando finalmente por el \textbf{ratio de aprendizaje}. Éste tiene un valor entre 0 y 1, e indica lo rápido que converge el algoritmo hasta un mínimo local. Es importante ver que el ratio influye mucho a la hora de utilizar el descenso de gradiente y es necesario escoger un valor adecuado para evitar problemas. 
+% TODO revisar fórmula
+$$\Delta w_{k} = \sum_{i} \epsilon\ x_{k}^{(i)} (t^{(i)} - y^{(i)} )$$
 
 El descenso de gradiente resulta útil a la hora de asignar pesos a una neurona, pero para aplicarlo a una red neuronal completa hay que dar un paso más allá. Es por ello que existe un algoritmo conocido como \textbf{retropropagación} (o \textit{backpropagation}). Al igual que en el descenso de gradiente, compara la salida real de la red neuronal con la salida deseada y minimiza su error, con la diferencia de que cambia los pesos de la capa anterior. Este proceso se lleva a cabo por toda la red hasta alcanzar la capa de entrada.
 
@@ -67,11 +68,14 @@ Para evitar que ocurran este tipo de problemas, se estudiaron múltiples algorit
     \item \textbf{Adam}: mientras que RMSProp utiliza la media de los gradientes que guarda Adagrad (primer momento), Adam utiliza la media de la varianza (segundo momento). Hay que tener en cuenta que ya que los momentos están inicializados a cero, es necesario un factor de corrección para obtener el valor real de ellos. Adam será el optimizador que utilizaremos, por ser más eficiente y poder adaptarse a la mayoría de problemas. 
 \end{itemize}
 
-
 \subsection{Problemas de clasificación}
 Los problemas de clasificación consisten, a grandes rasgos, en asignar un dato recibido a una categoría de un conjunto ya establecido. El ejemplo más claro de esta categoría sería proveer de imágenes de perros y gatos a una red neuronal, y que sea ésta la que decida de qué animal se trata en cada caso. Modificando el comportamiento del ojo humano, la red recibiría dichas imágenes como un conjunto de píxeles y a partir ellos, crearía contornos y buscaría patrones para distinguir entre un animal u otro.
 
-En nuestro ejemplo de aprendizaje supervisado sobre clasificación, hemos elegido otro conjunto de datos conocido: reconocimiento de cifras escritas a mano. Este consiste en un conjunto de imágenes de cada número escrito a mano de distintas formas, incluyendo la respuesta correcta para comprobar los resultados de nuestro clasificador.
+En nuestro ejemplo de aprendizaje supervisado sobre clasificación, hemos elegido otro conjunto de datos conocido: reconocimiento de cifras escritas a mano. Este consiste en un conjunto de imágenes de cada número escrito a mano de distintas formas, como se ve en la imagen \ref{fig:cifras}, incluyendo la respuesta correcta para comprobar los resultados de nuestro clasificador.
+
+% TODO JCA
+\figura{Bitmap/AprendizajeProfundo/Ejemplo_Cifras}{width=1\textwidth}{fig:cifras}%
+       {Imagen del conjunto de datos de cifras escritas a mano de MNIST.} 
 
 Para este caso, hemos establecido una red neuronal de tres capas, la de entrada, la de salida y una capa intermedia u oculta para que la red realice los cálculos necesarios. Hemos utilizado un optimizador Adam, de forma que el descenso de gradiente se realice de forma más efectiva y los valores de los pesos en la red se reajusten más rápidamente.
 
@@ -95,32 +99,26 @@ Además, para asegurarnos de la fiabilidad de la red neuronal y comprobar que no
 
 % TODO: añadir algoritmo de error
 
-\section{Aprendizaje por Refuerzo Profundo}
+\section{Redes neuronales y Q-learning}
 
-Cuando hablamos de Aprendizaje por Refuerzo anteriormente, nos centramos en el método de Q-Learning. Observamos que las soluciones planteadas eran válidas, pero el mayor problema que presentaba se debía al tamaño de las tabla-Q: ésta terminaba con tamaños intratables incluso con problemas de complejidad baja. En un intento de arreglar este problema, se generó la posibilidad de realizar aproximaciones a la función-Q, de forma que no fuera necesario recorrer todos los pares estado-valor. Mediante un nuevo modelo, el agente podría aproximar o generalizar múltiples valores de la tabla. A pesar de que el sistema no sería tan exacto como el anterior, el problema sería tratable y su eficiencia se seguiría manteniendo.
+Al hablar de Aprendizaje por Refuerzo anteriormente, nos centramos en el método de Q-Learning. Observamos que las soluciones planteadas eran válidas, pero el mayor problema que presentaba se debía al tamaño de las tabla-Q: ésta terminaba con tamaños intratables incluso con problemas de complejidad baja. 
 
-\subsection{DQNs}
+Buscando la forma de arreglar este problema, se generó la posibilidad de realizar aproximaciones a la función-Q a través del uso de una red neuronal, de forma que no fuera necesario recorrer todos los pares estado-valor constantemente. Es así como surgieron las redes neuronales profundas (\textit{Deep Q-Networks} o \textbf{DQNs}, como nos referiremos a ellas). 
 
-Tras conocer la posibilidad de aproximar las funciones-Q, se planteó la forma más eficiente de realizarlas sin tener que generar un modelo específico para cada problema. Es así como surgieron las \textit{Deep Q-Networks} o \textbf{DQNs}, como nos referiremos a ellas. 
-
-Como su nombre bien puede dar a entender, las DQNs resultan de una fusión entre el método de Q-Learning explicado anteriormente y una red neuronal profunda. Una DQN es una red neuronal multicapa que dado un estado "s" devuelve un vector de valores Q(s, · ; T ), donde T son los parámetros de la red. Esto significa que nuestra red es capaz de calcular múltiples valores-Q de forma dinámica para todas las acciones posibles en un estado, terminando así con la intratabilidad que suponía la utilización de la tabla-Q en problemas de Q-Learning.
-
-Sin embargo, ya que cualquier pequeño cambio en los parámetros de entrada modificará los resultados de la red, los valores-Q se recalcularán constantemente y podrían darse situaciones en las que el agente sea inducido a error durante su aprendizaje. Al tener multitud de estados similares con diferentes valores-Q, es muy posible que el agente ignore soluciones similares, aprendiendo mucho más despacio o repitiendo los mismos caminos constantemente. Con el fin de arreglar esta inestabilidad, se estudian varios métodos, de los cuales explicaremos los dos más relevantes.
+Las transiciones creadas a partir de las DQNs se pueden representar como un vector de valores de la siguiente forma: $$Q(s, · ; T )$$, donde \textit{T} son los parámetros de la red y \textit{s} es el estado actual. Esto significa que la red es capaz de calcular múltiples valores-Q de forma dinámica para todas las acciones posibles en un estado, sin abandonar la representación que suponía la tabla-Q. Además, permite generalizar estados no visitados pero sí muy parecidos a otros que ya ha visitado, ya que la red ya tendrá calculadas las decisiones para éstos también.
 
 \subsubsection{Múltiples redes neuronales}
-Con el fin de en estabilizar y reducir los cambios que sufriría la red neuronal ante estados similares, surge el concepto de la \textbf{Target Q-Network}. Éste implica la utilización de una segunda red objetivo (\textit{target}), como copia de la red principal de predicción. La red objetivo sólo se actualiza cada cierto número de pasos, ahorrándose los cambios en los pesos que sufre constantemente la red de predicción y consiguiendo así más estabilidad en los resultados.
+Con el fin de en estabilizar la evolución del aprendizaje de la red y evitar que repita los mismos caminos constantemente, o que ignore soluciones por ser demasiado similares, surge el concepto de la \textbf{Target Q-Network}. Éste implica la utilización de una segunda red objetivo (\textit{target}), como copia de la red principal de predicción. La red objetivo sólo se actualiza cada cierto número de pasos, ahorrándose los cambios en los pesos que sufre constantemente la red de predicción y consiguiendo así más estabilidad en los resultados.
 
 \begin{equation}
 	Y^Q_{t} \equiv R_{t+1} + \gamma max_{a} Q(S_{t+1}, a; \theta_{t})
 \end{equation}
 
-Como derivación de este método existe otro conocido como \textbf{Double Q-Network}, donde las redes se dividen entre "agente" y "aprendizaje". La red agente se utiliza para guardar los estados con los que tomar las decisiones en cuanto a los movimientos a ejecutar, mientras que la red de aprendizaje se encarga de guardar los valores de la ejecución actualizados: cada cierto número de pasos ambas redes son comparadas, guardando la que haya dado mejores resultados como agente, para la toma de decisiones, y utilizando la otra para el aprendizaje. Éste será el tipo de red que utilizaremos más adelante en nuestro proyecto.
+Como derivación de este método existe otro conocido como \textbf{Double Q-Network}, donde las redes se dividen entre "agente" y "aprendizaje". La red agente se utiliza para guardar los estados con los que tomar las decisiones en cuanto a los movimientos a ejecutar, mientras que la red de aprendizaje se encarga de guardar los valores de la ejecución actualizados: cada cierto número de pasos ambas redes son comparadas, guardando la que haya dado mejores resultados como agente, para la toma de decisiones, y utilizando la otra para el aprendizaje.
 
 \begin{equation}
 	Y^Q_{t} = R_{t+1} + \gamma Q(S_{t+1}, argmax_{a} Q(S_{t+1}, a; \theta_{t}); \theta_{t})
 \end{equation}
 
 \subsubsection{Experiencias pasadas}
-Otra manera de conseguir estabilidad es reduciendo las similitudes entre los estados de los que aprende nuestro agente, de forma que no sean estados relacionados y puedan ser representativos de distintos momentos dentro de nuestra ejecución. Para hacerlo recurriremos al \textit{Experience Replay} (reproductor de experiencias, también conocidas como valores-Q), al que nos referiremos como \textbf{replay}. Éste método consiste en almacenar múltiples experiencias pasadas del agente al finalizar cada episodio y tomar una muestra aleatoria del conjunto de experiencias acumuladas a lo largo de varios episodios. De esta forma conseguiremos casos no relacionados para optimizar el aprendizaje de nuestro agente.
-
-Más adelante observaremos la utilización de este método a lo largo de nuestras pruebas, además de poner en práctica lo explicado durante este capítulo.
+Otra manera de conseguir estabilidad es reduciendo las similitudes entre los estados de los que aprende nuestro agente, de forma que no sean estados relacionados y puedan ser representativos de distintos momentos dentro de nuestra ejecución. Para hacerlo recurriremos al reproductor de experiencias (o \textit{Experience Replay}), también conocidas como valores-Q, al que nos referiremos como \textbf{replay}. Éste método consiste en almacenar múltiples experiencias pasadas del agente al finalizar cada episodio y tomar una muestra aleatoria del conjunto de experiencias acumuladas a lo largo de varios episodios. De esta forma conseguiremos casos no relacionados para optimizar y acelerar el aprendizaje de nuestro agente.
