@@ -110,15 +110,11 @@ Las transiciones creadas a partir de las DQNs se pueden representar como un vect
 \subsubsection{Múltiples redes neuronales}
 Con el fin de en estabilizar la evolución del aprendizaje de la red y evitar que repita los mismos caminos constantemente, o que ignore soluciones por ser demasiado similares, surge el concepto de la \textbf{Target Q-Network}. Éste implica la utilización de una segunda red objetivo (\textit{target}), como copia de la red principal de predicción. La red objetivo sólo se actualiza cada cierto número de pasos, ahorrándose los cambios en los pesos que sufre constantemente la red de predicción y consiguiendo así más estabilidad en los resultados.
 
-\begin{equation}
-	Y^Q_{t} \equiv R_{t+1} + \gamma max_{a} Q(S_{t+1}, a; \theta_{t})
-\end{equation}
+$$Y^Q_{t} \equiv R_{t+1} + \gamma max_{a} Q(S_{t+1}, a; \theta_{t})$$
 
 Como derivación de este método existe otro conocido como \textbf{Double Q-Network}, donde las redes se dividen entre "agente" y "aprendizaje". La red agente se utiliza para guardar los estados con los que tomar las decisiones en cuanto a los movimientos a ejecutar, mientras que la red de aprendizaje se encarga de guardar los valores de la ejecución actualizados: cada cierto número de pasos ambas redes son comparadas, guardando la que haya dado mejores resultados como agente, para la toma de decisiones, y utilizando la otra para el aprendizaje.
 
-\begin{equation}
-	Y^Q_{t} = R_{t+1} + \gamma Q(S_{t+1}, argmax_{a} Q(S_{t+1}, a; \theta_{t}); \theta_{t})
-\end{equation}
+$$Y^Q_{t} = R_{t+1} + \gamma Q(S_{t+1}, argmax_{a} Q(S_{t+1}, a; \theta_{t}); \theta_{t})$$
 
 \subsubsection{Experiencias pasadas}
 Otra manera de conseguir estabilidad es reduciendo las similitudes entre los estados de los que aprende nuestro agente, de forma que no sean estados relacionados y puedan ser representativos de distintos momentos dentro de nuestra ejecución. Para hacerlo recurriremos al reproductor de experiencias (o \textit{Experience Replay}), también conocidas como valores-Q, al que nos referiremos como \textbf{replay}. Éste método consiste en almacenar múltiples experiencias pasadas del agente al finalizar cada episodio y tomar una muestra aleatoria del conjunto de experiencias acumuladas a lo largo de varios episodios. De esta forma conseguiremos casos no relacionados para optimizar y acelerar el aprendizaje de nuestro agente.
