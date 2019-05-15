@@ -11,7 +11,7 @@ La neurona es el elemento básico de una red neuronal. Al igual que las existent
 
 $$Y = f(x\ w\ + b)$$
 
-Echando un vistazo a la representación de la neurona en la imagen \ref{fig:esquema_neurona}, distinguiremos las $$x$$ como las variables de entrada y $$w$$ los pesos que les asigna la propia neurona. La variable $$b$$ es el \textit{bias}, o desplazamiento, que se suma a la multiplicación entre las variables y sus respectivos pesos y $$f$$ es la \textbf{función de activación}, que nos devolverá la salida de la neurona $$Y$$.
+Echando un vistazo a la representación de la neurona en la imagen \ref{fig:esquema_neurona}, distinguiremos las $x$ como las variables de entrada y $w$ los pesos que les asigna la propia neurona. La variable $b$ es el \textit{bias}, o desplazamiento, que se suma a la multiplicación entre las variables y sus respectivos pesos y $f$ es la \textbf{función de activación}, que nos devolverá la salida de la neurona $Y$.
 
 \figura{Bitmap/AprendizajeProfundo/Neuron}{width=1\textwidth}{fig:esquema_neurona}%
        {Esquema de una neurona artificial.}
@@ -21,7 +21,7 @@ Sin embargo, dentro de estas neuronas existen varios tipos. Las que nos interesa
 \begin{itemize}
     \item Sigmoide: $f(z) = \frac{1}{(1+e^{-z})}$: esta función logit marca una diferenciación clara entre valores pequeños y grandes, agrupándolos en 0 o 1 respectivamente. Entre estos dos extremos, las salidas de las neuronas adoptarán una forma de S.
     \item Tanh: $f(z)= tanh(z)$: este tipo de neurona tiene una salida muy parecida a las tipo sigmoide, manteniendo la forma de S, pero con la diferencia de que el marco esta entre -1 y 1. Suele ser usada con más asiduidad debido a que está centrada en 0.
-    \item ReLu: $f(z) = max(0,z)$: la neurona de linealidad restringida o ReLu (Restricted Linear Unit) utiliza un distinto tipo de no linealidad. A pesar de su variadas desventajas, se ha mantenido como la utilizada por defecto en todo tipo de problemas.
+    \item ReLu: $f(z) = max(0,z)$: la neurona de linealidad restringida o ReLu (Restricted Linear Unit) utiliza un distinto tipo de no linealidad. A pesar de su simplicidad, ha sido la función de activación utilizada para la resolución de los diferentes problemas debido a su mayor facilidad de convergencia y facilidad computacional \citep{Enyinna2018}.
 \end{itemize}
 
 \figura{Bitmap/AprendizajeProfundo/Func_Neuron}{width=1\textwidth}{fig:func_neurona}%
