@@ -2,3 +2,25 @@
 \label{cap:conclusiones}
 
 \chapterquote{Somos lo que hacemos repetidamente. La excelencia, entonces, no es un acto, es un hábito}{Aristóteles}
+
+Este proyecto nos ha servido como un extenso estudio sobre los orígenes y la evolución de la que actualmente es una de las tecnologías más exploradas dentro de la Inteligencia Artificial: Aprendizaje Automático, concretamente la subcategoría de Aprendizaje Profundo. 
+
+Cuando empezamos el proyecto, sólo teníamos una leve idea de la complejidad que implicaba este término o del alcance de las utilidades que se pueden conseguir a través de esta tecnología. Pero por suerte, teníamos claro nuestro objetivo y nuestra investigación fue dirigida a conseguirlo: conseguir que una IA pudiera jugar por sí sola a un videojuego.
+
+Comenzamos estudiando las bases del Aprendizaje Automático, tomando como punto de partida la técnica de Aprendizaje por Refuerzo. Ésta encajaba perfectamente en nuestro proyecto, ya que tratándose de videojuegos, es fácil encontrar recompensas en ese entorno. Investigando sobre ello, descubrimos el método de Q-Learning, que parecía ser el que mejor se adecuaba a nuestro caso. Nos permitía tomar decisiones a cada momento, manteniendo una representación fiable de cualquier posible entorno, por lo que la IA podría jugar con normalidad independientemente del juego.
+
+Tras el estudio previo, era el momento de hacer nuestras primeras pruebas y aprender cómo utilizar el entorno. Empezamos con un juego sencillo, el CartPole disponible en la librería de OpenAI Gym. El entorno era sencillo y las acciones que debía tomar el agente, reducidas. Los resultados eran buenos, pero necesitábamos ir un paso más allá. El modelo utilizado en Q-Learning nos podía dar muchos problemas en entornos mayores, a pesar de que el enfoque era bueno en un principio.
+
+Casi simultáneamente, comenzamos buscando otros caminos por los que desarrollar nuestro proyecto, optando finalmente por el uso de redes neuronales. Comprobamos con varios ejemplos que éstas eran compatibles con nuestro problema, llegando a la conclusión de que era un buen punto por el que avanzar. Explorando más allá de lo que ya conocíamos de ellas, encontramos la forma perfecta de combinar la idea y resultados del Q-Learning con la rapidez y comodidad que suponían las redes neuronales: DQNs. 
+
+Las pruebas utilizando DQNs resultaron algo más tediosas de realizar, ya que se trataba de algo totalmente nuevo para nosotros y requería un tiempo de investigación extra. Los resultados no eran buenos, pero tras conseguir estabilizarlos con una segunda red y añadirle una memoria para que aprendiese de sus propios errores, conseguimos que nuestro agente aprendiese correctamente, dando mejores resultados.
+
+El último paso al que llegamos en nuestro proyecto fue a trasladar todo lo aprendido y lo conseguido en el CartPole a otro entorno para comprobar que el agente seguía aprendiendo correctamente. Esta vez se trataba de el juego de MountainCar, también disponible en la librería de OpenAI Gym. Los resultados fueron exitosos, por lo que concluimos que habíamos conseguido desarrollar una IA capaz de jugar. 
+
+Lo conseguido en este proyecto nos ha demostrado la cantidad de posibilidades que existen a la hora de resolver un problema de este tipo. La investigación y tiempo invertidos, nos ha llevado a comprender el trabajo que supone construir una IA, incluso teniendo una pequeña base inicial en la que sostenerse, y la cantidad de información que nos queda por aprender respecto a este tema.  
+
+\section{Trabajo futuro}
+
+El proyecto iba dirigido a enseñar a una IA a jugar y, aunque ésta ha aprendido de forma exitosa, apenas ha sido probada en un par de entornos con pocas variables. El camino de nuestra investigación podía ser el correcto, pero sin más avances, o pruebas en otros entornos, no podemos estar seguros de ello. 
+
+Dicho esto, en caso de poder continuar nuestro proyecto, nos centraríamos en continuar con más pruebas en distintos juegos. Tras comprobar que nuestra IA es adaptable, empezaríamos añadiendo más opciones a las posibles acciones que puede realizar el jugador, actualizándola para que resulte escalable, en caso de que no lo fuera ya. 
