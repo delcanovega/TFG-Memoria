@@ -18,7 +18,7 @@ El campo del \textbf{Aprendizaje Automático} (o \textit{Machine Learning}) se e
 
 \subsection{¿Por qué Aprendizaje por Refuerzo?}
 
-Como muchos otros campos pertenecientes a la rama de Inteligencia Artificial, el Aprendizaje por Refuerzo \citet{Watkins1992} se inspira en estudios sobre el comportamiento en humanos y animales. De esta forma toma su base en la psicología conductista \citet{Skinner1953}, en la que un algoritmo decide si una acción tomada ha sido positiva o negativa, y la refuerza consecuentemente.
+Como muchos otros campos pertenecientes a la rama de Inteligencia Artificial, el Aprendizaje por Refuerzo \citep{Watkins1992} se inspira en estudios sobre el comportamiento en humanos y animales. De esta forma toma su base en la psicología conductista \citet{Skinner1953}, en la que un algoritmo decide si una acción tomada ha sido positiva o negativa, y la refuerza consecuentemente.
 
 Pero antes de profundizar en ello, analicemos por qué es el Aprendizaje por Refuerzo una opción interesante y por qué será la que utilicemos en nuestro proyecto.
 
@@ -26,7 +26,7 @@ Echemos un vistazo a las técnicas de aprendizaje vistas en la sección anterior
 
 El caso del \textit{Aprendizaje por Refuerzo} es distinto. El agente no necesita grandes cantidades de casos de prueba, sino un entorno con el que interactuar por sí mismo, de forma que los casos de prueba se generan de forma automática. La forma más rápida de hacernos con un entorno en el que soltar nuestro agente y verlo actuar es, claramente, simulándolo. Una simulación es la forma más sencilla de controlar las condiciones y el progreso de nuestro experimento, además de quitarnos otros problemas que podrían darse en un entorno real: variables que no se tuvieron en cuenta, cambios inesperados en dicho entorno, o cualquier tipo de error no controlado... El mundo real.
 
-Un dominio muy interesante sobre el que realizar simulaciones de Aprendizaje por Refuerzo son los videojuegos \citet{Rodriguez2018}. Durante los últimos años han tenido bastante éxito debido a varios motivos, entre ellos porque son entornos controlados y reproducibles, de forma que no habrá ninguna diferencia en nuestras pruebas más allá de las propias acciones que realice nuestro agente sobre la simulación, disponiendo así de unos resultados fiables y fácilmente comparables. Además, los videojuegos resultan ser un dominio accesible, de diversa complejidad y ya preparados para nuestro tipo de agente: muchos de ellos disponen de un sistema de puntuación que sirve perfectamente como refuerzo, ya sea por recolección de objetos, número de enemigos derrotados, tiempo... De esta forma, nuestro agente podrá utilizar sus experiencias pasadas para decidir cuál es la mejor decisión a tomar en cada nueva partida.
+Un dominio muy interesante sobre el que realizar simulaciones de Aprendizaje por Refuerzo son los videojuegos \citep{Rodriguez2018}. Durante los últimos años han tenido bastante éxito debido a varios motivos, entre ellos porque son entornos controlados y reproducibles, de forma que no habrá ninguna diferencia en nuestras pruebas más allá de las propias acciones que realice nuestro agente sobre la simulación, disponiendo así de unos resultados fiables y fácilmente comparables. Además, los videojuegos resultan ser un dominio accesible, de diversa complejidad y ya preparados para nuestro tipo de agente: muchos de ellos disponen de un sistema de puntuación que sirve perfectamente como refuerzo, ya sea por recolección de objetos, número de enemigos derrotados, tiempo... De esta forma, nuestro agente podrá utilizar sus experiencias pasadas para decidir cuál es la mejor decisión a tomar en cada nueva partida.
 
 Podemos ver el funcionamiento del aprendizaje por refuerzo en el pseudo-código \ref{code:q-learning}:
 
@@ -150,7 +150,7 @@ $$U(s) = \max_{a}Q(s, a)$$
 
 Con \textbf{diferenciación temporal} hacemos referencia al hecho de que, en busca de un aprendizaje correcto, nuestro agente tendrá que tener en cuenta tanto las recompensas directas como aquellas que pueden llegar con retardo, como anticipamos en la sección anterior. Reformulando esto, el agente deberá actualizar las estimaciones obtenidas en un momento Q(s, a) con el valor actualizado en pasos siguientes Q(s+k, a). Para poder hacerlo, debemos encontrar un equilibrio entre las recompensas inmediatas y las futuras. Como podemos imaginar, potenciar la importancia de las recompensas directas puede perjudicar el valor de las futuras.
 
-Existen varias fórmulas para calcular la utilidad de los estados. Uno de los métodos más utilizados es a través de la \textbf{Ecuación de Bellman} \citet{Baird1995}, que nos indica que la máxima recompensa futura de tomar una acción es la suma de la recompensa actual y la máxima recompensa futura del siguiente episodio, permitiéndonos así obtener una relación entre valores-Q.
+Existen varias fórmulas para calcular la utilidad de los estados. Uno de los métodos más utilizados es a través de la \textbf{Ecuación de Bellman} \citep{Baird1995}, que nos indica que la máxima recompensa futura de tomar una acción es la suma de la recompensa actual y la máxima recompensa futura del siguiente episodio, permitiéndonos así obtener una relación entre valores-Q.
 
 $$Q^*(s_{t}, a_{t}) = r_{t} + \gamma\ max_{a'}\ Q^*(s_{t+1}, a')$$
 
