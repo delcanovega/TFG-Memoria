@@ -108,7 +108,7 @@ Por fortuna solucionar el problema de la cohesión en el \texttt{BatchAgent} tie
     \end{lstlisting}%
 \end{minipage}
 
-El resultado es notoriamente mejor, como muestra la imagen \ref{fig:CartPole-RandomBatchAgent}. De esta forma el agente consigue resolver el problema de forma rápida, además de puntuaciones mucho más altas en general. Sin embargo, entre unas simulaciones y otras los resultados son muy dispares, desde encontrar rápidamente y reforzar un camino ``bueno" hasta lograr la resolución del problema, hasta no encontrar nunca un camino válido. En éste último caso podría deberse a que las muestras tomadas de la memoria no son lo suficiente variadas y el estado de la red neuronal se degrada progresivamente.
+El resultado es notoriamente mejor, como muestra la imagen \ref{fig:CartPole-RandomBatchAgent}. De esta forma el agente consigue resolver el problema de forma rápida, además de puntuaciones mucho más altas en general. Sin embargo, entre unas simulaciones y otras los resultados son muy dispares, desde encontrar rápidamente y reforzar un camino ``bueno'' hasta lograr la resolución del problema, hasta no encontrar nunca un camino válido. En éste último caso podría deberse a que las muestras tomadas de la memoria no son lo suficiente variadas y el estado de la red neuronal se degrada progresivamente.
 
 El problema del volumen de datos estaba solucionado, ya que en varias ocasiones el agente había conseguido aprender una solución, y en las que no, al menos daba la impresión de que iba por buen camino. No obstante, la volatilidad de los resultados nos daba a entender que el modelo propuesto aún no estaba completo.
 
@@ -117,12 +117,13 @@ El problema del volumen de datos estaba solucionado, ya que en varias ocasiones 
 
 
 \subsection{Estabilizar la red: \texttt{DoubleAgent}}
+\label{sec:DA}
 
 Con el fin de en estabilizar el aprendizaje del agente, intentando evitar esos escollos que el agente puede experimentar en algunas ejecuciones, surge por parte de \textit{DeepMind} el concepto de la \textbf{Target Q-Network} \citep{NIPS2010_3964}. Éste implica la utilización de una segunda red objetivo (\textit{target}), como copia de la red principal de predicción. La red objetivo sólo se actualiza cada cierto número de pasos, ahorrándose los cambios en los pesos que sufre constantemente la red de predicción y consiguiendo así más estabilidad en los resultados.
 
 $$Y^Q_{t} \equiv R_{t+1} + \gamma max_{a} Q(S_{t+1}, a; \theta_{t})$$
 
-Como derivación de este método existe otro conocido como \textbf{Double Q-Network}, donde las redes se dividen entre "agente" y "aprendizaje". La red agente se utiliza para guardar los estados con los que tomar las decisiones en cuanto a los movimientos a ejecutar, mientras que la red de aprendizaje se encarga de guardar los valores de la ejecución actualizados: cada cierto número de pasos ambas redes son comparadas, guardando la que haya dado mejores resultados como agente, para la toma de decisiones, y utilizando la otra para el aprendizaje.
+Como derivación de este método existe otro conocido como \textbf{Double Q-Network}, donde las redes se dividen entre ``agente'' y ``aprendiz''. La red agente se utiliza para guardar los estados con los que tomar las decisiones en cuanto a los movimientos a ejecutar, mientras que la red de aprendizaje se encarga de guardar los valores de la ejecución actualizados: cada cierto número de pasos ambas redes son comparadas, guardando la que haya dado mejores resultados como agente, para la toma de decisiones, y utilizando la otra para el aprendizaje.
 
 $$Y^Q_{t} = R_{t+1} + \gamma Q(S_{t+1}, argmax_{a} Q(S_{t+1}, a; \theta_{t}); \theta_{t})$$
 
@@ -159,6 +160,8 @@ Gracias a este método se han logrado grandes hitos en el campo del Aprendizaje 
 
 \section{MountainCar}
 
+Con el fin de comprobar la versatilidad de nuestro agente lo pondremos a prueba en un entorno distinto, este es su enunciado:
+
 \begin{quote}
     Un coche se encuentra en una pista unidimensional, posicionado entre dos "montañas". El objetivo es alcanzar la cima de la montaña derecha; sin embargo, el motor del coche no es lo bastante potente como para alcanzar la cima de la montaña con un único impulso. Por ello, la única forma de lograrlo es conducir hacia delante y hacia atrás aumentando el impulso.
 \end{quote}
@@ -177,89 +180,106 @@ Este problema fue descrito por primera vez por A. \citet{Moore90efficientmemory-
     \item \textbf{Acciones:} dispondremos de tres acciones disponibles, impulsarse hacia la derecha, impulsarse hacia la izquierda y no hacer nada. El cada situación el agente deberá elegir la opción que más impulso le ayude a acumular.
 \end{itemize}
 
-Se puede apreciar que las características del problema son muy similares a las vistas en CartPole. Por ello para resolver este problema partiremos de la versión más estable de nuestro agente desarrollado en \ref{sec:cartpoleDQN}.
+A primera vista puede parecer que es un problema muy parecido a CartPole, no obstante tiene detalles que lo convierten en un problema especialmente interesante. En particular su función de recompensa, recibir \texttt{-1} en cada paso, combinado con el hecho de que la simulación sólo termine tras 200 pasos (si no se alcanza la meta), hace que prácticamente todas las simulaciones terminen con un resultado de -200. Esto elimina el factor de progresión del que disponíamos en CartPole, donde el agente generalmente iba obteniendo recompensas pequeñas pero cada vez mayores.
+
+Para resolver este problema partiremos de la versión más estable de nuestro agente desarrollado en \ref{sec:cartpoleDQN}.
 
 
 \subsection{Enfoques de resolución}
 
-Ejecutando el problema con el agente descrito en [INSERTAR REF] y los parámetros usados en [INSERTAR REF], obtendremos unos resultados como los mostrados en la figura [INSERTAR REF]. La topología de la red también se mantiene igual, por supuesto adaptando el número de entradas y salidas a las del problema; ya que CartPole describía su estado a través de cuatro observaciones y tenía dos acciones disponibles, frente a las dos observaciones y tres acciones de las que MountainCar dispone.
+Ejecutando el problema con el agente descrito en \ref{sec:DA} y los parámetros usados en \ref{code:cartpole_drl}, obtendremos como resultado que el agente no aprende en absoluto. La topología interna de la red también se mantiene igual, por supuesto adaptando el número de entradas y salidas a las del problema; ya que CartPole describía su estado a través de cuatro variables y tenía dos acciones disponibles, frente a las dos variables y tres acciones de las que MountainCar dispone.
 
 Los resultados tan pobres obtenidos puede que sorprendan viniendo del rendimiento visto en CartPole, pero recordemos que el tamaño de las capas internas de la red se eligió para ese problema en concreto. Es de esperar que distintos escenarios necesiten redes de distinto tamaño que sean capaces de interpretar las observaciones de manera efectiva. En definitiva, nuestra red actual \textbf{no es lo bastante descriptiva} para la complejidad del problema.
 
-\subsubsection*{Nueva topología e hiperparámetros}
+
+\subsubsection{Nueva topología e hiperparámetros}
+
 Modificando el agente para usar la siguiente red e hiperparámetros:
 
 ((Imagen de la topología))
 
-$$ alpha = 0.0001$$
-$$ gamma = 0.95$$
-$$ epsilon = 0.5$$
-$$ Hiden layer size = 24$$
-$$ Minibatch size = 32 $$
+\begin{minipage}{0.9\linewidth}%
+    \begin{lstlisting}[frame=tb, language=Python, caption=Hiperparámetros MountainCar, label=code:cartpole_drl]
+    LEARNING_RATE = 0.0001  # Alpha
+    DISCOUNT_FACTOR = 0.95  # Gamma
+    EXPLORATION = 0.5       # Epsilon (initial)
+    MIN_EXPLORATION = 0.01  # Epsilon (final)
+    \end{lstlisting}%
+\end{minipage}
 
-Obteniendo resultados... 
+Gracias a la nueva topología y mediante un entrenamiento bastante largo, en la imagen \ref{fig:mountaincar_02} podemos comprobar que el agente llega a ser capaz de resolver el problema. No obstante, creemos que el resultado tiene mucho margen de mejora, por lo que seguiremos explorando otras soluciones que permitan al agente aprender de una forma más eficiente
 
-((Grafica de resultados(laFuerzaBrutaSiempreGana.png)))
-
-\subsubsection*{Función de recompensa}
-Observando la gráfica es apreciable que las modificaciones no son suficiente para recibir los resultados deseados.
-Durante nuestra investigación de las distintas posibilidades de acelerar la curva de aprendizaje, dimos con algunas propuestas interesantes que porponía \href{ https://medium.com/@ts1829/solving-mountain-car-with-q-learning-b77bf71b1de2}{sustituir la recompensa devuelta por el entorno} por una que fuera más significativa para el aprendizaje del agente. En esta nos inspiramos para desarrollar nuestros prototipos.
-Como ya explicamos antes, el entorno devuelve -1 si no alcanza la meta y en el caso contrario 0 y termina la ejecución. 
-Por un lado, esta recompensa guía al jugador a completar el objetivo con la mayor brevedad posible, cuanto antes complete el objetivo, menos negativa será su recompensa final.
-Pero por otro lado devuelve recompensas negativas hasta que alcanza el objetivo final, que se traduce en probar descartando caminos hasta alcanzar uno que logre el objetivo. Esto en teoría no suena tan mal, de no ser que puede tardar varias horas en encontrar uno de los caminos correctos. 
-//Fuerza bruta 
-Por ello decidimos orientarnos a una recompensa no binaria, alejándonos del meta o no-meta y basándonos en parámetros como la posición o la velocidad, para así tener una medida para evaluar no solo los episodios acertados sino también de los fallidos. Esto permitiría distinguir entre una ejecución en la que coche no se mueve y una en la que el coche casi llega a alcanzar la meta, mientras que con el método de Recompensa Binario serían indistinguibles. De esta forma el sistema tendrá acceso a recompensas de las que pueda aprender para llegar antes de lograr el camino a la meta. 
-
-//Recompensa envi vs modificado (centro, lejos)
-//Acumulados envi vs modificado
-
-Con este pensamiento en mente comenzamos a desarrollar las distintas posibilidades. A continuación, hablaremos de cada uno de los prototipos desarrollados acompañados de las consiguientes reflexiones que desembocaron.
+\figura{Bitmap/DQNEnAccion/mountainCar_02}{width=0.7\textwidth}{fig:mountaincar_02}%
+       {Resultados de la nueva topología}
 
 
+\subsubsection{Función de recompensa}
 
-\paragraph{Posición}
- Decidimos empezar por investigar las posibilidades de basar la recompensa en la posición del coche.
- Dado que el estado final se basa en la posición del coche, nos pareció la opción más razonable por la que iniciar nuestra investigación. Nuestro primer prototipo basaba enteramente la función de recompensa en la posición tal y como la devuelve el entorno. 
+El primer obstáculo a superar para acelerar la curva de aprendizaje es la función de la recompensa. La recompensa proporcionada por el entorno no es lo bastante útil para el agente. Imagina que haces un examen y, sin importar las veces que lo intentes o las respuestas que des, tu puntuación siempre es un cero. De esta forma es muy difícil identificar qué puntos en particular debe reforzar primero.
 
- RESULTADO:mainPosicionNoAbs
+Nuestra solución pasa por sustituir esa recompensa dada por el entorno \citep{mediumTim}, reemplazando ese resultado binario de \textit{meta} o \textit{no meta} por algo más descriptivo, que empuje al agente a mejorar su funcionamiento. Utilizando la \textbf{velocidad} o la \textbf{posición} del agente como recompensa motiva al mismo a tomar las decisiones que lo llevan a moverse más lejos, hasta que finalmente termine alcanzando la meta.
 
-Visto la poca diferencia entre los resultados de esta y la original, nos dimos cuenta de que hacía falta hacer una serie de ajustes:
+\figura{Bitmap/DQNEnAccion/mountainCar_03}{width=0.8\textwidth}{fig:mountaincar_03}%
+       {Visualización de la recompensa modificada}
+
+Como podemos ver en la imagen \ref{fig:mountaincar_03}, usando una recompensa modificada favorecemos que el coche se mueva e intente llegar cada vez más lejos, a diferencia de la recompensa original con la cual el coche suele quedarse estancado en el fondo.
+
+A continuación, evaluaremos en mayor detalle cada una de las opciones disponibles a la hora de reemplazar la recompensa, para ver cuál se adapta mejor al problema y nos proporciona mejores resultados.
+
+
+\subsubsection*{Posición}
+
+La posición es el primer candidato para utilizar como recompensa. Al fin y al cabo, si conseguimos que el coche avance lo bastante, terminará llegando a la meta. Hicimos una serie de pruebas en las que directamente reemplazábamos el valor de la recompensa por el valor de la posición, obteniendo los resultados de \ref{fig:mountaincar_04}. Para ser capaces de apreciar en qué momento el agente alcanzaba la meta, le otorgamos una recompensa significativamente más grande cuando éste la alcanzaba, con la esperanza también de que esto reforzase mucho más ese comportamiento.
+
+\figura{Bitmap/DQNEnAccion/mountaincar_04}{width=0.7\textwidth}{fig:mountaincar_04}%
+       {Visualización de la recompensa modificada}
+
+Como podemos observar, el rendimiento sigue siendo muy parecido al visto en la gráfica \ref{fig:mountaincar_02}. No es hasta los 1400 episodios cuando el agente consigue alcanzar la meta. A partir de los nuevos resultados podemos hacer las siguientes observaciones:
 
 \begin{itemize}
-    \item En primer lugar, dimos una recompensa exageradamente alta al alcanzar la meta, no solo para que ese camino se refuerce más que con la recompensa original, para acelerar el aprendizaje, sino para además permitirnos distinguir más fácilmente (en la gráfica) las partidas que llegan a la meta de las que no.  
-    \item Después, nos percatamos de que en el planteamiento de Recompensa Binaria no se hace distinción entre derecha e izquierda, por lo que consideramos hacer los cálculos con la posición en valor absoluto, para así no dar preferencia a la derecha frente a la izquierda con la intención de favorecer el balanceo.
-     Para poder llevar a cabo esto, necesitábamos fijar el centro, el cual, según el entorno, es -0.5, por lo tanto, debíamos sumarle 0.5 para corregir la desviación.
-    \item Por otro lado pensamos en darle una penalización en función del tiempo para dirigir el aprendizaje a una mayor presteza al igual que hacia la Recompensa Binaria. Pero esto último lo descartamos al ver los resultados.
+    % \item En primer lugar, dimos una recompensa exageradamente alta al alcanzar la meta, no solo para que ese camino se refuerce más que con la recompensa original, para acelerar el aprendizaje, sino para además permitirnos distinguir más fácilmente (en la gráfica) las partidas que llegan a la meta de las que no.  
+    \item Nuestra nueva recompensa sólo empuja al agente a intentar escalar la rampa de la derecha, ya que es la dirección que hace crecer el valor de la \texttt{posición}. No obstante, para conseguir escalar por la derecha necesita también tomar impulso desde la rampa de la izquierda, lo que se corresponde a valores negativos de la posición. Por ello, tendríamos que considerar usar la posición en valores absolutos para buscar un mejor resultado.
+    \item Otro detalle es que la posición central no se corresponde con \texttt{0}, si no con \texttt{-0.5}, por lo que también tendremos que corregir esta desviación.
+    % \item Por último, el agente no recibe ningún estímulo que lo lleve a resolver el problema cuanto antes, por lo que volveremos a introducir una penalización por cada paso tomado, de forma similar a la recompensa original del entorno.
 \end{itemize}
- RESULTADO: CapturaCambiandoRewardAPosicion.png
 
-La grafica representa claramente como la puntuación converge a un valor, esto se debe a que la penalización crece demasiado.
-Penalización inicial empieza en 1, sin penalización, y a cada Step esta se multiplica por 0.995, de forma que la penalización del último Step es de 0.36695. Esto hace que las puntuaciones de los últimos Steps de la partida sean despreciables para el sistema, de tal forma que se optimicen solo las recompensas iniciales e ignorando las de los últimos. Así llegando a la convergencia. 
-Además, nos dimos cuenta de que este tipo de penalización incumplía lo establecido de basar la recompensa únicamente en el estado, sin tener en cuenta factores externos como, en el caso de la penalización, el número de Steps que lleva la partida.
-Ante los inconvenientes de la penalización optamos por descartar ese método y en su lugar añadir una pequeña disminución de la recompensa, en caso de alcanzar la meta, según el número de pasos realizados al final del Episodio para reforzar las soluciones rápidas frente a las lentas.
+\figura{Bitmap/DQNEnAccion/mountaincar_05}{width=0.7\textwidth}{fig:mountaincar_05}%
+       {Resultados finales de la posición como recompensa}
 
-RESULTADOS: mainPosicion
+Teniendo en cuenta estos nuevos factores, los resultados obtenidos pueden verse en la gráfica \ref{fig:mountaincar_05}. Finalmente conseguimos que el problema se resuelva mucho más rápido: 500 episodios frente a los 1400 anteriores. No obstante, la estabilidad sigue lejos de lo visto en otros problemas como CartPole. Seguimos teniendo situaciones en las que el agente consigue resolver el problema en algunas partidas, pero luego vuelve a fracasar en las siguientes.
 
-\paragraph{Velocidad}
-Por otro lado, dado que para alcanzar la meta en el juego hace falta coger impulso para tener suficiente fuerza como para subir la montaña, decidimos abrir otra línea de investigación basada en la velocidad absoluta.
+% La grafica representa claramente como la puntuación converge a un valor, esto se debe a que la penalización crece demasiado.
+% Penalización inicial empieza en 1, sin penalización, y a cada Step esta se multiplica por 0.995, de forma que la penalización del último Step es de 0.36695. Esto hace que las puntuaciones de los últimos Steps de la partida sean despreciables para el sistema, de tal forma que se optimicen solo las recompensas iniciales e ignorando las de los últimos. Así llegando a la convergencia. 
+% Además, nos dimos cuenta de que este tipo de penalización incumplía lo establecido de basar la recompensa únicamente en el estado, sin tener en cuenta factores externos como, en el caso de la penalización, el número de Steps que lleva la partida.
+% Ante los inconvenientes de la penalización optamos por descartar ese método y en su lugar añadir una pequeña disminución de la recompensa, en caso de alcanzar la meta, según el número de pasos realizados al final del Episodio para reforzar las soluciones rápidas frente a las lentas.
 
-RESULTADO: mainVelocidadTalcualNoAbs
+% RESULTADOS: mainPosicion
 
-A diferencia de la posición, la velocidad devuelta por el entorno tiene unos valores muy pequeños, por lo que basar la recompensa en la velocidad bruta sería semejante a darle una recompensa constante, para cuando se alcance la meta darle una notablemente mayor, lo cual se asemeja a la Recompensa Binaria. Por ello decidimos multiplicarla por 100, haciéndola más visibles y relevantes para el agente. 
 
-Se puede ver como alcanza el meta más rápido, pero sufre caídas debido al overfitting, aun siendo caídas menores que las de posición nos parecía preocupante, por lo que probamos a cambiar la función de optimización de Adam a Adadelta.
+\subsubsection*{Velocidad}
 
-RESULTADO: main3.2 y  
+Otra opción explorada es la de usar la velocidad como recompensa. Al fin y al cabo, cuanta más velocidad consiga acumular el agente, más alto llegará escalando la rampa.
 
-Comprendimos que la razón es que Adadelta funcionara mejor era que 
-https://machinelearningmastery.com/adam-optimization-algorithm-for-deep-learning/
-Estos resultados nos parecieron suficientemente satisfactorios para este apartado.
+\figura{Bitmap/DQNEnAccion/mountaincar_06}{width=0.7\textwidth}{fig:mountaincar_06}%
+       {Resultados finales de la posición como recompensa}
 
-Para poder comparar lo mejor posible los resultamos decidimos crear una serie de gráficas para cada ejemplo en el que no solo se viera mejor la evolución general de los resultados, sino que añadiera otros datos de interés como la recompensa original del entorno, la velocidad máxima la posición máxima alcanzada, así seríamos capaces de ver más claramente la evolución de los distintos modelos y permitirnos compararlos en estos campos más fácilmente.
-Además, facilitando el avistamiento de partidas “buenas” podíamos permitirnos bajar la recompensa "exagerada" que le dábamos al alcanzar la meta.
+A diferencia de la posición, la velocidad devuelta por el entorno tiene unos valores muy pequeños, por lo que basar la recompensa en la velocidad recibida sería semejante a darle una recompensa constante, para cuando se alcance la meta darle una notablemente mayor, lo cual nos dejaría en una situación muy similar a la vista en \ref{fig:mountaincar_02}. Por ello decidimos multiplicarla por 100, haciéndola más visible y relevantes para el agente. 
 
-RESULTADO :main3.2.GraficaMejorada
-RESULTADO :mainPosicion.GraficaMejorada
+Como vemos en la imagen \ref{fig:mountaincar_06} nos encontramos con un comportamiento muy similar al visto usando la posición en valores absolutos. El agente consigue resolver el problema en varias ocasiones pero no se estabiliza.
+
+% RESULTADO: main3.2 y  
+
+
+\subsubsection*{Otras pruebas}
+
+Puesto que los resultados obtenidos por la posición y velocidad parecían haberse estancado, decidimos investigar otras piezas clave de nuestro modelo, como el optimizador. Empezamos a cuestionarnos si Adam \citep{kingma2014adam} era nuestra mejor opción, e hicimos algunas pruebas con Adadelta \citep{NIPS2017_7003}.
+
+Para poder comparar lo mejor posible los resultamos decidimos crear una serie de gráficas para cada ejemplo en el que no solo se viera mejor la evolución general de los resultados, sino que añadiera otros datos de interés como la recompensa original del entorno, la velocidad máxima la posición máxima alcanzada. Así seríamos capaces de vigilar en una sola simulación todas las variables.
+
+\figura{Bitmap/DQNEnAccion/mountaincar_07}{width=1\textwidth}{fig:mountaincar_07}%
+       {Resultados ¿?}
+
+SIN REVISAR A PARTIR DE AQUÍ
 
 Por último, decidimos añadir al agente una modificación para favorecer la convergencia de los resultados del sistema y reducir las caídas vistas en las gráficas.
 Esto lo conseguimos añadiendo un tercer modelo al agente, siendo su composición final de:
@@ -280,28 +300,29 @@ Fase final, fase de Mantenimiento, es semejante a Competición, salvo que ahora 
 
 RESULTADOS: 	main7SustituyendoModelPorBestEXT, main7SustituyendoModelPorBestEXT2, main7SustituyendoModelPorBestEXT4
 
-\paragraph{Variantes}
-Nos planteamos otros aderezos para las soluciones ya planteadas para optimizar el aprendizaje. 
-Consideramos añadir pequeñas recompensas como dar una bonificación extra al alcanzar cierta posición o al llevar una velocidad positiva.
-Algunas de estas fueron descartadas por la premisa de solo basarnos en el estado para definir la recompensa, pero otras pudimos llevarlas a cabo.
 
- Dar bonus +10 cada vez que alcanza un multiplo de 0.1
+% \subsubsection*{Variantes}
+% Nos planteamos otros aderezos para las soluciones ya planteadas para optimizar el aprendizaje. 
+% Consideramos añadir pequeñas recompensas como dar una bonificación extra al alcanzar cierta posición o al llevar una velocidad positiva.
+% Algunas de estas fueron descartadas por la premisa de solo basarnos en el estado para definir la recompensa, pero otras pudimos llevarlas a cabo.
 
- Dar bonus al llevar velocidad positiva al pasar por 0
+%  Dar bonus +10 cada vez que alcanza un multiplo de 0.1
 
- Dar bonus al superar su velocidad máxima al pasar por cero(se dedicaba a pasar muchas veces por cero)
+%  Dar bonus al llevar velocidad positiva al pasar por 0
 
- Dar una bonificación cada vez que supera mu mayor altura por 0.1, a primera vista puede parecer que de elementos externos al estado pero... teniendo en cuenta que se trata de solo posiciones de 0.1, al final solo se recompensan 0, 0.1, 0.2... sería equivalente la primera propuesta pero alternando la ladera. 
+%  Dar bonus al superar su velocidad máxima al pasar por cero(se dedicaba a pasar muchas veces por cero)
 
-((algoritmo de modificacion))
+%  Dar una bonificación cada vez que supera mu mayor altura por 0.1, a primera vista puede parecer que de elementos externos al estado pero... teniendo en cuenta que se trata de solo posiciones de 0.1, al final solo se recompensan 0, 0.1, 0.2... sería equivalente la primera propuesta pero alternando la ladera. 
 
-((Gráfica de resultados))
+% ((algoritmo de modificacion))
 
-\subsubsection*{Otros enfoques}
-Hablar sobre randomwalks y transfer learning
+% ((Gráfica de resultados))
 
-\paragraph{Randomwalks}
-A grandes rasgos Randomwalks, consiste en generar una gran memoria de partidas jugadas totalmente al azar para luego seleccionar los mejores resultados de entre estos para entrenar el agente. Por último, poner el agente en el entorno real.
-Este planteamiento ha resultado ser con diferencia el más rapido de todos, dado que al ahorarse el entrenamiento intermedio de todas las partidas se ahora gran parte del tiempo de ejecución.
+% \subsubsection*{Otros enfoques}
+% Hablar sobre randomwalks y transfer learning
+
+% \paragraph{Randomwalks}
+% A grandes rasgos Randomwalks, consiste en generar una gran memoria de partidas jugadas totalmente al azar para luego seleccionar los mejores resultados de entre estos para entrenar el agente. Por último, poner el agente en el entorno real.
+% Este planteamiento ha resultado ser con diferencia el más rapido de todos, dado que al ahorarse el entrenamiento intermedio de todas las partidas se ahora gran parte del tiempo de ejecución.
 
 
