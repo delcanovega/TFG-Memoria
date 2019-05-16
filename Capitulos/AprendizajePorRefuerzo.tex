@@ -28,22 +28,24 @@ El caso del \textit{Aprendizaje por Refuerzo} es distinto. El agente no necesita
 
 Un dominio muy interesante sobre el que realizar simulaciones de Aprendizaje por Refuerzo son los videojuegos \citet{Rodriguez2018}. Durante los últimos años han tenido bastante éxito debido a varios motivos, entre ellos porque son entornos controlados y reproducibles, de forma que no habrá ninguna diferencia en nuestras pruebas más allá de las propias acciones que realice nuestro agente sobre la simulación, disponiendo así de unos resultados fiables y fácilmente comparables. Además, los videojuegos resultan ser un dominio accesible, de diversa complejidad y ya preparados para nuestro tipo de agente: muchos de ellos disponen de un sistema de puntuación que sirve perfectamente como refuerzo, ya sea por recolección de objetos, número de enemigos derrotados, tiempo... De esta forma, nuestro agente podrá utilizar sus experiencias pasadas para decidir cuál es la mejor decisión a tomar en cada nueva partida.
 
-Podemos ver el funcionamiento del aprendizaje por refuerzo en el siguiente pseudo-código:
+Podemos ver el funcionamiento del aprendizaje por refuerzo en el pseudo-código \ref{code:q-learning}:
 
 \begin{minipage}{0.9\linewidth}%
-    \begin{lstlisting}[frame=tb, caption=Pseudocódigo Aprendizaje por Refuerzo,   inputencoding=latin1, label=code:q-learning]
+    \begin{lstlisting}[frame=tb, language=python, caption=Pseudocódigo Aprendizaje por Refuerzo,   inputencoding=latin1, label={code:q-learning}]
     
-    Inicializar tabla-Q, estados y acciones
+    Initialize Q-table, states and actions
     
-    Repetir (para cada episodio):
-        Inicializar estado-actual (s)
+    for i in range(episodes):
+        Initialize current-state
         
-        Repetir (para cada paso del episodio):
-            Elegir una accion
-            Tomar la accion
-            Actualizar tabla-Q
-            estado-actual = estado-siguiente
-        Hasta que el episodio termine
+        while not end:
+            choose an action
+            take action
+            # update Q-table
+            Q'(s,a) = (1 - LEARNING_RATE) * old_value + 
+                    LEARNING_RATE * (reward + 
+                    DISCOUNT_FACTOR * next_max)
+            current-state = next-state
     \end{lstlisting}%
 \end{minipage}
 
@@ -119,19 +121,21 @@ El factor de descuento, \( \gamma \), representa cuánto se descuenta de la reco
 
 Esta búsqueda del balance entre las recompensas cercanas y futuras está muy relacionado con el problema de \textbf{Exploración vs. Explotación}. Nuestro agente contará con un hiperparámetro \textit{exploración}, el cual determina con qué frecuencia el agente decide tomar una acción aleatoria (exploración) en lugar de aquella que le proporcione el valor más prometedor (explotación), con la esperanza de encontrar un nuevo estado en el que nunca haya estado y que pueda resultar más beneficioso. En otras palabras, el agente decide si sacar provecho de lo ya aprendido o arriesgarse e intentar aprender algo mejor.
 
-Siguiendo con esta idea, nuestra estrategia para equilibrar el dilema de la explotación vs. exploración se basa en el llamado \textbf{e-Greedy}. E-Greedy es una estrategia que implica tomar una decisión en cada paso para tomar la acción registrada por el agente con una mayor recompensa o tomar una acción al azar. La probabilidad de que el agente tome una acción aleatoria se rige por el parámeto \( \epsilon \). Podemos hacer un acercamiento de esta idea en el siguiente código:
+Siguiendo con esta idea, nuestra estrategia para equilibrar el dilema de la explotación vs. exploración se basa en el llamado \textbf{e-Greedy}. E-Greedy es una estrategia que implica tomar una decisión en cada paso para tomar la acción registrada por el agente con una mayor recompensa o tomar una acción al azar. La probabilidad de que el agente tome una acción aleatoria se rige por el parámeto \( \epsilon \). Podemos hacer un acercamiento de esta idea en el código \ref{code:e_greedy}:
 
 \begin{minipage}{0.9\linewidth}%
-    \begin{lstlisting}[frame=tb, language=Python, caption=Pseudocódigo e-Greedy, label=code:e_greedy]
+    \begin{lstlisting}[frame=tb, language=Python, caption=Pseudocódigo e-Greedy, label={code:e_greedy}]
 
     import numpy as np
     import random
 
     if random.random() < epsilon:
-        # exploracion
+        # exploracion:
+        # eleccion aleatoria de una accion
         random.randint(0, action_space - 1)
     else:
-        # explotacion
+        # explotacion:
+        # eleccion en base a lo aprendido
         action = np.argmax(q_table[discreted_state])
     \end{lstlisting}%
 \end{minipage}
