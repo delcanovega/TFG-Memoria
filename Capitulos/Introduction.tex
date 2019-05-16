@@ -1,0 +1,50 @@
+\chapter{Introduction}
+
+\chapterquote{The young man or the young woman must possess or teach himself, train himself, in infinite patience, which is to try and to try and to try until it comes right}{William Faulkner}
+
+
+\section{Motivation}
+
+\textbf{Artificial Intelligence} is one of the computation fields that most interest has generated, both among experts and general public, who is more interested in the leisure side of it. Been able to grant a machine the hability to reason and perform functions only associated with the human intellect has always been considered Sci-Fi. And nonetheless this very idea has experienced a huge technological leap in the last years.
+
+To better understand this concept from its roots, we need to reference the \textbf{Turing Test}, formulated by Alan Turing \citep{Turing1950-TURCMA}, which consists in performing a series of questions to a machine. The test is considered passed if the evaluator cannot discern if the answers were given by a human or a machine.
+
+Trying to define Artificial Intelligence quickly leads us to concepts like \textit{thought process} or \textit{reasoning}, which end up driving to more complex ones like \textit{behaviour}. From this ideas we can find other definitions, classified in the matrix \ref{fig:tabla_IA}.
+
+\figura{Bitmap/Introduccion/tabla_IA}{width=1\textwidth}{fig:tabla_IA}%
+       {Definiciones de Inteligencia Artificial, \citet{Russell:2009:AIM:1671238}}
+
+% TODO JCA TRADUCIR UNA VEZ AMPLIADO
+En base a estas clasificaciones podríamos diferenciar dos corrientes de interpretación:
+\begin{itemize}
+    \item Una visión empírica (columna izquierda) con el ser humano como centro de la investigación.
+    \item Una visión racionalista (columna derecha) que involucra una combinación de matemáticas e ingeniería.
+\end{itemize}
+
+Lots of experts have studied both approaches in different ways. We will focus in the empiric approach, pursuing the goal of our \textit{agent} being able to take the ``right choices'' with its available knowledge. In order to achieve this, we will study an Artificial Intelligence's field in particular, called Reinforcement Learning. We will also combine this field with Neural Networks, resulting in Deep Reinforcement Learning.
+
+
+\section{Goals}
+
+\begin{enumerate}
+    \item Understand why is Reinforcement Learning different from other Machine Learning methods, and in which situations it can be applied.
+    \item Study the fundamentals of Reinforcement Learning, understanding its components, implementations and limits.
+    \item Test what we have learned with practical simulations, on which we will implement Reinforcement Learning algorithms, and study the results.
+    \item Dive into the Deep Learning field, where we will see the fundamentals of Neural Networks.
+    \item Learn how is it possible to combine Neural Networks with Reinforcement Learning techniques, trying to avoid the limitations of both. It will be a journey where, step by step, we will find solutions to the problems that arise, until we come with a stable Deep Reinforcement Learning solution.
+    \item After every milestone we will evaluate the results, contrasting if our solutions improve stability and performance.
+\end{enumerate}
+
+
+\section{Structure of the memory}
+
+Our project intercalates theorical chapters with practical applications of what we have seen, resulting in two big blocks: One about Reinforcement Learning and other about Deep Reinforcement Learning.
+
+\begin{itemize}
+    \item \textbf{Chapter 1, Introduction.} Motivation and goals of our proyect.
+    \item \textbf{Chapter 2, Reinforcement Learning.} The chapter begins with a comparison between different Machine Learning techniques. Afterwards, the needed Reinforcement Learning theorical background is provided. Finally, we will thoroughly explain Q-Learning, one of the most commonly used Reinforcement Learning algorithms.
+    \item \textbf{Chapter 3, Q-Learning in action.} We will introduce OpenAI Gym, the framework used in our tests. Later we will apply the acquired Reinforcement Learning knowledge into CartPole, an environment that will allow us to measure results and experience Reinforcement Learning's limitations.
+    \item \textbf{Chapter 4, Neural Networks and Q-Learning.} We will give the necessary theorical background to understand Neural Networks, followed by how is possible to combine them with Reinforcement Learning techniques, obtaining the so called Deep Q-Networks.
+    \item \textbf{Chapter 5, DQNs in action.} We will solve CartPole again, this time applying the new learned approaches. Then we will face MountainCar, a new and challenging environment for our agent.
+    \item \textbf{Chapter 6, Conlusions.} Summary of everything we have achieved so far. Lessons learned, highlights and future work.    
+\end{itemize}
