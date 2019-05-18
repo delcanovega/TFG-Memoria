@@ -121,7 +121,9 @@ El factor de descuento, \( \gamma \), representa cuánto se descuenta de la reco
 
 Esta búsqueda del balance entre las recompensas cercanas y futuras está muy relacionado con el problema de \textbf{Exploración vs. Explotación}. Nuestro agente contará con un hiperparámetro \textit{exploración}, el cual determina con qué frecuencia el agente decide tomar una acción aleatoria (exploración) en lugar de aquella que le proporcione el valor más prometedor (explotación), con la esperanza de encontrar un nuevo estado en el que nunca haya estado y que pueda resultar más beneficioso. En otras palabras, el agente decide si sacar provecho de lo ya aprendido o arriesgarse e intentar aprender algo mejor.
 
-Siguiendo con esta idea, nuestra estrategia para equilibrar el dilema de la explotación vs. exploración se basa en el llamado \textbf{e-Greedy}. E-Greedy es una estrategia que implica tomar una decisión en cada paso para tomar la acción registrada por el agente con una mayor recompensa o tomar una acción al azar. La probabilidad de que el agente tome una acción aleatoria se rige por el parámeto \( \epsilon \). Podemos hacer un acercamiento de esta idea en el código \ref{code:e_greedy}:
+Siguiendo con esta idea, nuestra estrategia para equilibrar el dilema de la explotación vs. exploración se basa en el llamado \textbf{e-Greedy} \citep{Tokic:egreedy}. E-Greedy es una estrategia que implica tomar una decisión en cada paso para tomar la acción registrada por el agente con una mayor recompensa o tomar una acción al azar. La probabilidad de que el agente tome una acción aleatoria se rige por el parámeto \( \epsilon \). Podemos hacer un acercamiento de esta idea en el código \ref{code:e_greedy}.
+
+De esta manera, se busca obtener un balance entre la exploración y explotación, con el objetivo de evitar que se explore demasiado, lo que conllevaría que nuestro agente no optimizase lo suficiente su política, nii que tampoco explote demasiado, lo que significaría caer en un mínimo local.
 
 \begin{minipage}{0.9\linewidth}%
     \begin{lstlisting}[frame=tb, language=Python, caption=Pseudocódigo e-Greedy, label={code:e_greedy}]
@@ -130,12 +132,12 @@ Siguiendo con esta idea, nuestra estrategia para equilibrar el dilema de la expl
     import random
 
     if random.random() < epsilon:
-        # exploracion:
-        # eleccion aleatoria de una accion
+        # explore:
+        # choose a random action
         random.randint(0, action_space - 1)
     else:
-        # explotacion:
-        # eleccion en base a lo aprendido
+        # exploit:
+        # choose action based on learned values
         action = np.argmax(q_table[discreted_state])
     \end{lstlisting}%
 \end{minipage}
