@@ -1,0 +1,30 @@
+\chapter{Aportación de los participantes}
+
+
+\section{Juan Ramón del Caño Vega}
+
+
+\subsection{Antecedentes}
+
+Antes de empezar el proyecto ya contaba con un conocimiento básico sobre el Aprendizaje por Refuerzo. En la asignatura que cursé de Inteligencia Artificial se le daba bastante importancia a este apartado, especialmente de forma práctica. En los laboratorios trabajamos con Q-Learning en un entorno Java. Se trataba de una simulación en la que teníamos que estabilizar una nave espacial con tres motores, no obstante tan sólo tuvimos que implementar las funciones de recompensa y discretización.
+
+Respecto a Redes Neuronales, recuerdo que no entramos en profundidad. Se nos explicaron, pero ni llegamos a utilizarlas de forma práctica ni se consideraba materia de examen, por lo que quedaron bastante de lado. Lo mismo ocurrió con el Aprendizaje por Refuerzo Profundo, el cual se nos mencionó al final del curso junto con sus posibles usos en campos como el reconocimiento de imágenes.
+
+También tenía experiencia en otras áreas del Aprendizaje Automático, tanto aprendizaje supervisado como no supervisado, con los que he trabajado en las librerías \texttt{scikit-learn}, \texttt{pandas} o \texttt{numpy} de Python. Esto, a pesar de no estar directamente relacionado con nuestro trabajo, me facilitó acostumbrarme a trabajar con \texttt{Keras}.
+
+
+\subsection{Aportación}
+
+Inicialmente me dediqué a la parte de Aprendizaje por Refuerzo. Puesto que ya tenía una buena base teórica pudimos empezar a hacer pruebas con bastante rapidez.
+
+Empecé por programar el simulador para poder ejecutar CartPole. El objetivo era hacerlo de forma modular, principalmente por un motivo: encapsular toda la lógica del agente en una clase propia nos permitiría mantener el ``bucle de ejecución'' lo más limpio y simple posible, de esta forma se asemejaba mucho al pseudocódigo que veíamos en los libros, como puede verse en los fragmentos de código de la sección \ref{sec:cartpoleDQN}).
+
+Una vez conseguido eso, sólo quedaba por implementar la lógica del agente. Quizá lo más complicado fue la función de discretización, explicada en \ref{sec:disc}. Una vez implementada la función parametrizada sólo fue cuestión de probar algunas configuraciones e hiperparámetros hasta dar con la solución que más nos gustase. Eso y corregir algún que otro bug, como que la ecuación de Bellman no sumase recompensas futuras si el agente se encontraba en un estado final, lo cual hacía que nuestro algoritmo divergiese.
+
+A la hora de documentar este primer bloque recurrí al libro \textit{Artificial Intelligence: A Moddern Approach} \citep{Russell:2009:AIM:1671238}, el cuál también fue mi libro de referencia durante la asignatura de Inteligencia Artificial y proporciona explicaciones bastante concisas de distintos campos. Aproveché este libro para escribir la introducción del proyecto y la primera parte de Aprendizaje por Refuerzo. Para los apartados más técnicos cambié a \textit{Reinforcement Learning: An Introduction} \citep{Sutton:2018:RLI:3312046}, manual por excelencia del Aprendizaje por Refuerzo. No obstante fue Juan Luis Romero (quien también ayudó e hizo pruebas con CartPole) el encargado de rematar el capítulo con las secciones de Q-Learning y Markov Decision Process.
+
+En este punto el resto del equipo ya había acabado de investigar Redes Neuronales (especialmente Lidia Concepción y Francisco Ponce), y nos preparábamos para empezar con el Aprendizaje por Refuerzo Profundo. Para ponerme al día con Redes Neuronales repetí uno de los ejemplos de clasificación que ellos ya habían hecho, MNIST \citep{MNISTKeras}, pero esta vez usando Jupyter Notebooks y el conjunto de datos propio de Keras.
+
+Una vez hecho esto todos nos pusimos a volver a resolver CartPole utilizando las DQN que vimos en libros como \textit{Fundamentals of Deep Learning} \citep{Buduma:grad-dec} y los artículos de DeepMind. Mientras el resto del equipo salto directamente a las implementaciones vistas en \ref{sec:cartpoledqn3} y \ref{sec:DA}, yo empecé desde \ref{sec:cartpoledqn1}. Estas implementaciones, a pesar de que sabíamos que no funcionarían demasiado bien, nos permitieron comprender el proceso de mejora del agente mucho mejor, y por supuesto a documentarlo mejor, en lo que también participé.
+
+Finalmente, también dediqué tiempo al problema de MountainCar. Especialmente a darnos cuenta de por qué es un problema tan especial y cuáles eran los motivos por los que presentaba nuevos retos. Finalmente fue Ricardo Arranz quien se enfrentó con el problema hasta el final.
