@@ -11,6 +11,7 @@ El primer problema que trataremos al trabajar con DQNs se corresponde con el de 
 
 
 \subsection{Reemplazar la tabla-Q: \texttt{SimpleAgent}}
+\label{sec:cartpoledqn1}
 
 Como primer paso para la resolución del problema, se sustituyó la tabla-Q y su consecuente discretización de estados por una red neuronal \ref{fig:nn_cartpole}, abandonando por fin los problemas y limitaciones que habíamos observado anteriormente. La red neuronal recibe como entrada el \textbf{estado} actual (posición del carro, velocidad del carro, posición del péndulo y velocidad del péndulo) y produce dos salidas: el resultado (aproximado por la red neuronal) de la partida si el agente ejerciese fuerza hacia la izquierda y el resultado hacia la derecha. Después de ejecutar cada movimiento, se aplicaba la ecuación de Bellman para entrenar la red e intentar que el agente aprendiese a jugar.
 
@@ -55,6 +56,7 @@ Los hiperparámetros usados también son una ligera modificación de los usados 
        {Resultados del \texttt{SimpleAgent}}
 
 \subsection{Añadir memoria al agente: \texttt{BatchAgent}}
+\label{sec:cartpoledqn2}
 
 Otra manera de conseguir estabilidad es añadiendo una memoria al agente. Para hacerlo recurriremos al reproductor de experiencias (o \textit{Experience Replay} \citep{Lin1992}), también conocidas como valores-Q, al que nos referiremos como \textbf{replay}. Éste método consiste en almacenar múltiples experiencias pasadas del agente y, antes de cada entrenamiento, tomar una muestra del conjunto de experiencias acumuladas a lo largo de varios episodios.
 
@@ -101,6 +103,7 @@ El problema es que los pasos tomados dentro de estos $batch$ están fuertemente 
 
 
 \subsection{Romper la cohesión de la memoria: \texttt{RandomBatchAgent}}
+\label{sec:cartpoledqn3}
 
 Por fortuna solucionar el problema de la cohesión en el \texttt{BatchAgent} tiene fácil solución. Tan sólo necesitaremos que la memoria de nuestro agente sea lo bastante grande como par albergar experiencias lo bastante variadas, después sólo tendremos que seleccionar elementos aleatorios de la memoria. Con esta solución, el agente debería tener una muestra más amplia respecto a los estados posibles y sería mucho más fácil que encontrase una solución con prontitud.
 
