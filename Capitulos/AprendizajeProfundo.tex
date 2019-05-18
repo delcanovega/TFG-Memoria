@@ -76,14 +76,11 @@ En nuestro ejemplo de aprendizaje supervisado sobre clasificación, hemos elegid
 \figura{Bitmap/AprendizajeProfundo/Ejemplo_Cifras}{width=1\textwidth}{fig:cifras}%
        {Imagen del conjunto de datos de cifras escritas a mano de MNIST.} 
 
-Para este caso, hemos establecido una red neuronal de tres capas, la de entrada, la de salida y una capa intermedia u oculta para que la red realice los cálculos necesarios. Hemos utilizado un optimizador Adam, de forma que el descenso de gradiente se realice de forma más efectiva y los valores de los pesos en la red se reajusten más rápidamente.
+Para este caso, hemos establecido una red neuronal de tres capas, la de entrada, la de salida y una capa intermedia u oculta para que la red realice los cálculos necesarios. Hemos utilizado un optimizador Adam, de forma que el descenso de gradiente se realice de forma más efectiva y los valores de los pesos en la red se reajusten más rápidamente. Además, puede regular automáticamente el valor de la tasa de aprendizaje, comenzando en un valor de 0.001.
 
 Tanto la capa de entrada como la oculta, son del tipo \textit{ReLu}, visto anteriormente. La capa de entrada se encarga de procesar los 400 píxeles que representan la imagen de una cifra escrita a mano. A modo de salida, hemos utilizado un tipo especial de capa llamado \textit{softmax}. En ella, se da la condición de que la suma de todas las salidas sea igual a 1. De esta forma, las probabilidades que reflejan las distintas salidas se encuentran normalizadas y son excluyentes entre sí, dejando que haya una probabilidad que destaque por encima de las demás en su conjunto; ésa será nuestra predicción. 
 
-Además, para comprobar que nuestra red neuronal entrena y aprende correctamente, hemos utilizado validación cruzada en K-iteraciones (\textbf{K-Fold cross-validation}). La técnica de validación cruzada consiste en dividir en varios grupos el conjunto de datos proporcionado y entrenar varias veces el modelo sobre ellos, alternando la función de dichos grupos entre entrenamiento y prueba. El algoritmo K-Fold nos permite barajar el conjunto de datos y dividirlo en k grupos, todos para entrenamiento a excepción de uno que se reserva para el prueba. De esta forma, podemos comprobar las distintas formas en las que ha aprendido, en función de los grupos formados durante la aplicación del K-Fold \ref{fig:Class_accuracy}.
-
-\figura{Bitmap/AprendizajeProfundo/ClassificationNN/Class_accuracy3}{width=1\textwidth}{fig:Class_accuracy}%
-        {Resultados de la clasificación con K-Fold de k = 10.}
+Además, para comprobar que nuestra red neuronal entrena y aprende correctamente, hemos utilizado validación cruzada en K-iteraciones (\textbf{K-Fold cross-validation}). La técnica de validación cruzada consiste en dividir en varios grupos el conjunto de datos proporcionado y entrenar varias veces el modelo sobre ellos, alternando la función de dichos grupos entre entrenamiento y prueba. El algoritmo K-Fold nos permite barajar el conjunto de datos y dividirlo en k grupos, todos para entrenamiento a excepción de uno que se reserva para el prueba. De esta forma, podemos comprobar las distintas formas en las que ha aprendido, en función de los grupos formados durante la aplicación del K-Fold.
 
 \subsection{Problemas de regresión}
 Los problemas de regresión se distinguen de los de clasificación en que la respuesta de la red neuronal no pertenece a un grupo, sino que se intenta predecir un valor real. La forma de entender este tipo de problemas sería tomando como ejemplo una red neuronal que sea capaz de predecir el precio de una casa en función de su tamaño, número de habitaciones, localización, etc.
@@ -100,7 +97,7 @@ Además, para asegurarnos de la fiabilidad de la red neuronal y comprobar que no
 \figura{Bitmap/AprendizajeProfundo/regresion}{width=1\textwidth}{fig:regresion}%
        {Disminución del error sobre el entrenamiento respecto a la validación.} 
 
-En los casos de regresión, haremos uso del \textbf{error cuadrático medio} (ECM), el más utilizado de los múltiples métodos de cálculo de error existentes. En nuestro caso, $Ypred$ se refiere al valor calculado por la red neuronal mientras que $Yreal$ es el valor real del precio de las casas. El cálculo del ECM nos indicará la diferencia entre ambos, pudiendo así comprobar lo cerca que han estado las predicciones de la red neuronal de los valores reales.
+En los casos de regresión haremos uso del \textbf{error cuadrático medio} (ECM), el más utilizado de los múltiples métodos de cálculo de error existentes. En nuestro caso, $Ypred$ se refiere al valor calculado por la red neuronal mientras que $Yreal$ es el valor real del precio de las casas. El cálculo del ECM nos indicará la diferencia entre ambos, pudiendo así comprobar lo cerca que han estado las predicciones de la red neuronal de los valores reales.
 
 $$ECM = 1/n \sum^n_{i=1}(Ypred_i - Yreal_i)^2$$
 
