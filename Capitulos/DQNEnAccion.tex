@@ -28,15 +28,15 @@ En el fragmento de código \ref{code:dqn} podemos ver que la implementación del
         Inicializar estado-actual (s)
         
         Repetir (para cada paso del episodio):
-            Predecir accion
-            Tomar la accion
+            Predecir acción
+            Tomar la acción
             Entrenar red
             estado-actual = estado-siguiente
         Hasta que el episodio termine
     \end{lstlisting}%
 \end{minipage}
 
-Para \textbf{predecir acciones} utilizamos la red neuronal, a la cual introducimos el estado actual para que nos devuelva los resultados de ambas acciones, de los cuales nos quedaremos con el mejor. Una vez ejecutada la acción disponemos del estado siguiente y la recompensa, lo cual podemos usar pare \textbf{entrenar la red neuronal} de nuevo.
+Para \textbf{predecir acciones} utilizamos la red neuronal, a la cual introducimos el estado actual para que nos devuelva los resultados de ambas acciones, de los cuales nos quedaremos con el mejor. Una vez ejecutada la acción disponemos del estado siguiente y la recompensa, lo cual podemos usar para \textbf{entrenar la red neuronal} de nuevo.
 
 Como cabía esperar con una modificación tan ingenua, los resultados no son buenos, como podemos apreciar en la imagen \ref{fig:CartPole-SimpleAgent}. El agente no logra aprender de una forma estable. Si miramos atrás, en nuestra solución con una tabla-Q, el único estado que es modificado tras un entrenamiento es aquél en el que nos encontramos. Por otra parte cuando trabajamos con una red neuronal esto no es posible. Entrenar una red neuronal implica que toda la red se modificará, buscando satisfacer el nuevo caso de entrenamiento proporcionado \citep{Buduma:backprop}. En otras palabras, el agente mejora su rendimiento en el estado actual, pero al mismo tiempo empeora en todos los demás.
 
@@ -60,21 +60,35 @@ Otra manera de conseguir estabilidad es añadiendo una memoria al agente. Para h
 
 En nuestra memoria guardamos todos los datos necesarios para la perfecta representación de lo sucedido en pasos de ejecución anteriores, lo que se traduce en: \textbf{estado-actual}, \textbf{acción-tomada}, \textbf{recompensa}, \textbf{estado-siguiente} y \textbf{finalizado}.
 
+%Inicializar red, estados y acciones
+    
+%Repetir (para cada episodio):
+%Inicializar estado-actual (s)
+
+%Repetir (para cada paso del episodio):
+%    Predecir accion
+%    Tomar la accion
+%    Almacenar resultados en memoria
+%    Entrenar red con datos de la memoria
+%    estado-actual = estado-siguiente
+%Hasta que el episodio termine
+
 \begin{minipage}{0.9\linewidth}%
     \begin{lstlisting}[frame=tb, caption=Pseudocódigo BatchAgent, inputencoding=latin1, label=code:cartpole_drl2]
     
     Inicializar red, estados y acciones
     
-    Repetir (para cada episodio):
-        Inicializar estado-actual (s)
+    for i in range(EPISODES):
+        enviroment.restart()
+        state = enviroment.getState()
         
-        Repetir (para cada paso del episodio):
-            Predecir accion
-            Tomar la accion
-            Almacenar resultados en memoria
-            Entrenar red con datos de la memoria
-            estado-actual = estado-siguiente
-        Hasta que el episodio termine
+        while not done:
+            action = agent.predict(state)
+            next_state, reward, done  = enviroment.step(action)
+            agent.update(state, action, reward, next_state, done)
+            agent.replay()
+            state = next_state
+        
     \end{lstlisting}%
 \end{minipage}
 
