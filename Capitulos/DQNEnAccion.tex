@@ -11,7 +11,6 @@ El primer problema que trataremos al trabajar con DQNs se corresponde con el de 
 
 
 \subsection{Reemplazar la tabla-Q: \texttt{SimpleAgent}}
-\label{sec:cartpoledqn1}
 
 Como primer paso para la resolución del problema, se sustituyó la tabla-Q y su consecuente discretización de estados por una red neuronal \ref{fig:nn_cartpole}, abandonando por fin los problemas y limitaciones que habíamos observado anteriormente. La red neuronal recibe como entrada el \textbf{estado} actual (posición del carro, velocidad del carro, posición del péndulo y velocidad del péndulo) y produce dos salidas: el resultado (aproximado por la red neuronal) de la partida si el agente ejerciese fuerza hacia la izquierda y el resultado hacia la derecha. Después de ejecutar cada movimiento, se aplicaba la ecuación de Bellman para entrenar la red e intentar que el agente aprendiese a jugar.
 
@@ -22,7 +21,7 @@ En el fragmento de código \ref{code:dqn} podemos ver que la implementación del
 
 \begin{minipage}{0.9\linewidth}%
 \begin{lstlisting}[frame=tb, caption=Pseudocódigo SimpleAgent, inputencoding=latin1, label=code:dqn]      
-  state = env.restart()
+  state = env.reset()
 
   while not done:
     action = agent.predict_action(state)
@@ -60,18 +59,18 @@ En nuestra memoria guardamos todos los datos necesarios para la perfecta represe
 
 \begin{minipage}{0.9\linewidth}%
 \begin{lstlisting}[frame=tb, caption=Pseudocódigo BatchAgent, inputencoding=latin1, label=code:cartpole_drl2]
-  state = env.restart()
+  state = env.reset()
 
   while not done:
     action = agent.predict_action(state)
     next, reward, done = env.step(action)
 
-    agent.remember(state, action, reward, next, done)
+       agent.remember(state, action, reward, next, done)
     # Takes the last N memories and trains with them
     agent.learn_by_replay()
 
     state = next
-        
+              
 \end{lstlisting}%
 \end{minipage}
 
@@ -87,10 +86,10 @@ El problema es que los pasos tomados dentro de estos $batch$ están fuertemente 
 \label{sec:cartpoledqn3}
 
 Por fortuna solucionar el problema de la cohesión en el \texttt{BatchAgent} tiene fácil solución. Tan sólo necesitaremos que la memoria de nuestro agente sea lo bastante grande como par albergar experiencias lo bastante variadas, después sólo tendremos que seleccionar elementos aleatorios de la memoria. Con esta solución, el agente debería tener una muestra más amplia respecto a los estados posibles y sería mucho más fácil que encontrase una solución con prontitud.
-
+  
 \begin{minipage}{0.9\linewidth}%
 \begin{lstlisting}[frame=tb, caption=Pseudocódigo RandomBatchAgent, inputencoding=latin1, label=code:cartpole_drl3]
-  state = env.restart()
+  state = env.reset()
 
   while not done:
     action = agent.predict_action(state)
@@ -101,7 +100,7 @@ Por fortuna solucionar el problema de la cohesión en el \texttt{BatchAgent} tie
     agent.learn_by_replay()
 
     state = next
-        
+              
 \end{lstlisting}%
 \end{minipage}
 
@@ -155,6 +154,7 @@ Tras la implementación de este método, comprobamos que lográbamos una mayor c
 
 Gracias a este método se han logrado grandes hitos en el campo del Aprendizaje por Refuerzo Profundo. Por ejemplo, hacer que una red neuronal sea capaz de jugar a juegos de Atari a nivel profesional utilizando tan solo los píxeles como entrada \citep{mnih2013playing}
 
+Por otro lado, este método no es perfecto, en la imagen \ref{fig:CartPole-DoubleAgent} se puede ver una pequeña caída al final de la ejecución. Inicialmente achacamos este comportamiento a una desafortunada conjunción probabilística. Pero más adelante supimos que se trataba de un fenómeno mucho más cotidiano. Tras investigar sobre el tema descubrimos que el causante es el propio método de Deep Q-Learning. Como ya hemos visto previamente, en este sistema se pretende aproximar los valores de la tabla Q por medio de una red neuronal de regresión, el problema es que a las redes neuronales de regresión tienen dificultades para aproximar funciones no lineales. En teoría, si contáramos con tiempo infinito terminaría consiguiendo cuadrar todos los valores.
 
 \section{MountainCar}
 
@@ -194,7 +194,8 @@ Los resultados tan pobres obtenidos puede que sorprendan viniendo del rendimient
 
 Modificando el agente para usar la siguiente red e hiperparámetros:
 
-((Imagen de la topología))
+\figura{Bitmap/DQNEnAccion/nn_mountainCar}{width=0.7\textwidth}{fig:nn_mountainCar}%
+       {Topología MountainCar}
 
 \begin{minipage}{0.9\linewidth}%
     \begin{lstlisting}[frame=tb, language=Python, caption=Hiperparámetros MountainCar, label=code:cartpole_drl]
@@ -272,55 +273,26 @@ Como vemos en la imagen \ref{fig:mountaincar_06} nos encontramos con un comporta
 
 Puesto que los resultados obtenidos por la posición y velocidad parecían haberse estancado, decidimos investigar otras piezas clave de nuestro modelo, como el optimizador. Empezamos a cuestionarnos si Adam \citep{kingma2014adam} era nuestra mejor opción, e hicimos algunas pruebas con Adadelta \citep{NIPS2017_7003}.
 
-Para poder comparar lo mejor posible los resultamos decidimos crear una serie de gráficas para cada ejemplo en el que no solo se viera mejor la evolución general de los resultados, sino que añadiera otros datos de interés como la recompensa original del entorno, la velocidad máxima la posición máxima alcanzada. Así seríamos capaces de vigilar en una sola simulación todas las variables.
+Para poder comparar lo mejor posible los resultamos decidimos crear una serie de gráficas para cada ejemplo en el que no solo se viera mejor la evolución general de los resultados, sino que añadiera otros datos de interés como la recompensa original del entorno, la velocidad máxima, la posición máxima alcanzada. Así seríamos capaces de controlar en una sola simulación todas las variables.
 
 \figura{Bitmap/DQNEnAccion/mountaincar_07}{width=1\textwidth}{fig:mountaincar_07}%
-       {Resultados ¿?}
+       {Resultados ¿main12 y main13?}
 
-SIN REVISAR A PARTIR DE AQUÍ
-
-Por último, decidimos añadir al agente una modificación para favorecer la convergencia de los resultados del sistema y reducir las caídas vistas en las gráficas.
-Esto lo conseguimos añadiendo un tercer modelo al agente, siendo su composición final de:
+Las imágenes cuenta con tres graficas:
 \begin{itemize}
- \item Modelo Mentor: se limitará a responder a los estímulos del entorno sin hacer replay de sus jugadas, es decir, sin aprender y simplemente almacenando en la memoria los estados por los que ha pasado y sus correspondientes recompensas.
- \item Modelo Aprendiz: se dedicará a aprender, haciendo los replays de la batería de estados-recompensa que va generando el Modelo Mentor.
- \item Modelo Best: será el mejor de los modelos encontrados hasta el momento. 
+    \item La primera muestra la evolución general del sistema en función de los episodios, muestra los resultados de las dos redes neuronales, la azul para agente y la cian para el aprendiz- la línea roja representa la recompensa real que devuelve el entorno, y la negra muestra la media de las cien ultimas partidas, de esta forma tenemos una observación general y fácil de interpretar.
+    \item La grafica inferior izquierda muestra la posición máxima alcanzada durante la partida, esto nos permite ver lo cerca que se ha quedado de alcanzar la meta.
+    \item La grafica inferior derecha representa las puntuaciones obtenidas por las redes en una simulación al final de la ejecución, así podemos ver si realmente han aprendido. Esta simulación la haremos utilizando la recompensa original simplificando la interpretación de la misma.  
 \end{itemize}
-El desarrollo de la ejecución se divide en 3 fases:
-
-Primera fase, fase Inicial, durante los primeros episodios, equivalente a dos veces la periodicidad de las competiciones (COMP), el modelo mentor aprende del entorno tal y como hacen los agentes predecesores, jugando la partida y aprendiendo mediante backtracking. Mientras que los otros dos, Aprendiz y Best no hacen nada, se limitan a inicializarse.
-
-La segunda fase, fase de Competiciones, Mentor se limita a interactuar con el entorno, es decir, toma las decisiones que controlan al avatar durante la partida, y guarda los resultados obtenidos en la memoria. Por otro lado, Aprendiz comienza a entrenar con dicha memoria, aprendiendo de las acciones de Mentor.
-Cada COMP episodios, se produce una competición, que somete a Mentor y Aprendiz a una prueba, que no tiene repercusión alguna en la memoria y permite comparar los resultados para ver quien reacciona mejor en el entorno. La que salga victoriosa se copia sobre la vencida, y prosigue el proceso.
-Así, si Aprendiz aprende de las experiencias de Mentor, y es capaz de superarle en la prueba, pasará a ser Mentor, dejando una copia en Aprendiz para seguir desarrollándose. Por otro lado, si Aprendiz aprende “mal”, es decir, si los resultados de la prueba indican que Mentor es mejor que Aprendiz, Mentor trasmitirá su configuración de los pesos a Aprendiz para que este proceda a mejorarlo y aprenda de Mentor hasta la siguiente Competición.  
-
-Fase final, fase de Mantenimiento, es semejante a Competición, salvo que ahora Best guarda el mejor modelo que se haya generado durante la simulación. Cada 100 episodios, los tres modelos se pondrán a prueba con 100 partidas de testeo, que al igual que durante las competiciones normales, no tendrán ninguna repercusión en la memoria y por tanto serán invisibles para el entrenamiento. El mejor modelo se guardará en Best y se pondrá como Mentor, para así generar los mejores resultados posibles de los que Aprendiz pueda aprender.  
-
-RESULTADOS: 	main7SustituyendoModelPorBestEXT, main7SustituyendoModelPorBestEXT2, main7SustituyendoModelPorBestEXT4
 
 
-% \subsubsection*{Variantes}
-% Nos planteamos otros aderezos para las soluciones ya planteadas para optimizar el aprendizaje. 
-% Consideramos añadir pequeñas recompensas como dar una bonificación extra al alcanzar cierta posición o al llevar una velocidad positiva.
-% Algunas de estas fueron descartadas por la premisa de solo basarnos en el estado para definir la recompensa, pero otras pudimos llevarlas a cabo.
 
-%  Dar bonus +10 cada vez que alcanza un multiplo de 0.1
+Dado que seguíamos encontrando fluctuaciones en el aprendizaje de algunas ejecuciones, y en busca de una mayor estabilidad, decidimos añadir una tercera red neuronal que permitiera almacenar el mejor modelo encontrado hasta el momento. El objetivo de dicho modelo es intervenir eventualmente en competiciones para medir la progresión del aprendizaje y en caso de producirse una regresión, revertirla. De esta forma aseguramos una mayor estabilidad.
 
-%  Dar bonus al llevar velocidad positiva al pasar por 0
+\figura{Bitmap/DQNEnAccion/mountaincar_07}{width=1\textwidth}{fig:mountaincar_11}%
+       {Resultados ¿main11?}
 
-%  Dar bonus al superar su velocidad máxima al pasar por cero(se dedicaba a pasar muchas veces por cero)
+En la imagen \ref{fig:mountaincar_11} se puede ver como una vez alcanza el máximo, el agente se mantienen sin divergir y sin casi fluctuar. Se debe a la estabilidad de las dos redes, que le permiten retractar cualquier caída en el aprendizaje.
 
-%  Dar una bonificación cada vez que supera mu mayor altura por 0.1, a primera vista puede parecer que de elementos externos al estado pero... teniendo en cuenta que se trata de solo posiciones de 0.1, al final solo se recompensan 0, 0.1, 0.2... sería equivalente la primera propuesta pero alternando la ladera. 
-
-% ((algoritmo de modificacion))
-
-% ((Gráfica de resultados))
-
-% \subsubsection*{Otros enfoques}
-% Hablar sobre randomwalks y transfer learning
-
-% \paragraph{Randomwalks}
-% A grandes rasgos Randomwalks, consiste en generar una gran memoria de partidas jugadas totalmente al azar para luego seleccionar los mejores resultados de entre estos para entrenar el agente. Por último, poner el agente en el entorno real.
-% Este planteamiento ha resultado ser con diferencia el más rapido de todos, dado que al ahorarse el entrenamiento intermedio de todas las partidas se ahora gran parte del tiempo de ejecución.
 
 
