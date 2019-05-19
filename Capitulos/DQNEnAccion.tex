@@ -266,7 +266,6 @@ A diferencia de la posición, la velocidad devuelta por el entorno tiene unos va
 
 Como vemos en la imagen \ref{fig:mountaincar_06} nos encontramos con un comportamiento muy similar al visto usando la posición en valores absolutos. El agente consigue resolver el problema en varias ocasiones pero no se estabiliza.
 
-% RESULTADO: main3.2 y  
 
 
 \subsubsection*{Otras pruebas}
@@ -275,8 +274,11 @@ Puesto que los resultados obtenidos por la posición y velocidad parecían haber
 
 Para poder comparar lo mejor posible los resultamos decidimos crear una serie de gráficas para cada ejemplo en el que no solo se viera mejor la evolución general de los resultados, sino que añadiera otros datos de interés como la recompensa original del entorno, la velocidad máxima, la posición máxima alcanzada. Así seríamos capaces de controlar en una sola simulación todas las variables.
 
-\figura{Bitmap/DQNEnAccion/mountaincar_07}{width=1\textwidth}{fig:mountaincar_07}%
-       {Resultados ¿main12 y main13?}
+\figura{Bitmap/DQNEnAccion/mountaincar_08}{width=1\textwidth}{fig:mountaincar_08}%
+       {Resultados velocidad Adam}
+
+\figura{Bitmap/DQNEnAccion/mountaincar_09}{width=1\textwidth}{fig:mountaincar_09}%
+       {Resultados velocidad Adadelta}
 
 Las imágenes cuenta con tres graficas:
 \begin{itemize}
@@ -285,12 +287,12 @@ Las imágenes cuenta con tres graficas:
     \item La grafica inferior derecha representa las puntuaciones obtenidas por las redes en una simulación al final de la ejecución, así podemos ver si realmente han aprendido. Esta simulación la haremos utilizando la recompensa original simplificando la interpretación de la misma.  
 \end{itemize}
 
-
+Se puede ver como Adadelta consigue alcanzar el objetivo varias iteraciones antes que Adam \ref{fig:mountaincar_09}. Y ambas se mantienen casi totalmente estables durante las siguientes episodios.
 
 Dado que seguíamos encontrando fluctuaciones en el aprendizaje de algunas ejecuciones, y en busca de una mayor estabilidad, decidimos añadir una tercera red neuronal que permitiera almacenar el mejor modelo encontrado hasta el momento. El objetivo de dicho modelo es intervenir eventualmente en competiciones para medir la progresión del aprendizaje y en caso de producirse una regresión, revertirla. De esta forma aseguramos una mayor estabilidad.
 
-\figura{Bitmap/DQNEnAccion/mountaincar_07}{width=1\textwidth}{fig:mountaincar_11}%
-       {Resultados ¿main11?}
+\figura{Bitmap/DQNEnAccion/mountaincar_07}{width=1\textwidth}{fig:mountaincar_10}%
+       {Resultados Agente Final}
 
 En la imagen \ref{fig:mountaincar_11} se puede ver como una vez alcanza el máximo, el agente se mantienen sin divergir y sin casi fluctuar. Se debe a la estabilidad de las dos redes, que le permiten retractar cualquier caída en el aprendizaje.
 
