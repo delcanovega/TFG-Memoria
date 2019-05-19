@@ -24,23 +24,14 @@ En el fragmento de código \ref{code:dqn} podemos ver que la implementación del
     \begin{lstlisting}[frame=tb, caption=Pseudocódigo SimpleAgent, inputencoding=latin1, label=code:dqn]
 \begin{lstlisting}[frame=tb, caption=Pseudocódigo SimpleAgent, inputencoding=latin1, label=code:dqn]      
   state = env.restart()
-    
+
   while not done:
     action = agent.predict_action(state)
     next, reward, done = env.step(action)
     agent.learn(state, action, reward, next, done)
     state = next
         
-    Repetir (para cada episodio):
-        Inicializar estado-actual (s)
-        
-        Repetir (para cada paso del episodio):
-            Predecir acción
-            Tomar la acción
-            Entrenar red
-            estado-actual = estado-siguiente
-        Hasta que el episodio termine
-    \end{lstlisting}%
+\end{lstlisting}%
 \end{minipage}
 
 Para \textbf{predecir acciones} utilizamos la red neuronal, a la cual introducimos el estado actual para que nos devuelva los resultados de ambas acciones, de los cuales nos quedaremos con el mejor. Una vez ejecutada la acción disponemos del estado siguiente y la recompensa, lo cual podemos usar para \textbf{entrenar la red neuronal} de nuevo.
@@ -62,40 +53,25 @@ Los hiperparámetros usados también son una ligera modificación de los usados 
        {Resultados del \texttt{SimpleAgent}}
 
 \subsection{Añadir memoria al agente: \texttt{BatchAgent}}
+\label{sec:cartpoledqn2}
 
 Otra manera de conseguir estabilidad es añadiendo una memoria al agente. Para hacerlo recurriremos al reproductor de experiencias (o \textit{Experience Replay} \citep{Lin1992}), también conocidas como valores-Q, al que nos referiremos como \textbf{replay}. Éste método consiste en almacenar múltiples experiencias pasadas del agente y, antes de cada entrenamiento, tomar una muestra del conjunto de experiencias acumuladas a lo largo de varios episodios.
 
 En nuestra memoria guardamos todos los datos necesarios para la perfecta representación de lo sucedido en pasos de ejecución anteriores, lo que se traduce en: \textbf{estado-actual}, \textbf{acción-tomada}, \textbf{recompensa}, \textbf{estado-siguiente} y \textbf{finalizado}.
 
-%Inicializar red, estados y acciones
-    
-%Repetir (para cada episodio):
-%Inicializar estado-actual (s)
-
-%Repetir (para cada paso del episodio):
-%    Predecir accion
-%    Tomar la accion
-%    Almacenar resultados en memoria
-%    Entrenar red con datos de la memoria
-%    estado-actual = estado-siguiente
-%Hasta que el episodio termine
-
 \begin{minipage}{0.9\linewidth}%
-    \begin{lstlisting}[frame=tb, caption=Pseudocódigo BatchAgent, inputencoding=latin1, label=code:cartpole_drl2]
-    
+\begin{lstlisting}[frame=tb, caption=Pseudocódigo BatchAgent, inputencoding=latin1, label=code:cartpole_drl2]
+  state = env.restart()
+
     Initialize network, states and actions
     
-    for i in range(EPISODES):
-        state = enviroment.restart()
+    agent.remember(state, action, reward, next, done)
+    # Takes the last N memories and trains with them
+    agent.learn_by_replay()
 
-        while not done:
-            action = agent.predict(state)
-            next_state, reward, done  = enviroment.step(action)
-            agent.memorice(state, action, reward, next_state, done)
-            agent.train()
-            state = next_state
+    state = next
         
-    \end{lstlisting}%
+\end{lstlisting}%
 \end{minipage}
 
 Tras la ejecución de cada acción, y con la información proporcionada por el entorno en ese momento, guardamos todos estos valores en la memoria para ser utilizados posteriormente. De esta forma contamos con un conjunto ($batch$) de los últimos $N$ pasos guardados en la memoria. De esta forma podemos entrenar la red neuronal con un mayor número de casos de prueba, intentando evitar así la inestabilidad del \texttt{SimpleAgent}.
@@ -107,14 +83,13 @@ El problema es que los pasos tomados dentro de estos $batch$ están fuertemente 
 
 
 \subsection{Romper la cohesión de la memoria: \texttt{RandomBatchAgent}}
+\label{sec:cartpoledqn3}
 
 Por fortuna solucionar el problema de la cohesión en el \texttt{BatchAgent} tiene fácil solución. Tan sólo necesitaremos que la memoria de nuestro agente sea lo bastante grande como par albergar experiencias lo bastante variadas, después sólo tendremos que seleccionar elementos aleatorios de la memoria. Con esta solución, el agente debería tener una muestra más amplia respecto a los estados posibles y sería mucho más fácil que encontrase una solución con prontitud.
-
+  
 \begin{minipage}{0.9\linewidth}%
-    \begin{lstlisting}[frame=tb, caption=Pseudocódigo RandomBatchAgent, inputencoding=latin1, label=code:cartpole_drl3]
-    
+\begin{lstlisting}[frame=tb, caption=Pseudocódigo RandomBatchAgent, inputencoding=latin1, label=code:cartpole_drl3]
     Inicializar red, estados y acciones
-    
     Repetir (para cada episodio):
         Inicializar estado-actual (s)
         
@@ -124,6 +99,8 @@ Por fortuna solucionar el problema de la cohesión en el \texttt{BatchAgent} tie
             Almacenar resultados en memoria
             Entrenar con datos aleatorios de la memoria
             estado-actual = estado-siguiente
+            Entrenar con datos aleatorios  
+            estado_actual = estado-siguiente
         Hasta que el episodio termine
     \end{lstlisting}%
 \end{minipage}
@@ -150,24 +127,25 @@ $$Y^Q_{t} = R_{t+1} + \gamma Q(S_{t+1}, argmax_{a} Q(S_{t+1}, a; \theta_{t}); \t
 El principal inconveniente que mostraba nuestro agente hasta el momento se debía a la gran diferencia entre las ejecuciones, dando unos resultados que era necesario estabilizar. Tomando como referencia las soluciones consideradas en el capítulo anterior, optamos por el uso de dos redes diferentes.
 
 \begin{minipage}{0.9\linewidth}%
-    \begin{lstlisting}[frame=tb, caption=Pseudocódigo DoubleAgent, inputencoding=latin1, label=code:cartpole_drl4]
-    
-    Inicializar red, estados y acciones
-    
-    Repetir (para cada episodio):
-        Inicializar estado-actual (s)
-        
-        Repetir (para cada paso del episodio):
-            Predecir accion con agente
-            Tomar la accion
-            Almacenar resultados en memoria
-            Entrenar aprendiz con datos aleatorios
-            estado-actual = estado-siguiente
-        Hasta que el episodio termine
+\begin{lstlisting}[frame=tb, caption=Pseudocódigo DoubleAgent, inputencoding=latin1, label=code:cartpole_drl4]
+  state = env.restart()
 
-        Si aprendiz mejor que agente:
-            agente = aprendiz
-    \end{lstlisting}%
+  while not done:
+    action = target.predict_action(state)
+    next, reward, done = env.step(action)
+
+    agent.remember(state, action, reward, next, done)
+    # Takes the N random memories and trains with them
+    agent.learn_by_replay()
+
+    state = next
+
+  # If the agent's performance surpasses the target's
+  if agent.performance() > target.performance():
+    # the agent becomes the target for now on
+    target = agent
+        
+\end{lstlisting}%
 \end{minipage}
 
 Tras la implementación de este método, comprobamos que lográbamos una mayor consistencia en los datos entre unas simulaciones y otras, obteniendo resultados menos dispares que con el entrenamiento por conjunto aleatorio como podemos observar en la imagen \ref{fig:CartPole-DoubleAgent}.
@@ -301,7 +279,7 @@ Para poder comparar lo mejor posible los resultamos decidimos crear una serie de
 \figura{Bitmap/DQNEnAccion/mountaincar_07}{width=1\textwidth}{fig:mountaincar_07}%
        {Resultados ¿main12 y main13?}
 
-Las imagenes cuenta con tres graficas:
+Las imágenes cuenta con tres graficas:
 \begin{itemize}
     \item La primera muestra la evolución general del sistema en función de los episodios, muestra los resultados de las dos redes neuronales, la azul para agente y la cian para el aprendiz- la línea roja representa la recompensa real que devuelve el entorno, y la negra muestra la media de las cien ultimas partidas, de esta forma tenemos una observación general y fácil de interpretar.
     \item La grafica inferior izquierda muestra la posición máxima alcanzada durante la partida, esto nos permite ver lo cerca que se ha quedado de alcanzar la meta.
@@ -315,50 +293,7 @@ Dado que seguíamos encontrando fluctuaciones en el aprendizaje de algunas ejecu
 \figura{Bitmap/DQNEnAccion/mountaincar_07}{width=1\textwidth}{fig:mountaincar_11}%
        {Resultados ¿main11?}
 
-En la imagen \ref{fig:mountaincar_11} se puede ver como una vez alcanza el máximo, el agente se mantienen sin divergir y sin casi fluctuar. Se debe a la estabilidad de las dos redes, que le permiten retractar cualquier caida en el aprendizaje.
+En la imagen \ref{fig:mountaincar_11} se puede ver como una vez alcanza el máximo, el agente se mantienen sin divergir y sin casi fluctuar. Se debe a la estabilidad de las dos redes, que le permiten retractar cualquier caída en el aprendizaje.
 
-
-Profundizando en la implementación:
-\begin{itemize}
- \item Modelo Agente: se limitará a responder a los estímulos del entorno sin aprender y almacenando en la memoria los estados y recompensas por los que ha pasado.
- \item Modelo Aprendiz: se dedicará a aprender, haciendo los ``replays'' de la memoria generada por el Modelo agente.
- \item Modelo ``Best'': contiene la configuración del mejor de los modelos encontrados hasta el momento. 
-\end{itemize}
-El desarrollo de la ejecución se divide en 3 fases:
-
-Primera fase, fase Inicial, durante los primeros episodios, equivalente a dos veces la periodicidad de las competiciones (COMP), el modelo mentor aprende del entorno tal y como hacen los agentes predecesores, jugando la partida y aprendiendo mediante backtracking. Mientras que los otros dos, Aprendiz y Best no hacen nada, se limitan a inicializarse.
-
-La segunda fase, fase de Competiciones, Mentor se limita a interactuar con el entorno, es decir, toma las decisiones que controlan al avatar durante la partida, y guarda los resultados obtenidos en la memoria. Por otro lado, Aprendiz comienza a entrenar con dicha memoria, aprendiendo de las acciones de Mentor.
-Cada COMP episodios, se produce una competición, que somete a Mentor y Aprendiz a una prueba, que no tiene repercusión alguna en la memoria y permite comparar los resultados para ver quien reacciona mejor en el entorno. La que salga victoriosa se copia sobre la vencida, y prosigue el proceso.
-Así, si Aprendiz aprende de las experiencias de Mentor, y es capaz de superarle en la prueba, pasará a ser Mentor, dejando una copia en Aprendiz para seguir desarrollándose. Por otro lado, si Aprendiz aprende “mal”, es decir, si los resultados de la prueba indican que Mentor es mejor que Aprendiz, Mentor trasmitirá su configuración de los pesos a Aprendiz para que este proceda a mejorarlo y aprenda de Mentor hasta la siguiente Competición.  
-
-Fase final, fase de Mantenimiento, es semejante a Competición, salvo que ahora Best guarda el mejor modelo que se haya generado durante la simulación. Cada 100 episodios, los tres modelos se pondrán a prueba con 100 partidas de testeo, que al igual que durante las competiciones normales, no tendrán ninguna repercusión en la memoria y por tanto serán invisibles para el entrenamiento. El mejor modelo se guardará en Best y se pondrá como Mentor, para así generar los mejores resultados posibles de los que Aprendiz pueda aprender.  
-
-RESULTADOS: 	main7SustituyendoModelPorBestEXT, main7SustituyendoModelPorBestEXT2, main7SustituyendoModelPorBestEXT4
-
-
-% \subsubsection*{Variantes}
-% Nos planteamos otros aderezos para las soluciones ya planteadas para optimizar el aprendizaje. 
-% Consideramos añadir pequeñas recompensas como dar una bonificación extra al alcanzar cierta posición o al llevar una velocidad positiva.
-% Algunas de estas fueron descartadas por la premisa de solo basarnos en el estado para definir la recompensa, pero otras pudimos llevarlas a cabo.
-
-%  Dar bonus +10 cada vez que alcanza un multiplo de 0.1
-
-%  Dar bonus al llevar velocidad positiva al pasar por 0
-
-%  Dar bonus al superar su velocidad máxima al pasar por cero(se dedicaba a pasar muchas veces por cero)
-
-%  Dar una bonificación cada vez que supera mu mayor altura por 0.1, a primera vista puede parecer que de elementos externos al estado pero... teniendo en cuenta que se trata de solo posiciones de 0.1, al final solo se recompensan 0, 0.1, 0.2... sería equivalente la primera propuesta pero alternando la ladera. 
-
-% ((algoritmo de modificacion))
-
-% ((Gráfica de resultados))
-
-% \subsubsection*{Otros enfoques}
-% Hablar sobre randomwalks y transfer learning
-
-% \paragraph{Randomwalks}
-% A grandes rasgos Randomwalks, consiste en generar una gran memoria de partidas jugadas totalmente al azar para luego seleccionar los mejores resultados de entre estos para entrenar el agente. Por último, poner el agente en el entorno real.
-% Este planteamiento ha resultado ser con diferencia el más rapido de todos, dado que al ahorarse el entrenamiento intermedio de todas las partidas se ahora gran parte del tiempo de ejecución.
 
 
