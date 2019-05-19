@@ -13,7 +13,7 @@ $$Y = f(x\ w\ + b)$$
 
 Echando un vistazo a la representación de la neurona en la imagen \ref{fig:esquema_neurona}, distinguiremos las $x$ como las variables de entrada y $w$ los pesos que les asigna la propia neurona. La variable $b$ es el \textit{bias}, o desplazamiento, que se suma a la multiplicación entre las variables y sus respectivos pesos y $f$ es la \textbf{función de activación}, que nos devolverá la salida de la neurona $Y$.
 
-\figura{Bitmap/AprendizajeProfundo/Neuron}{width=1\textwidth}{fig:esquema_neurona}%
+\figura{Bitmap/AprendizajeProfundo/Neuron}{width=0.8\textwidth}{fig:esquema_neurona}%
        {Esquema de una neurona artificial.}
 
 Sin embargo, dentro de estas neuronas existen varios tipos. Las que nos interesan y trataremos en profundidad son las especializadas en no linealidad, manteniendo ésta característica en su función de activación. Este tipo de neuronas produce respuestas acotadas, terminando así con los problemas de fluctuación y la falta de adecuación a diversos tamaños de señales. A continuación, listaremos las más utilizadas y las que podremos observar en la gráfica \ref{fig:func_neurona}.
@@ -24,7 +24,7 @@ Sin embargo, dentro de estas neuronas existen varios tipos. Las que nos interesa
     \item ReLu: $f(z) = max(0,z)$: la neurona de linealidad restringida o ReLu (Restricted Linear Unit) utiliza un distinto tipo de no linealidad. A pesar de su simplicidad, ha sido la función de activación utilizada para la resolución de los diferentes problemas debido a su mayor facilidad de convergencia y facilidad computacional \citep{Enyinna2018}.
 \end{itemize}
 
-\figura{Bitmap/AprendizajeProfundo/Func_Neuron}{width=1\textwidth}{fig:func_neurona}%
+\figura{Bitmap/AprendizajeProfundo/Func_Neuron}{width=0.8\textwidth}{fig:func_neurona}%
        {Comparación entre funciones Sigmoide, Tanh y ReLu.}
 
 \subsection{Estructura y funcionamiento}
@@ -33,14 +33,14 @@ Ya que las funcionalidades de una neurona son limitadas, nos resultaría imposib
 Las Redes Neuronales están compuestas generalmente por varias capas, de forma que las salidas de la anterior forman las entradas de la siguiente, tal y como podemos observar en la imagen \ref{fig:red_neuronal}. Entre ellas, podemos distinguir la capa de entrada, que es la que recibe los datos a analizar, la capa de salida, que es la que devuelve los resultados en el formato que nos interesa en función del problema, y las capas intermedias u ocultas. Éstas son las encargadas de abstraer todos los datos recibidos por la capa anterior para que sea más fácil procesarlos y analizarlos. 
 
 \figura{Bitmap/AprendizajeProfundo/Red_Neuronal}{width=1\textwidth}{fig:red_neuronal}%
-       {Esquema de estructura de una red neuronal profunda \citep{NIPS2013_5207}}
+       {Esquema de estructura de una red neuronal profunda}
 
 Las redes con múltiples capas intermedias son conocidas como \textbf{Redes Neuronales Profundas}, o \textit{Deep Neural Networks} (DNNs). El ejemplo más conocido para el que podemos utilizar estas redes es el de reconocimiento de objetos en imágenes. Existen múltiples formas de utilizar las DNNs en este ámbito, así que utilizaremos el ejemplo que podemos ver en la imagen \ref{fig:dnn}. 
 
 La capa de entrada comienza recibiendo un conjunto de bits de distintos colores. Las capas intermedias se encargan de distinguir el objeto, ya sea diferenciando los píxeles según sus colores y su proximidad, distinguiendo siluetas o bien reconociendo patrones que puedan distinguir al coche del resto de la fotografía. Con una sola capa intermedia nos sería imposible resolver este problema, ya que el proceso requiere varios pasos entre neuronas (por ejemplo, reconocer los faros, las ventanas, la matrícula, etc.). Finalmente, la capa de salida se encarga de marcar las regiones en las que el coche es visible, o más bien, en las que existe el objeto coche. En otros casos, las capas intermedias también pueden ser utilizadas para disminuir las dimensiones del problema, como reduciendo el número de píxeles de una imagen desde una magnitud de miles a una de decenas.
 
 \figura{Bitmap/AprendizajeProfundo/DNN_ejemplo}{width=1\textwidth}{fig:dnn}%
-       {Ejemplo de uso de una DNN.}    
+       {Ejemplo de uso de una DNN \citep{NIPS2013_5207}}    
 
 \subsubsection{Descenso de gradiente y retropropagación}
 
