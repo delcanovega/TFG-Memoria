@@ -20,10 +20,17 @@ Como primer paso para la resolución del problema, se sustituyó la tabla-Q y su
 En el fragmento de código \ref{code:dqn} podemos ver que la implementación del algoritmo es muy similar a la usada en \ref{code:q-learning}, con unas modificaciones que describiremos a continuación.
 
 \begin{minipage}{0.9\linewidth}%
+\begin{lstlisting}[frame=tb, caption=Pseudocódigo SimpleAgent, inputencoding=latin1, label=code:dqn]      
     \begin{lstlisting}[frame=tb, caption=Pseudocódigo SimpleAgent, inputencoding=latin1, label=code:dqn]
+\begin{lstlisting}[frame=tb, caption=Pseudocódigo SimpleAgent, inputencoding=latin1, label=code:dqn]      
+  state = env.restart()
     
-    Inicializar red, estados y acciones
-    
+  while not done:
+    action = agent.predict_action(state)
+    next, reward, done = env.step(action)
+    agent.learn(state, action, reward, next, done)
+    state = next
+        
     Repetir (para cada episodio):
         Inicializar estado-actual (s)
         

@@ -331,11 +331,23 @@
   year = 2010
 }
 
-% Fuente imagenes Aprendizaje Profundo
-% Red_Neuronal: https://www.kisspng.com/png-artificial-neural-network-deep-learning-convolutio-2489986/ 
-% DNN_ejemplo: https://medium.com/academic-origami/deep-neural-networks-for-object-detection-c9d286b88dbf
-% Ejemplo cifras a mano (p. 16 libro): Y. LeCun, L. Bottou, Y. Bengio, and P. Haffner. “Gradient-Based Learning Applied to Document Recognition”
-Proceedings of the IEEE, 86(11):2278-2324, November 1998.
+@incollection{NIPS2013_5207,
+    title = {Deep Neural Networks for Object Detection},
+    author = {Szegedy, Christian and Toshev, Alexander and Erhan, Dumitru},
+    booktitle = {Advances in Neural Information Processing Systems 26},
+    editor = {C. J. C. Burges and L. Bottou and M. Welling and Z. Ghahramani and K. Q. Weinberger},
+    pages = {2553--2561},
+    year = {2013},
+    publisher = {Curran Associates, Inc.},
+    url = {http://papers.nips.cc/paper/5207-deep-neural-networks-for-object-detection.pdf}
+}
+@INPROCEEDINGS{Lecun98gradient-basedlearning,
+    author = {Yann Lecun and Léon Bottou and Yoshua Bengio and Patrick Haffner},
+    title = {Gradient-based learning applied to document recognition},
+    booktitle = {Proceedings of the IEEE},
+    year = {1998},
+    pages = {2278--2324}
+}
 
 @misc{mediumTim,
     author = {Tim},
@@ -351,14 +363,147 @@ Proceedings of the IEEE, 86(11):2278-2324, November 1998.
   journal={arXiv preprint arXiv:1412.6980},
   year={2014}
 }
+
+@inproceedings{Tokic:egreedy,
+    author = {{Tokic, Michel}},
+    title = {Adaptive e-greedy Exploration in Reinforcement Learning Based on Value Differences},
+    booktitle = {Proceedings of the 33rd Annual German Conference on Advances in Artificial Intelligence},
+    year = {2010},
+    isbn = {3-642-16110-3, 978-3-642-16110-0},
+    location = {Karlsruhe, Germany},
+    pages = {203--210},
+    numpages = {8},
+    url = {http://dl.acm.org/citation.cfm?id=1882150.1882177},
+    acmid = {1882177},
+    publisher = {Springer-Verlag},
+    address = {Berlin, Heidelberg},
+}
  
+@misc{MNISTKeras,
+    title = {MNIST database of handwritten digits},
+    author = {Chollet, Fran\c{c}ois and others},
+    year = {2015},
+    publisher = {Keras},
+    howpublished = {\url{https://keras.io/datasets/#mnist-database-of-handwritten-digits}},
+}
 
-% Recursos
+@misc{BostonKeras,
+    title = {Boston housing price regression dataset},
+    author = {Chollet, Fran\c{c}ois and others},
+    year = {2015},
+    publisher = {Keras},
+    howpublished = {\url{https://keras.io/datasets/#boston-housing-price-regression-dataset}},
+}
 
-% - OpenAI
-% - Python
-% - Keras
-% - NumPy
-% - scikit-learn
-% - MatplotLib
-% - Pandas
+@misc{python,
+    title = {Python},
+    author = {Python Software Foundation},
+    year = {1991},
+    howpublished = {\url{https://www.python.org/about/}},
+}
+
+@misc{numpy,
+    title = {NumPy},
+    author = {Travis Oliphant},
+    year = {1995},
+    howpublished = {\url{https://www.numpy.org/}},
+}
+
+@misc{matplotlib,
+    title = {Matplotlib},
+    author = {John D. Hunter},
+    year = {2003},
+    howpublished = {\url{https://matplotlib.org/}},
+}
+
+@misc{anaconda,
+    title = {Anaconda},
+    author = {Anaconda, Inc.},
+    year = {2012},
+    howpublished = {\url{https://www.anaconda.com/why-anaconda/}},
+}
+
+@misc{chollet2015keras,
+  title={Keras},
+  author={Chollet, Fran\c{c}ois and others},
+  year={2015},
+  howpublished={\url{https://keras.io}},
+}
+
+@misc{tensorflow2015-whitepaper,
+title={{TensorFlow}: Large-Scale Machine Learning on Heterogeneous Systems},
+url={http://tensorflow.org/},
+note={Software available from tensorflow.org},
+author={
+    Mart\'{\i}n~Abadi and
+    Ashish~Agarwal and
+    Paul~Barham and
+    Eugene~Brevdo and
+    Zhifeng~Chen and
+    Craig~Citro and
+    Greg~S.~Corrado and
+    Andy~Davis and
+    Jeffrey~Dean and
+    Matthieu~Devin and
+    Sanjay~Ghemawat and
+    Ian~Goodfellow and
+    Andrew~Harp and
+    Geoffrey~Irving and
+    Michael~Isard and
+    Yangqing Jia and
+    Rafal~Jozefowicz and
+    Lukasz~Kaiser and
+    Manjunath~Kudlur and
+    Josh~Levenberg and
+    Dan~Man\'{e} and
+    Rajat~Monga and
+    Sherry~Moore and
+    Derek~Murray and
+    Chris~Olah and
+    Mike~Schuster and
+    Jonathon~Shlens and
+    Benoit~Steiner and
+    Ilya~Sutskever and
+    Kunal~Talwar and
+    Paul~Tucker and
+    Vincent~Vanhoucke and
+    Vijay~Vasudevan and
+    Fernanda~Vi\'{e}gas and
+    Oriol~Vinyals and
+    Pete~Warden and
+    Martin~Wattenberg and
+    Martin~Wicke and
+    Yuan~Yu and
+    Xiaoqiang~Zheng},
+  year={2015},
+}
+
+@ARTICLE{2016arXiv160502688short,
+   author = {{Theano Development Team}},
+    title = "{Theano: A {Python} framework for fast computation of mathematical expressions}",
+  journal = {arXiv e-prints},
+   volume = {abs/1605.02688},
+ primaryClass = "cs.SC",
+ keywords = {Computer Science - Symbolic Computation, Computer Science - Learning, Computer Science - Mathematical Software},
+     year = 2016,
+    month = may,
+      url = {http://arxiv.org/abs/1605.02688},
+}
+
+@inproceedings{Seide:2016:CMO:2939672.2945397,
+ author = {Seide, Frank and Agarwal, Amit},
+ title = {CNTK: Microsoft's Open-Source Deep-Learning Toolkit},
+ booktitle = {Proceedings of the 22Nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining},
+ series = {KDD '16},
+ year = {2016},
+ isbn = {978-1-4503-4232-2},
+ location = {San Francisco, California, USA},
+ pages = {2135--2135},
+ numpages = {1},
+ url = {http://doi.acm.org/10.1145/2939672.2945397},
+ doi = {10.1145/2939672.2945397},
+ acmid = {2945397},
+ publisher = {ACM},
+ address = {New York, NY, USA},
+ keywords = {CNTK, computational networks, deep learning, neural network learning toolkit, neural networks},
+}

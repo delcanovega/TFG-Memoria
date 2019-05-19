@@ -12,7 +12,7 @@ El campo del \textbf{Aprendizaje Automático} (o \textit{Machine Learning}) se e
 \begin{itemize}
     \item \textbf{Aprendizaje Supervisado} (\textit{Supervised Learning}): el agente observa una serie de ejemplos de entradas y salidas, aprendiendo una función que es capaz de asignar a una entrada su salida correspondiente. Se llama \textbf{supervisado} porque esta serie de ejemplos, llamado conjunto de entrenamiento, deben estar correctamente clasificada desde un primer momento (es decir, supervisado por un humano). Podría decirse que el agente aprende en base a estas experiencias, hasta que llegado un punto es capaz de clasificar una entrada completamente nueva. La exactitud de esta clasificación dependerá del entrenamiento recibido; más adelante en el proyecto haremos uso de esta técnica de aprendizaje.
     \item \textbf{Aprendizaje no Supervisado} (\textit{Unsupervised Learning}): a diferencia del supervisado, en el aprendizaje no supervisado los ejemplos no cuentan con una etiqueta que los clasifica inequívocamente. En su lugar el agente busca patrones en el conjunto de entrada, intentando extraer características comunes de sus elementos. Uno de los usos más comunes del Aprendizaje No Supervisado es la agrupación o \textbf{clustering}: La unión de ejemplos como grupos o \textit{clústeres} que comparten características comunes. Por ejemplo, la agrupación de películas con características similares, de modo que si a un usuario le resultan interesantes varias de un mismo \textit{clúster}, es muy probable que también disfrute de otros elementos de esa misma agrupación. Estas ideas se usan, por ejemplo, en algunos sistemas de recomendación.   
-    \item \textbf{Aprendizaje por Refuerzo} (\textit{Reinforcement Learning}): el agente aprende a partir de una serie de refuerzos: recompensas si son positivos y penalizaciones en caso de ser negativos. Por ejemplo, cuando una mascota cumple una orden y recibe una galleta como recompensa; o un músico desafina en directo y recibe un abucheo por parte del público. Además el agente puede "pensar" a largo plazo, de forma que su comportamiento le permita conseguir una recompensa mayor en un futuro, así como adaptarse a entornos totalmente nuevos para él. Esta técnica de aprendizaje será el punto de partida de nuestro proyecto y explicaremos su funcionamiento a lo largo de este capítulo. 
+    \item \textbf{Aprendizaje por Refuerzo} (\textit{Reinforcement Learning}): el agente aprende a partir de una serie de refuerzos: recompensas si son positivos y penalizaciones en caso de ser negativos. Por ejemplo, cuando una mascota cumple una orden y recibe una galleta como recompensa; o un músico desafina en directo y recibe un abucheo por parte del público. Además el agente puede ``pensar'' a largo plazo, de forma que su comportamiento le permita conseguir una recompensa mayor en un futuro, así como adaptarse a entornos totalmente nuevos para él. Esta técnica de aprendizaje será el punto de partida de nuestro proyecto y explicaremos su funcionamiento a lo largo de este capítulo. 
 \end{itemize}
 
 
@@ -121,7 +121,9 @@ El factor de descuento, \( \gamma \), representa cuánto se descuenta de la reco
 
 Esta búsqueda del balance entre las recompensas cercanas y futuras está muy relacionado con el problema de \textbf{Exploración vs. Explotación}. Nuestro agente contará con un hiperparámetro \textit{exploración}, el cual determina con qué frecuencia el agente decide tomar una acción aleatoria (exploración) en lugar de aquella que le proporcione el valor más prometedor (explotación), con la esperanza de encontrar un nuevo estado en el que nunca haya estado y que pueda resultar más beneficioso. En otras palabras, el agente decide si sacar provecho de lo ya aprendido o arriesgarse e intentar aprender algo mejor.
 
-Siguiendo con esta idea, nuestra estrategia para equilibrar el dilema de la explotación vs. exploración se basa en el llamado \textbf{e-Greedy}. E-Greedy es una estrategia que implica tomar una decisión en cada paso para tomar la acción registrada por el agente con una mayor recompensa o tomar una acción al azar. La probabilidad de que el agente tome una acción aleatoria se rige por el parámeto \( \epsilon \). Podemos hacer un acercamiento de esta idea en el código \ref{code:e_greedy}:
+Siguiendo con esta idea, nuestra estrategia para equilibrar el dilema de la explotación vs. exploración se basa en el llamado \textbf{e-Greedy} \citep{Tokic:egreedy}. E-Greedy es una estrategia que implica tomar una decisión en cada paso para tomar la acción registrada por el agente con una mayor recompensa o tomar una acción al azar. La probabilidad de que el agente tome una acción aleatoria se rige por el parámeto \( \epsilon \). Podemos hacer un acercamiento de esta idea en el código \ref{code:e_greedy}.
+
+De esta manera, se busca obtener un balance entre la exploración y explotación, con el objetivo de evitar que se explore demasiado, lo que conllevaría que nuestro agente no optimizase lo suficiente su política, nii que tampoco explote demasiado, lo que significaría caer en un mínimo local.
 
 \begin{minipage}{0.9\linewidth}%
     \begin{lstlisting}[frame=tb, language=Python, caption=Pseudocódigo e-Greedy, label={code:e_greedy}]
@@ -130,12 +132,12 @@ Siguiendo con esta idea, nuestra estrategia para equilibrar el dilema de la expl
     import random
 
     if random.random() < epsilon:
-        # exploracion:
-        # eleccion aleatoria de una accion
+        # explore:
+        # choose a random action
         random.randint(0, action_space - 1)
     else:
-        # explotacion:
-        # eleccion en base a lo aprendido
+        # exploit:
+        # choose action based on learned values
         action = np.argmax(q_table[discreted_state])
     \end{lstlisting}%
 \end{minipage}

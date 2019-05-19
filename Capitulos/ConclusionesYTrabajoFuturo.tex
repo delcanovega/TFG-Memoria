@@ -19,8 +19,24 @@ El último paso al que llegamos en nuestro proyecto fue a trasladar todo lo apre
 
 Lo conseguido en este proyecto nos ha demostrado la cantidad de posibilidades que existen a la hora de resolver un problema de este tipo. La investigación y tiempo invertidos, nos ha llevado a comprender el trabajo que supone construir una IA, incluso teniendo una pequeña base inicial en la que sostenerse, y la cantidad de información que nos queda por aprender respecto a este tema.  
 
+\section{Cumplimiento de objetivos}
+
+Al principio de este documento, planteábamos unos objetivos que explorar durante la realización de este proyecto, los cuales nos han servido para organizar el trabajo y su exposición en el presente documento:
+
+\begin{enumerate}
+        \item El primer objetivo era comprender qué es el Aprendizaje por Refuerzo y en qué se diferencia de otras ramas del Aprendizaje Automático. A lo largo del capítulo \ref{cap:reinforcementLearning} vimos una explicación de dicho concepto, así como las ideas en las que se basaba y sus diferencias respecto a otras ramas del Aprendizaje Automático y por qué la elegimos como punto de partida. Siguiendo con esta idea, explicamos todos los elementos que lo componen y la forma que tienen de relacionarse.
+        \item Visto como se relacionan todos los elementos del Aprendizaje por Refuerzo, decidimos poner dichos conceptos a prueba durante el capítulo \ref{cap:q-learning}, en el que explicamos la librería Gym de OpenAI y elegíamos el entorno de CartPole para llevar a cabo nuestros experimentos, logrando superar el objetivo planteado para dicho entorno y viendo los problemas que suponía la implementación de dicho algoritmo en referencia al aumento exponencial de la tabla-Q y la complejidad que suponía mantenerla completamente actualizada y conseguir el correcto aprendizaje de nuestro agente.
+        \item Otro objetivo era el de adentrarnos en el campo del Aprendizaje Profundo y los fundamentos de las Redes Neuronales, el cual tratamos a lo largo del capítulo \ref{cap:deepLearning}, durante el cual explicamos los principios de las Redes Neuronales, su composición, estructura y funcionamiento. De este modo, jugamos con distintos problemas de clasificación y regresión que nos sirvieron para tener una primera toma de contacto que más adelante nos ayudaría para manejar problemas dentro del ámbito del Aprendizaje Profundo por Refuerzo.
+        \item Nuestro último objetivo era el de combinar las Redes Neuronales y el Aprendizaje por Refuerzo, de forma que consiguiéramos obtener los beneficios de ambos, así como encontrar soluciones a los inconvenientes que tenían por separado, como vimos durante el capítulo \ref{cap:dqnEnAccion}. Estudiamos paso a paso cómo combinar los dos ámbitos, primero reemplazando la tabla-Q del Aprendizaje por Refuerzo por una Red Neuronal, lo cual vimos que no nos otorgaba un aprendizaje suficiente en nuestro agente, tras lo que introdujimos el concepto de reproductor de experiencias y más tarde el uso de dos redes, gracias al cual conseguimos estabilizar el aprendizaje y una convergencia de los resultados.
+        \item Cumplidos todos los objetivos y en vista a los resultados obtenidos, hemos conseguido ver las limitaciones que tiene este campo de estudio actualmente, el cual sigue en evolución y queda mucho trabajo por hacer.
+\end{enumerate}
+
 \section{Trabajo futuro}
 
 El proyecto iba dirigido a enseñar a una IA a jugar y, aunque ésta ha aprendido de forma exitosa, apenas ha sido probada en un par de entornos con pocas variables. El camino de nuestra investigación podía ser el correcto, pero sin más avances, o pruebas en otros entornos, no podemos estar seguros de ello. 
 
 Dicho esto, en caso de poder continuar nuestro proyecto, nos centraríamos en continuar con más pruebas en distintos juegos. Tras comprobar que nuestra IA es adaptable, empezaríamos añadiendo más opciones a las posibles acciones que puede realizar el jugador, actualizándola para que resulte escalable, en caso de que no lo fuera ya. 
+
+=== REVISAR / AMPLIAR ===
+Como último punto a destacar en lo que a trabajo futuro se refiere, creemos que otro hilo del que tirar sería meternos en el terreno de las Redes Convolucionales y el reconocimiento por imágenes de lo que sucede en cada episodio, con lo que lograr proveer al agente de ``visión''  con la que tomar decisiones, y que no sólo se base en un puñado de números sino que realmente vea lo que ocurre y actúe en consecuencia. Queda como trabajo futuro debido a la mayor complejidad que estas redes suponen.
+
