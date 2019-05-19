@@ -79,14 +79,12 @@ En nuestra memoria guardamos todos los datos necesarios para la perfecta represe
     Inicializar red, estados y acciones
     
     for i in range(EPISODES):
-        enviroment.restart()
-        state = enviroment.getState()
-        
+        state = enviroment.restart()
         while not done:
             action = agent.predict(state)
             next_state, reward, done  = enviroment.step(action)
-            agent.update(state, action, reward, next_state, done)
-            agent.replay()
+            agent.memorice(state, action, reward, next_state, done)
+            agent.train()
             state = next_state
         
     \end{lstlisting}%
@@ -171,6 +169,7 @@ Tras la implementación de este método, comprobamos que lográbamos una mayor c
 
 Gracias a este método se han logrado grandes hitos en el campo del Aprendizaje por Refuerzo Profundo. Por ejemplo, hacer que una red neuronal sea capaz de jugar a juegos de Atari a nivel profesional utilizando tan solo los píxeles como entrada \citep{mnih2013playing}
 
+Por otro lado, este método no es perfecto, en la imagen \ref{fig:CartPole-DoubleAgent} se puede ver una pequeña caída al final de la ejecución. Inicialmente achacamos este comportamiento a una desafortunada conjunción probabilística. Pero más adelante supimos que se trataba de un fenómeno mucho más cotidiano. Tras investigar sobre el tema descubrimos que el causante es el propio método de Deep Q-Learning. Como ya hemos visto previamente, en este sistema se pretende aproximar los valores de la tabla Q por medio de una red neuronal de regresión, el problema es que a las redes neuronales de regresión tienen dificultades para aproximar funciones no lineales. En teoría, si contáramos con tiempo infinito terminaría consiguiendo cuadrar todos los valores.
 
 \section{MountainCar}
 
@@ -210,7 +209,8 @@ Los resultados tan pobres obtenidos puede que sorprendan viniendo del rendimient
 
 Modificando el agente para usar la siguiente red e hiperparámetros:
 
-((Imagen de la topología))
+\figura{Bitmap/DQNEnAccion/nn_mountainCar}{width=0.7\textwidth}{fig:nn_mountainCar}%
+       {Topología MountainCar}
 
 \begin{minipage}{0.9\linewidth}%
     \begin{lstlisting}[frame=tb, language=Python, caption=Hiperparámetros MountainCar, label=code:cartpole_drl]
@@ -288,19 +288,33 @@ Como vemos en la imagen \ref{fig:mountaincar_06} nos encontramos con un comporta
 
 Puesto que los resultados obtenidos por la posición y velocidad parecían haberse estancado, decidimos investigar otras piezas clave de nuestro modelo, como el optimizador. Empezamos a cuestionarnos si Adam \citep{kingma2014adam} era nuestra mejor opción, e hicimos algunas pruebas con Adadelta \citep{NIPS2017_7003}.
 
-Para poder comparar lo mejor posible los resultamos decidimos crear una serie de gráficas para cada ejemplo en el que no solo se viera mejor la evolución general de los resultados, sino que añadiera otros datos de interés como la recompensa original del entorno, la velocidad máxima la posición máxima alcanzada. Así seríamos capaces de vigilar en una sola simulación todas las variables.
+Para poder comparar lo mejor posible los resultamos decidimos crear una serie de gráficas para cada ejemplo en el que no solo se viera mejor la evolución general de los resultados, sino que añadiera otros datos de interés como la recompensa original del entorno, la velocidad máxima, la posición máxima alcanzada. Así seríamos capaces de controlar en una sola simulación todas las variables.
 
 \figura{Bitmap/DQNEnAccion/mountaincar_07}{width=1\textwidth}{fig:mountaincar_07}%
-       {Resultados ¿?}
+       {Resultados ¿main12 y main13?}
 
+Las imagenes cuenta con tres graficas:
+\begin{itemize}
+    \item La primera muestra la evolución general del sistema en función de los episodios, muestra los resultados de las dos redes neuronales, la azul para agente y la cian para el aprendiz- la línea roja representa la recompensa real que devuelve el entorno, y la negra muestra la media de las cien ultimas partidas, de esta forma tenemos una observación general y fácil de interpretar.
+    \item La grafica inferior izquierda muestra la posición máxima alcanzada durante la partida, esto nos permite ver lo cerca que se ha quedado de alcanzar la meta.
+    \item La grafica inferior derecha representa las puntuaciones obtenidas por las redes en una simulación al final de la ejecución, así podemos ver si realmente han aprendido. Esta simulación la haremos utilizando la recompensa original simplificando la interpretación de la misma.  
+\end{itemize}
+ 
 SIN REVISAR A PARTIR DE AQUÍ
 
-Por último, decidimos añadir al agente una modificación para favorecer la convergencia de los resultados del sistema y reducir las caídas vistas en las gráficas.
-Esto lo conseguimos añadiendo un tercer modelo al agente, siendo su composición final de:
+Dado que seguíamos encontrando fluctuaciones en el aprendizaje de algunas ejecuciones, y en busca de una mayor estabilidad, decidimos añadir una tercera red neuronal que permitiera almacenar el mejor modelo encontrado hasta el momento. Este modelo intervendría eventualmente en competiciones para medir la progresión del aprendizaje y en caso de producirse una regresión revertirla.
+
+\figura{Bitmap/DQNEnAccion/mountaincar_07}{width=1\textwidth}{fig:mountaincar_11}%
+       {Resultados ¿main11?}
+
+En la imagen \ref{fig:mountaincar_11} se puede ver como una vez alcanza el máximo, el agente se mantienen sin divergir y sin casi fluctuar. Se debe a la estabilidad de las dos redes, que le permiten retractar cualquier caida en el aprendizaje.
+
+
+Profundizando en la implementación:
 \begin{itemize}
- \item Modelo Mentor: se limitará a responder a los estímulos del entorno sin hacer replay de sus jugadas, es decir, sin aprender y simplemente almacenando en la memoria los estados por los que ha pasado y sus correspondientes recompensas.
- \item Modelo Aprendiz: se dedicará a aprender, haciendo los replays de la batería de estados-recompensa que va generando el Modelo Mentor.
- \item Modelo Best: será el mejor de los modelos encontrados hasta el momento. 
+ \item Modelo Agente: se limitará a responder a los estímulos del entorno sin aprender y almacenando en la memoria los estados y recompensas por los que ha pasado.
+ \item Modelo Aprendiz: se dedicará a aprender, haciendo los ``replays'' de la memoria generada por el Modelo agente.
+ \item Modelo ``Best'': contiene la configuración del mejor de los modelos encontrados hasta el momento. 
 \end{itemize}
 El desarrollo de la ejecución se divide en 3 fases:
 
