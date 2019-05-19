@@ -1,5 +1,25 @@
 \chapter{Aportación de los participantes}
 
+\section{Ricardo Arranz Janeiro}
+\subsection{Antecedentes}
+Antes de comenzar este proyecto, mi conocimiento sobre redes neuronales se limitaba al adquirido durante la asignatura de Inteligencia Artificial. En esta asignatura nos enseñaron los tipos básicos de redes neuronales, cuando aplicar cada tipo de red y como interpretar graficas resultantes. No llegamos a implementarlos en ningún proyecto, pero contaba con la base teórica.
+
+Por otro lado, el concepto de aprendizaje por refuerzo me era prácticamente desconocido, surgió durante la asignatura de Programación Evolutiva, cuando unos compañeros hicieron un prototipo capaz de jugar al Super Mario Bros., y que mediante técnicas de programación evolutiva iba mejorando su árbol de decisión, en ese momento el profesor comentó que para este tipo problemas era más eficiente utilizar técnicas de Aprendizaje por refuerzo. Parecía algo interesante pero no volvimos a tratar el tema. 
+
+\subsection{Aportación} 
+Al ser el último en unirme al grupo, me encontré con que mis compañeros ya contaban con cierto conocimiento en la materia que íbamos a tratar, así que inicialmente me dediqué a ponerme al día. Estudié el libro \textit{Fundamentals of Deep Learning} \citep{Buduma:general} y empecé a indagar en internet buscando artículos que hablaran de esta tecnología. 
+
+Después, me pude unir a mis compañeros en el desarrollo de redes neuronales, mi aportación fue ayudar con el ajuste de los hiperpámetros del ejercicio de regresión, y así acelerar el aprendizaje.
+
+A estas alturas la primera fase de nuestro proyecto llegaba a su fin y teníamos que empezar con el desarrollo del prototipo de aprendizaje profundo por refuerzo. Esta parte consistía en suplir el problema de almacenamiento del Q-Learning con una red neuronal.
+
+El primer problema al que nos enfrentamos fue implementar CartPole, pero esta vez utilizando la técnica de DQL, Juan Ramón del Caño Vega y Juan Luis Romero Sánchez, que se habían encargado de la parte de aprendizaje por refuerzo, fueron los que más aportaron en esta parte, aunque todos investigamos como solucionar los problemas que iban surgiendo, ellos fueron los que llevaron mayor carga de trabajo. Mientras tanto yo me centré en desarrollar las distintas versiones del ``DobleAgent’’, que inicialmente, comenzó siendo dos agentes completamente separados y terminó siendo un solo agente relativamente escalable. 
+
+Más tarde me volqué en el desarrollo de los prototipos del problema de MountainCar. El prototipo inicial se basaba en la recompensa devuelta por el entorno, pero viendo los resultados comprendimos que no bastaba con las técnicas aprendidas durante el CartPole, teníamos que buscar alguna forma de acelerar el aprendizaje.
+
+Tras una lluvia de ideas en el despacho de Antonio, comenzamos a explorar nuevas opciones. Por mi parte, me centré en la función de recompensa, creé distintas variantes en busca de un aprendizaje más rápido, pero todos fueron un fracaso al principio, no aprendían bien o se atascaban en máximos locales. Además, debido a la baja velocidad de aprendizaje necesitábamos muchos episodios para ver diferencia entre los prototipos, lo que se traduce en grandes tiempos de espera entre pruebas. 
+
+Poco a poco, con la implementación de nuevas técnicas, refinamiento y descarté de otras, y el conocimiento adquirido en sucesivos intentos, fui consiguiendo buenos resultados. Finalmente obtuvimos una solución capaz de alcanzar el objetivo en un periodo mucho menor al que obtuvimos al principio y con una robusta convergencia.
 
 
 \section{Lidia Concepción Echeverría}
