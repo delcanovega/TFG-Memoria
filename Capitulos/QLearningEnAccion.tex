@@ -3,7 +3,22 @@
 
 \chapterquote{La vida no es un problema por resolver, sino una realidad que experimentar}{Søren Kierkegaard}
 
+
+\section{Lenguajes y herramientas utilizadas}
+
+La elección de Python \citep{python} como lenguaje para nuestras pruebas tiene muchos motivos. Para empezar se trata de un lenguaje de programación que te permite ponerte a trabajar muy rápidamente, no necesitas grandes entornos de desarrollo y su gestión de paquetes es rápida y sencilla, por lo que en apenas unos minutos puedes tener tu proyecto configurado y listo para trabajar en cualquier ordenador.
+
+Además, durante los últimos años Python ha sido la opción por excelencia para el Aprendizaje Automático. Esto se traduce en una gran cantidad de recursos disponibles, ya sea en forma de frameworks, librerías de utilidades, documentación o una gran comunidad activa dispuesta a resolver tus dudas.
+
+La distribución elegida de Python ha sido Anaconda \citep{anaconda}, la cual incluye muchas librerías básicas para trabajar en Aprendizaje Automático. Además de proporcionarte facilidades, como poder mantener distintas instalaciones de Python en entornos aislados con la seguridad de que los paquetes o configuraciones para otros proyectos no se verán alterados.
+
+Algunas de las librerías que hemos usado han sido NumPy y Matplotlib. Numpy \citet{numpy} pone a tu disposición arrays multidimensionales y multitud de funciones para trabajar con ellos. Se trata de implementaciones de muy alto rendimiento en C, utilizadas a través de la comodidad y simpleza de Python. Matplotlib \citep{matplotlib} es una biblioteca para la generación de gráficas a partir de datos almacenados en arrays. Generar gráficas sencillas como las nuestras es rápido e intuitivo, pero la librería es lo bastante compleja como para permitirte generar cosas mucho más avanzadas.
+
+Más adelante también utilizaremos Keras. Keras \citep{chollet2015keras} es una biblioteca de alto nivel para Aprendizaje Profundo. Es capaz de funcionar con varios \textit{backends}, como TensorFlow \citep{tensorflow2015-whitepaper}, Theano \citep{2016arXiv160502688short} o CNTK \citep{Seide:2016:CMO:2939672.2945397}. Su principal ventaja es que permite trabajar de forma rápida y amigable a los usuarios novicios, pero al mismo tiempo posee la suficiente flexibilidad para aquellos usuarios avanzados que necesiten mayor control sobre las implementaciones.
+
+
 \section{OpenAI}
+
 OpenAI es una iniciativa cuyo objetivo es asegurar que la \textbf{Inteligencia Artificial General} (AGI) beneficie a toda la humanidad. En su web se encuentra el siguiente manifiesto \citep{OpenAI_charter}:
 
 \begin{quote}
@@ -19,8 +34,10 @@ En busca de este objetivo, OpenAI sigue tres caminos:
 
 Es nuestra investigación nos serviremos de una de estas plataformas, \textbf{OpenAI Gym}, para experimentar y descubrir los puntos fuertes y débiles de las distintas técnicas y algoritmos de aprendizaje.
 
+
 \subsection{OpenAI Gym}
 \label{sec:openai}
+
 Gym es un conjunto de herramientas para desarrollar y comparar algoritmos de aprendizaje de refuerzo. A través de sus diferentes entornos los agentes son capaces de aprender cualquier cosa, desde caminar hasta jugar a juegos como Pong o Pinball.
 
 Para ello la librería aporta al usuario una interfaz sencilla, a través de la cual se le provee un entorno de simulación. En nuestro caso, el algoritmo que proporcionaremos será el agente que interaccionará con el entorno para aprender de él e intentar lograr unos objetivos.
@@ -54,8 +71,10 @@ Todos los entornos respetan la estructura definida en la sección de Problemas d
 
 Nuestro objetivo consistirá en que el agente aprenda por sí mismo cuál es la acción que más le conviene tomar en cada situación, buscando maximizar la recompensa.
 
+
 \section{CartPole}
 \label{cartpole-sec}
+
 CartPole es uno de los problemas introductorios al Aprendizaje Automático mas famosos. Fue introducido por primera vez en \citet{BartoSA83} y su descripción en OpenAI es la siguiente:
 
 \figura{Bitmap/QLearningEnAccion/cartpole_00}{width=0.7\textwidth}{fig:cartpole_00}%
@@ -88,8 +107,10 @@ Nuestro conjunto de acciones, como se indica en el enunciado, tiene dos elemento
 
 Como podemos ver a través de las observaciones, este es uno de esos problemas en los que el número de estados distintos es potencialmente infinito, debido a que estamos tratando con valores continuos. Por ello tendremos que encontrar una buena \textbf{función de discretización} que simplifique la representación del estado y nos permita trabajar con un número óptimo de estados. Por suerte para nosotros, disponer de un número tan limitado de acciones posibles disminuye la complejidad del problema.
 
+
 \subsection{Discretizando el estado}
 \label{sec:disc}
+
 A la hora de discretizar una observación, una de las mejores formas de hacerlo es a través de una simplificación de la misma. Este acercamiento es una adaptación del \textit{Constraint Relaxation} (\citet{rardin1998optimization}) que se aplica en muchos problemas de satisfacción de restricciones. De esta forma podemos comprender el problema desde un punto de partida mucho más sencillo, para después pulir la fórmula y tener en cuenta más variables. Además, podemos ir evaluando el rendimiento de nuestro agente a lo largo del camino, y así poder comprobar si las modificaciones que vamos añadiendo realmente mejoran su comportamiento o simplemente añaden ruido.
 
 Centrémonos por un momento en el objetivo más básico del problema: mantener el mástil en pie. Podemos dividir el problema en dos estados muy simples, uno en el que el mástil está cayendo hacia la derecha y otro en el cae hacia la izquierda, como podemos ver en la Figura \ref{fig:cartpole_01}. Esto coincide con nuestras dos acciones disponibles y, de forma algo ingenua, podemos considerar esto un punto de partida válido.
@@ -104,7 +125,9 @@ Por supuesto, esta discretización es demasiado ingenua para resolver el problem
 
 Este aumento en el número de estados permite que nuestro agente sea capaz de especializarse más en situaciones concretas. Pero esta mejora viene con un precio a pagar: cuantos más estados distintos tengamos más ocuparán en memoria, llegando al punto de quedarnos sin ella; y más tiempo tardará en visitarlos todos los estados (en repetidas ocasiones) durante su etapa de entrenamiento. Esto quiere decir que nuestro agente tardará más en tener un buen rendimiento. Es importante entonces que evaluemos el problema al que nos enfrentamos para encontrar el equilibrio ideal y así poder ahorrar recursos de memoria y tiempo.
 
+
 \subsection{Resultados}
+
 \begin{quote}
     CartPole define como solucionado el problema al obtener una recompensa media de 195.0 durante 100 episodios consecutivos.
 \end{quote}
@@ -137,7 +160,9 @@ En dicha gráfica se pueden apreciar tres etapas distintas en el rendimiento del
 
 Como hemos indicado anteriormente, estos resultados han sido obtenidos con una configuración en la discretización de \texttt{(1, 1, 3, 6)}. Utilizar \texttt{'1'} para las observaciones de la velocidad y posición del carro quiere decir que ignoramos las mismas. Aunque esto pueda parecer contraproducente, durante nuestras simulaciones descubrimos que el principal motivo de finalización de un episodio era la caída del mástil. En la mayoría de las ocasiones el mástil cae mucho antes de que el carro alcance los límites laterales. Esto nos permite ignorar las dos primeras observaciones (posición del carro y velocidad del carro) reduciendo notablemente la dimensionalidad del problema, con un resultado de tan solo $1*1*3*6=18$ estados. De esta forma, el agente aprende mucho antes y no consume tantos recursos.
 
+
 \subsubsection{Otras configuraciones}
+
 Para comprender mejor el comportamiento del agente, realizamos pruebas con otras configuraciones en la discretización del estado durante simulaciones más extendidas. En concreto, probamos la discretización expuesta en la imagen \ref{fig:cartpole_01}, la cual es demasiado simple como para conseguir aprender. Para el agente todas las situaciones a las que se enfrenta son la misma, por lo tanto cuando mejora su rendimiento una situación concreta también lo empeora para otras.
 
 Otra configuración probada fue \texttt{(1, 2, 3, 8)}, la cuál es más detallada que la usada en \ref{fig:cartpole_03}. Por ello, cabe esperar que el agente tarde más en tener buenos resultados, ya que al haber un mayor número de estados tardará más en visitarlos todos y reforzarlos consecuentemente. Por otra parte, cabría esperar una mayor estabilidad cuando el agente ha entrenado durante mucho tiempo. Los resultados de las pruebas pueden verse en la gráfica \ref{fig:cartpole_04}.
@@ -147,6 +172,7 @@ Otra configuración probada fue \texttt{(1, 2, 3, 8)}, la cuál es más detallad
 
 
 \section{Los límites del Aprendizaje por Refuerzo}
+
 A lo largo de este capítulo hemos introducido el \textit{Aprendizaje por Refuerzo} como método de aprendizaje, las ventajas que tiene sobre otros métodos, sus mecánicas y elementos, algunos de sus algoritmos... Pero también nos hemos encontrado ciertos problemas.
 
 El más importante es el que vimos durante la discretización del estado, cómo a medida que aumentan las dimensiones el número de estados se dispara. Este problema es conocido como la \textbf{maldición de la dimensión} (\textit{curse of dimensionality}), expresión que fue acuñada por Richard E. Bellman (\citet{bellman1957dynamic}, \citet{bellman1961adaptive}) y en el Aprendizaje Automático hace referencia al aumento exponencial en el tamaño de las tablas de estados en la memoria de los agentes, aunque también está presente en otros dominios como Combinatoria, Muestreo, Optimización... El problema puede ser contenido hasta cierto punto a través de buenas aproximaciones en la discretización; no obstante, un entorno continuo lo bastante complejo acaba resultando inviable de afrontar.
