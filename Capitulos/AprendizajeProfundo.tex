@@ -65,6 +65,7 @@ Para evitar que ocurran este tipo de problemas, se estudiaron múltiples algorit
 \end{itemize}
 
 \subsection{Problemas de clasificación}
+\label{sec:clasif_NN}
 Los problemas de clasificación consisten, a grandes rasgos, en asignar un dato recibido a una categoría de un conjunto ya establecido. El ejemplo más claro de esta categoría sería proveer de imágenes de perros y gatos a una red neuronal, y que sea ésta la que decida de qué animal se trata en cada caso. Modificando el comportamiento del ojo humano, la red recibiría dichas imágenes como un conjunto de píxeles y a partir ellos, crearía contornos y buscaría patrones para distinguir entre un animal u otro.
 
 En nuestro ejemplo de aprendizaje supervisado sobre clasificación, hemos elegido otro conjunto de datos conocido: reconocimiento de cifras escritas a mano \citep{lecun-mnisthandwrittendigit-2010}. Este consiste en un conjunto de 4500 imágenes de diferentes cifras escritas a mano de distintas formas, como se ve en la imagen \ref{fig:cifras}, incluyendo la respuesta correcta para comprobar los resultados de nuestro clasificador.
@@ -79,6 +80,7 @@ Tanto la capa de entrada como la oculta, son del tipo \textit{ReLu}, visto anter
 Además, para comprobar que nuestra red neuronal entrena y aprende correctamente, hemos utilizado validación cruzada en K-iteraciones (\textbf{K-Fold cross-validation}). La técnica de validación cruzada consiste en dividir en varios grupos el conjunto de datos proporcionado y entrenar varias veces el modelo sobre ellos, alternando la función de dichos grupos entre entrenamiento y prueba. El algoritmo K-Fold nos permite barajar el conjunto de datos y dividirlo en k grupos, todos para entrenamiento a excepción de uno que se reserva para el prueba. De esta forma, podemos comprobar las distintas formas en las que ha aprendido, en función de los grupos formados durante la aplicación del K-Fold.
 
 \subsection{Problemas de regresión}
+\label{sec:regres_NN}
 Los problemas de regresión se distinguen de los de clasificación en que la respuesta de la red neuronal no pertenece a un grupo, sino que se intenta predecir un valor real. La forma de entender este tipo de problemas sería tomando como ejemplo una red neuronal que sea capaz de predecir el precio de una casa en función de su tamaño, número de habitaciones, localización, etc.
 
 Para este ejemplo, hemos utilizado el conjunto de datos \textbf{Boston Housing}, incluido en uno de los paquetes de Keras \citep{BostonKeras}. Éste consta de 13 características distintas de un número determinado de viviendas (506 casos), a partir de las cuales se puede averiguar su precio. 

@@ -25,6 +25,28 @@ A la hora de documentar este primer bloque recurrí al libro \textit{Artificial 
 
 En este punto el resto del equipo ya había acabado de investigar Redes Neuronales (especialmente Lidia Concepción y Francisco Ponce), y nos preparábamos para empezar con el Aprendizaje por Refuerzo Profundo. Para ponerme al día con Redes Neuronales repetí uno de los ejemplos de clasificación que ellos ya habían hecho, MNIST \citep{MNISTKeras}, pero esta vez usando Jupyter Notebooks y el conjunto de datos propio de Keras.
 
-Una vez hecho esto todos nos pusimos a volver a resolver CartPole utilizando las DQN que vimos en libros como \textit{Fundamentals of Deep Learning} \citep{Buduma:grad-dec} y los artículos de DeepMind. Mientras el resto del equipo salto directamente a las implementaciones vistas en \ref{sec:cartpoledqn3} y \ref{sec:DA}, yo empecé desde \ref{sec:cartpoledqn1}. Estas implementaciones, a pesar de que sabíamos que no funcionarían demasiado bien, nos permitieron comprender el proceso de mejora del agente mucho mejor, y por supuesto a documentarlo mejor, en lo que también participé.
+Una vez hecho esto todos nos pusimos a volver a resolver CartPole utilizando las DQN que vimos en libros como \textit{Fundamentals of Deep Learning} \citep{Buduma:dnn} y los artículos de DeepMind. Mientras el resto del equipo salto directamente a las implementaciones vistas en \ref{sec:cartpoledqn3} y \ref{sec:DA}, yo empecé desde \ref{sec:cartpoledqn1}. Estas implementaciones, a pesar de que sabíamos que no funcionarían demasiado bien, nos permitieron comprender el proceso de mejora del agente mucho mejor, y por supuesto a documentarlo mejor, en lo que también participé.
 
 Finalmente, también dediqué tiempo al problema de MountainCar. Especialmente a darnos cuenta de por qué es un problema tan especial y cuáles eran los motivos por los que presentaba nuevos retos. Finalmente fue Ricardo Arranz quien se enfrentó con el problema hasta el final.
+
+\section{Francisco Ponce Belmonte}
+
+
+\subsection{Antecedentes}
+
+Al principio tenía conocimientos bastante ligeros sobre temas como Aprendizaje por Refuerzo y Redes Neuronales, todos ellos lo aprendí en la asignatura de Inteligencia Artificial. Sin embargo, considerando esta base insuficiente, decidí cursar la optativa de Aprendizaje Automático, con el fin de ganar más conocimientos y soltura en el uso y funcionamiento de las Redes Neuronales.
+
+Por otro lado, también cursé Minería de Datos. Aunque la asignatura no estaba directamente relacionada con el objetivo de este proyecto, sí que utilizaba algunas herramientas y principios que me resultaron útiles para empezar con mis aportaciones. Entre ellos, cabría destacar las librerías \texttt{scikit-learn}, \texttt{pandas} o \texttt{numpy} de Python. 
+
+
+\subsection{Aportación}
+
+Mientras algunos de mis compañeros se encargaban de la base para Aprendizaje por Refuerzo, yo me centré en el desarrollo de la Red Neuronal. Aunque ya tenía unos conocimientos base, además de lo que iba aprendiendo paralelamente en Aprendizaje Automático, decidí empezar desde abajo para ir analizando paso a paso las posibilidades de esta rama.
+
+Debido a ello, comencé con el desarrollo de una red neuronal de clasificación \ref{sec:classif_NN} usando las herramientas con las que ya estaba familiarizado, consiguiendo resultados rápidamente y sin ningún problema. Una vez más acostumbrado al funcionamiento de las Redes Neuronales, empecé a preparar lo que realmente necesitaría para nuestro proyecto, una red neuronal de regresión \ref{sec:regres_NN}. Para ello, dejé atrás las herramientas conocidas y empecé a utilizar \texttt{Keras}. Éste ya poseía unos cuantos ejemplos que podía aprovechar, aparte de automatizar muchos de los procesos necesarios para la resolución del problema.
+
+Para entonces, el resto del grupo ya había concluido con su parte y pudimos empezar a unir nuestros aportes para empezar con el Aprendizaje por Refuerzo Profundo. Por mi parte, empecé directamente con las implementaciones vistas en \ref{sec:cartpoledqn3}, en busca de obtener resultados que analizar. Sin embargo, ante la tesitura de que éramos muchos trabajando individualmente sobre el mismo problema, y que algunos de mis compañeros estaban consiguiendo mejores resultados, decidí centrarme más en la memoria del proyecto.
+
+Durante esta parte \ref{cap:deepLearning} comencé referenciando lo aprendido en las pruebas de los primeros meses\ref{sec:classif_NN} \ref{sec:regres_NN}, para luego basarme en el libro de \textit{Fundamentals of Deep Learning}, especialmente en sus segundo\citep{Buduma:backprop} y cuarto \citep{Buduma:dnn} capítulos. En ellos se tratan de manera profunda los fundamentos y mecánicas de Redes Neuronales y su aplicación y uso en el Aprendizaje por Refuerzo Profundo.
+
+En última instancia, al igual que el resto de mis compañeros, revisé el trabajo completo tanto para búsqueda de errores como para una mayor comprensión de lo conseguido en el proyecto.
