@@ -21,20 +21,16 @@ Como primer paso para la resolución del problema, se sustituyó la tabla-Q y su
 En el fragmento de código \ref{code:dqn} podemos ver que la implementación del algoritmo es muy similar a la usada en \ref{code:q-learning}, con unas modificaciones que describiremos a continuación.
 
 \begin{minipage}{0.9\linewidth}%
-    \begin{lstlisting}[frame=tb, caption=Pseudocódigo SimpleAgent, inputencoding=latin1, label=code:dqn]
-    
-    Inicializar red, estados y acciones
-    
-    Repetir (para cada episodio):
-        Inicializar estado-actual (s)
+\begin{lstlisting}[frame=tb, caption=Pseudocódigo SimpleAgent, inputencoding=latin1, label=code:dqn]      
+  state = env.restart()
+
+  while not done:
+    action = agent.predict_action(state)
+    next, reward, done = env.step(action)
+    agent.learn(state, action, reward, next, done)
+    state = next
         
-        Repetir (para cada paso del episodio):
-            Predecir accion
-            Tomar la accion
-            Entrenar red
-            estado-actual = estado-siguiente
-        Hasta que el episodio termine
-    \end{lstlisting}%
+\end{lstlisting}%
 \end{minipage}
 
 Para \textbf{predecir acciones} utilizamos la red neuronal, a la cual introducimos el estado actual para que nos devuelva los resultados de ambas acciones, de los cuales nos quedaremos con el mejor. Una vez ejecutada la acción disponemos del estado siguiente y la recompensa, lo cual podemos usar para \textbf{entrenar la red neuronal} de nuevo.
@@ -62,36 +58,21 @@ Otra manera de conseguir estabilidad es añadiendo una memoria al agente. Para h
 
 En nuestra memoria guardamos todos los datos necesarios para la perfecta representación de lo sucedido en pasos de ejecución anteriores, lo que se traduce en: \textbf{estado-actual}, \textbf{acción-tomada}, \textbf{recompensa}, \textbf{estado-siguiente} y \textbf{finalizado}.
 
-%Inicializar red, estados y acciones
-    
-%Repetir (para cada episodio):
-%Inicializar estado-actual (s)
-
-%Repetir (para cada paso del episodio):
-%    Predecir accion
-%    Tomar la accion
-%    Almacenar resultados en memoria
-%    Entrenar red con datos de la memoria
-%    estado-actual = estado-siguiente
-%Hasta que el episodio termine
-
 \begin{minipage}{0.9\linewidth}%
-    \begin{lstlisting}[frame=tb, caption=Pseudocódigo BatchAgent, inputencoding=latin1, label=code:cartpole_drl2]
-    
-    Inicializar red, estados y acciones
-    
-    for i in range(EPISODES):
-        enviroment.restart()
-        state = enviroment.getState()
+\begin{lstlisting}[frame=tb, caption=Pseudocódigo BatchAgent, inputencoding=latin1, label=code:cartpole_drl2]
+  state = env.restart()
+
+  while not done:
+    action = agent.predict_action(state)
+    next, reward, done = env.step(action)
+
+    agent.remember(state, action, reward, next, done)
+    # Takes the last N memories and trains with them
+    agent.learn_by_replay()
+
+    state = next
         
-        while not done:
-            action = agent.predict(state)
-            next_state, reward, done  = enviroment.step(action)
-            agent.update(state, action, reward, next_state, done)
-            agent.replay()
-            state = next_state
-        
-    \end{lstlisting}%
+\end{lstlisting}%
 \end{minipage}
 
 Tras la ejecución de cada acción, y con la información proporcionada por el entorno en ese momento, guardamos todos estos valores en la memoria para ser utilizados posteriormente. De esta forma contamos con un conjunto ($batch$) de los últimos $N$ pasos guardados en la memoria. De esta forma podemos entrenar la red neuronal con un mayor número de casos de prueba, intentando evitar así la inestabilidad del \texttt{SimpleAgent}.
@@ -108,21 +89,20 @@ El problema es que los pasos tomados dentro de estos $batch$ están fuertemente 
 Por fortuna solucionar el problema de la cohesión en el \texttt{BatchAgent} tiene fácil solución. Tan sólo necesitaremos que la memoria de nuestro agente sea lo bastante grande como par albergar experiencias lo bastante variadas, después sólo tendremos que seleccionar elementos aleatorios de la memoria. Con esta solución, el agente debería tener una muestra más amplia respecto a los estados posibles y sería mucho más fácil que encontrase una solución con prontitud.
 
 \begin{minipage}{0.9\linewidth}%
-    \begin{lstlisting}[frame=tb, caption=Pseudocódigo RandomBatchAgent, inputencoding=latin1, label=code:cartpole_drl3]
-    
-    Inicializar red, estados y acciones
-    
-    Repetir (para cada episodio):
-        Inicializar estado-actual (s)
+\begin{lstlisting}[frame=tb, caption=Pseudocódigo RandomBatchAgent, inputencoding=latin1, label=code:cartpole_drl3]
+  state = env.restart()
+
+  while not done:
+    action = agent.predict_action(state)
+    next, reward, done = env.step(action)
+
+    agent.remember(state, action, reward, next, done)
+    # Takes the N random memories and trains with them
+    agent.learn_by_replay()
+
+    state = next
         
-        Repetir (para cada paso del episodio):
-            Predecir accion
-            Tomar la accion
-            Almacenar resultados en memoria
-            Entrenar con datos aleatorios de la memoria
-            estado-actual = estado-siguiente
-        Hasta que el episodio termine
-    \end{lstlisting}%
+\end{lstlisting}%
 \end{minipage}
 
 El resultado es notoriamente mejor, como muestra la imagen \ref{fig:CartPole-RandomBatchAgent}. De esta forma el agente consigue resolver el problema de forma rápida, además de puntuaciones mucho más altas en general. Sin embargo, entre unas simulaciones y otras los resultados son muy dispares, desde encontrar rápidamente y reforzar un camino ``bueno'' hasta lograr la resolución del problema, hasta no encontrar nunca un camino válido. En éste último caso podría deberse a que las muestras tomadas de la memoria no son lo suficiente variadas y el estado de la red neuronal se degrada progresivamente.
@@ -147,24 +127,25 @@ $$Y^Q_{t} = R_{t+1} + \gamma Q(S_{t+1}, argmax_{a} Q(S_{t+1}, a; \theta_{t}); \t
 El principal inconveniente que mostraba nuestro agente hasta el momento se debía a la gran diferencia entre las ejecuciones, dando unos resultados que era necesario estabilizar. Tomando como referencia las soluciones consideradas en el capítulo anterior, optamos por el uso de dos redes diferentes.
 
 \begin{minipage}{0.9\linewidth}%
-    \begin{lstlisting}[frame=tb, caption=Pseudocódigo DoubleAgent, inputencoding=latin1, label=code:cartpole_drl4]
-    
-    Inicializar red, estados y acciones
-    
-    Repetir (para cada episodio):
-        Inicializar estado-actual (s)
-        
-        Repetir (para cada paso del episodio):
-            Predecir accion con agente
-            Tomar la accion
-            Almacenar resultados en memoria
-            Entrenar aprendiz con datos aleatorios
-            estado-actual = estado-siguiente
-        Hasta que el episodio termine
+\begin{lstlisting}[frame=tb, caption=Pseudocódigo DoubleAgent, inputencoding=latin1, label=code:cartpole_drl4]
+  state = env.restart()
 
-        Si aprendiz mejor que agente:
-            agente = aprendiz
-    \end{lstlisting}%
+  while not done:
+    action = target.predict_action(state)
+    next, reward, done = env.step(action)
+
+    agent.remember(state, action, reward, next, done)
+    # Takes the N random memories and trains with them
+    agent.learn_by_replay()
+
+    state = next
+
+  # If the agent's performance surpasses the target's
+  if agent.performance() > target.performance():
+    # the agent becomes the target for now on
+    target = agent
+        
+\end{lstlisting}%
 \end{minipage}
 
 Tras la implementación de este método, comprobamos que lográbamos una mayor consistencia en los datos entre unas simulaciones y otras, obteniendo resultados menos dispares que con el entrenamiento por conjunto aleatorio como podemos observar en la imagen \ref{fig:CartPole-DoubleAgent}.
