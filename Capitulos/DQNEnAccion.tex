@@ -21,9 +21,7 @@ En el fragmento de código \ref{code:dqn} podemos ver que la implementación del
 
 \begin{minipage}{0.9\linewidth}%
 \begin{lstlisting}[frame=tb, caption=Pseudocódigo SimpleAgent, inputencoding=latin1, label=code:dqn]      
-    \begin{lstlisting}[frame=tb, caption=Pseudocódigo SimpleAgent, inputencoding=latin1, label=code:dqn]
-\begin{lstlisting}[frame=tb, caption=Pseudocódigo SimpleAgent, inputencoding=latin1, label=code:dqn]      
-  state = env.restart()
+  state = env.reset()
 
   while not done:
     action = agent.predict_action(state)
@@ -61,16 +59,18 @@ En nuestra memoria guardamos todos los datos necesarios para la perfecta represe
 
 \begin{minipage}{0.9\linewidth}%
 \begin{lstlisting}[frame=tb, caption=Pseudocódigo BatchAgent, inputencoding=latin1, label=code:cartpole_drl2]
-  state = env.restart()
+  state = env.reset()
 
-    Initialize network, states and actions
-    
-    agent.remember(state, action, reward, next, done)
+  while not done:
+    action = agent.predict_action(state)
+    next, reward, done = env.step(action)
+
+       agent.remember(state, action, reward, next, done)
     # Takes the last N memories and trains with them
     agent.learn_by_replay()
 
     state = next
-        
+              
 \end{lstlisting}%
 \end{minipage}
 
@@ -89,18 +89,19 @@ Por fortuna solucionar el problema de la cohesión en el \texttt{BatchAgent} tie
   
 \begin{minipage}{0.9\linewidth}%
 \begin{lstlisting}[frame=tb, caption=Pseudocódigo RandomBatchAgent, inputencoding=latin1, label=code:cartpole_drl3]
-    Inicializar red, estados y acciones
-    Repetir (para cada episodio):
-        Inicializar estado-actual (s)
+  state = env.reset()
 
-        Repetir (para cada paso del episoio):
-            Predecir accion
-            Tomar la accion
-            Almacenar resultado en memoria
-            Entrenar con datos aleatorios  
-            estado_actual = estado-siguiente
-        Hasta que el episodio termine
-    \end{lstlisting}%
+  while not done:
+    action = agent.predict_action(state)
+    next, reward, done = env.step(action)
+
+    agent.remember(state, action, reward, next, done)
+    # Takes the N random memories and trains with them
+    agent.learn_by_replay()
+
+    state = next
+              
+\end{lstlisting}%
 \end{minipage}
 
 El resultado es notoriamente mejor, como muestra la imagen \ref{fig:CartPole-RandomBatchAgent}. De esta forma el agente consigue resolver el problema de forma rápida, además de puntuaciones mucho más altas en general. Sin embargo, entre unas simulaciones y otras los resultados son muy dispares, desde encontrar rápidamente y reforzar un camino ``bueno'' hasta lograr la resolución del problema, hasta no encontrar nunca un camino válido. En éste último caso podría deberse a que las muestras tomadas de la memoria no son lo suficiente variadas y el estado de la red neuronal se degrada progresivamente.
