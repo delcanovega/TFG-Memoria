@@ -80,6 +80,7 @@ En nuestra memoria guardamos todos los datos necesarios para la perfecta represe
     
     for i in range(EPISODES):
         state = enviroment.restart()
+
         while not done:
             action = agent.predict(state)
             next_state, reward, done  = enviroment.step(action)
