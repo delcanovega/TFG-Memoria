@@ -92,13 +92,11 @@ Por fortuna solucionar el problema de la cohesión en el \texttt{BatchAgent} tie
     Inicializar red, estados y acciones
     Repetir (para cada episodio):
         Inicializar estado-actual (s)
-        
-        Repetir (para cada paso del episodio):
+
+        Repetir (para cada paso del episoio):
             Predecir accion
             Tomar la accion
-            Almacenar resultados en memoria
-            Entrenar con datos aleatorios de la memoria
-            estado-actual = estado-siguiente
+            Almacenar resultado en memoria
             Entrenar con datos aleatorios  
             estado_actual = estado-siguiente
         Hasta que el episodio termine
