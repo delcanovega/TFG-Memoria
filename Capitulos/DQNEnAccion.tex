@@ -284,10 +284,10 @@ Las imágenes cuenta con tres graficas:
     \item La grafica inferior izquierda muestra la posición máxima alcanzada durante la partida, esto nos permite ver lo cerca que se ha quedado de alcanzar la meta.
     \item La grafica inferior derecha representa las puntuaciones obtenidas por las redes en una simulación al final de la ejecución, así podemos ver si realmente han aprendido. Esta simulación la haremos utilizando la recompensa original simplificando la interpretación de la misma.  
 \end{itemize}
- 
-SIN REVISAR A PARTIR DE AQUÍ
 
-Dado que seguíamos encontrando fluctuaciones en el aprendizaje de algunas ejecuciones, y en busca de una mayor estabilidad, decidimos añadir una tercera red neuronal que permitiera almacenar el mejor modelo encontrado hasta el momento. Este modelo intervendría eventualmente en competiciones para medir la progresión del aprendizaje y en caso de producirse una regresión revertirla.
+
+
+Dado que seguíamos encontrando fluctuaciones en el aprendizaje de algunas ejecuciones, y en busca de una mayor estabilidad, decidimos añadir una tercera red neuronal que permitiera almacenar el mejor modelo encontrado hasta el momento. El objetivo de dicho modelo es intervenir eventualmente en competiciones para medir la progresión del aprendizaje y en caso de producirse una regresión, revertirla. De esta forma aseguramos una mayor estabilidad.
 
 \figura{Bitmap/DQNEnAccion/mountaincar_07}{width=1\textwidth}{fig:mountaincar_11}%
        {Resultados ¿main11?}
