@@ -6,13 +6,13 @@
 
 \section{Lenguajes y herramientas utilizadas}
 
-La elección de Python \citep{python} como lenguaje para nuestras pruebas tiene muchos motivos. Para empezar se trata de un lenguaje de programación que te permite ponerte a trabajar muy rápidamente, no necesitas grandes entornos de desarrollo y su gestión de paquetes es rápida y sencilla, por lo que en apenas unos minutos puedes tener tu proyecto configurado y listo para trabajar en cualquier ordenador.
+La elección de Python \citep{python} como lenguaje para nuestras pruebas consta de múltiples motivos. Para empezar se trata de un lenguaje de programación que permite empezar a trabajar muy rápidamente, no se necesitan grandes entornos de desarrollo y su gestión de paquetes es rápida y sencilla, por lo que en apenas unos minutos es posible tener un proyecto configurado y listo para trabajar en cualquier ordenador.
 
-Además, durante los últimos años Python ha sido la opción por excelencia para el Aprendizaje Automático. Esto se traduce en una gran cantidad de recursos disponibles, ya sea en forma de frameworks, librerías de utilidades, documentación o una gran comunidad activa dispuesta a resolver tus dudas.
+Además, durante los últimos años Python ha sido la opción por excelencia para el Aprendizaje Automático. Esto se traduce en una gran cantidad de recursos disponibles, ya sea en forma de frameworks, librerías de utilidades, documentación o una gran comunidad activa dispuesta a resolver cualquier duda.
 
-La distribución elegida de Python ha sido Anaconda \citep{anaconda}, la cual incluye muchas librerías básicas para trabajar en Aprendizaje Automático. Además de proporcionarte facilidades, como poder mantener distintas instalaciones de Python en entornos aislados con la seguridad de que los paquetes o configuraciones para otros proyectos no se verán alterados.
+La distribución elegida de Python ha sido Anaconda \citep{anaconda}, la cual incluye multitud de librerías básicas para trabajar en Aprendizaje Automático. Además de proporcionar facilidades extra, como es poder mantener distintas instalaciones de Python en entornos aislados, con la seguridad de que los paquetes o configuraciones para otros proyectos no se verán alterados.
 
-Algunas de las librerías que hemos usado han sido NumPy y Matplotlib. Numpy \citet{numpy} pone a tu disposición arrays multidimensionales y multitud de funciones para trabajar con ellos. Se trata de implementaciones de muy alto rendimiento en C, utilizadas a través de la comodidad y simpleza de Python. Matplotlib \citep{matplotlib} es una biblioteca para la generación de gráficas a partir de datos almacenados en arrays. Generar gráficas sencillas como las nuestras es rápido e intuitivo, pero la librería es lo bastante compleja como para permitirte generar cosas mucho más avanzadas.
+Algunas de las librerías que hemos utilizado han sido NumPy y Matplotlib. Numpy \citet{numpy} dispone de arrays multidimensionales y multitud de funciones para trabajar con ellos. Se tratan de implementaciones de muy alto rendimiento en C, utilizadas a través de la comodidad y simpleza de Python. Matplotlib \citep{matplotlib} es una biblioteca para la generación de gráficas a partir de datos almacenados en arrays. Generar gráficas sencillas como las que mostraremos más adelante es rápido e intuitivo, pero la librería es lo suficientemente compleja como para poder generar elementos mucho más avanzados.
 
 Más adelante también utilizaremos Keras. Keras \citep{chollet2015keras} es una biblioteca de alto nivel para Aprendizaje Profundo. Es capaz de funcionar con varios \textit{backends}, como TensorFlow \citep{tensorflow2015-whitepaper}, Theano \citep{2016arXiv160502688short} o CNTK \citep{Seide:2016:CMO:2939672.2945397}. Su principal ventaja es que permite trabajar de forma rápida y amigable a los usuarios novicios, pero al mismo tiempo posee la suficiente flexibilidad para aquellos usuarios avanzados que necesiten mayor control sobre las implementaciones.
 
@@ -27,12 +27,12 @@ OpenAI es una iniciativa cuyo objetivo es asegurar que la \textbf{Inteligencia A
 
 En busca de este objetivo, OpenAI sigue tres caminos:
 \begin{itemize}
-    \item \textbf{Investigación y desarrollo:} Sus contribuciones al Aprendizaje Automático como estado del arte durante los últimos años no han sido pocas: desde nuevos algoritmos de Aprendizaje por Refuerzo (\citet{baselines}) hasta demostraciones de cómo una Inteligencia Artificial puede sobrepasar a jugadores expertos (\citet{OpenAI_dota}).
+    \item \textbf{Investigación y desarrollo:} sus contribuciones al Aprendizaje Automático como estado del arte durante los últimos años no han sido pocas: desde nuevos algoritmos de Aprendizaje por Refuerzo (\citet{baselines}) hasta demostraciones de cómo una Inteligencia Artificial puede sobrepasar a jugadores expertos (\citet{OpenAI_dota}).
     \item \textbf{Recursos académicos} puestos a disposición por \citet{spinningup} para todo aquél que quiera aprender sobre el Aprendizaje por Refuerzo Profundo.
     \item \textbf{Herramientas y plataformas} mediante las cuales facilitar la labor de investigación y pruebas del Aprendizaje Automático.
 \end{itemize}
 
-Es nuestra investigación nos serviremos de una de estas plataformas, \textbf{OpenAI Gym}, para experimentar y descubrir los puntos fuertes y débiles de las distintas técnicas y algoritmos de aprendizaje.
+Es nuestra investigación nos serviremos de una de estas plataformas, \textbf{OpenAI Gym}, para experimentar y descubrir los puntos fuertes y débiles de las distintas técnicas y algoritmos de aprendizaje que utilizaremos.
 
 
 \subsection{OpenAI Gym}
@@ -59,14 +59,14 @@ Para ello la librería aporta al usuario una interfaz sencilla, a través de la 
     \end{lstlisting}%
 \end{minipage}
 
-Un ejemplo mínimo del uso de la librería puede verse en el fragmento de código \ref{code:gym_api}. La operación \texttt{gym.make()} crea una instancia del entorno especificado. No debemos preocuparnos por las reglas que rigen su funcionamiento (leyes físicas, acciones disponibles, resultados desencadenados por esas acciones...) ya que todo ello se hace automáticamente. La instrucción \texttt{env.reset()} devuelve el entorno a su estado inicial. Más adelante encontramos un bucle, en el que dos acciones ocurren en cada iteración. Primero el estado actual nos es mostrado a través de una interfaz gráfica a través de la función \texttt{env.render()}, como puede comprobarse en la imagen \ref{fig:cartpole_00}. A continuación una acción aleatorio es escogida del conjunto de acciones posibles mediante \texttt{env.action\_space.sample()} para después ser tomada como decisión en \texttt{env.step(action)}.
+Un ejemplo mínimo del uso de la librería puede verse en el fragmento de código \ref{code:gym_api}. La operación \texttt{gym.make()} crea una instancia del entorno especificado. No debemos preocuparnos por las reglas que rigen su funcionamiento (leyes físicas, acciones disponibles, resultados desencadenados por esas acciones...), ya que todo ello se hace automáticamente. La instrucción \texttt{env.reset()} devuelve el entorno a su estado inicial. Más adelante encontramos un bucle, en el que dos acciones ocurren en cada iteración. Primero, el estado actual nos es mostrado mediante una interfaz gráfica a través de la función \texttt{env.render()}, como puede comprobarse en la imagen \ref{fig:cartpole_00}. A continuación una acción aleatoria es escogida del conjunto de acciones posibles mediante \texttt{env.action\_space.sample()} para después ser tomada como decisión en \texttt{env.step(action)}.
 
 Todos los entornos respetan la estructura definida en la sección de Problemas de Decisión de Markov \ref{sec:mdp}. Cada vez que interaccionamos con un entorno a través de \texttt{env.step()} cuatro elementos nos son devueltos:
 \begin{itemize}
     \item \textbf{Observación} (objeto): consiste en un array que contiene la información necesaria para describir el estado actual.
     \item \textbf{Recompensa} (float): refuerzo para el agente proporcionado por el entorno.
-    \item \textbf{Fin} (boolean): señal que indica si la simulación ha concluido,en la mayoría de los entornos puede deberse a dos motivos: que el agente haya logrado su objetivo, o que haya fracasado.
-    \item \textbf{Info} (diccionario): información de diagnóstico útil para la depuración del agente. No obstante, esta información no debe ser usada por el agente para aprender.
+    \item \textbf{Fin} (boolean): señal que indica si la simulación ha concluido. En la mayoría de los entornos puede deberse a dos motivos: que el agente haya logrado su objetivo o que haya fracasado.
+    \item \textbf{Info} (diccionario): información de diagnóstico útil para la depuración del agente. Esta información no debe ser usada por el agente para aprender.
 \end{itemize}
 
 Nuestro objetivo consistirá en que el agente aprenda por sí mismo cuál es la acción que más le conviene tomar en cada situación, buscando maximizar la recompensa.
@@ -75,7 +75,7 @@ Nuestro objetivo consistirá en que el agente aprenda por sí mismo cuál es la 
 \section{CartPole}
 \label{cartpole-sec}
 
-CartPole es uno de los problemas introductorios al Aprendizaje Automático mas famosos. Fue introducido por primera vez en \citet{BartoSA83} y su descripción en OpenAI es la siguiente:
+CartPole es uno de los problemas más famosos, introductorios al Aprendizaje Automático. Fue introducido por primera vez en \citet{BartoSA83} y su descripción en OpenAI es la siguiente:
 
 \figura{Bitmap/QLearningEnAccion/cartpole_00}{width=0.7\textwidth}{fig:cartpole_00}%
        {Entorno CartPole, \citet{BartoSA83}}
@@ -89,7 +89,7 @@ Nuestro conjunto de acciones, como se indica en el enunciado, tiene dos elemento
 \begin{itemize}
     \item \textbf{Observación} (objeto): los rangos de valores para el array pueden verse en la tabla \ref{obs-cartpole}.
     \item \textbf{Recompensa} (float): +1.0 mientras la simulación continúe.
-    \item \textbf{Fin} (boolean): la señal cambiará a \texttt{True} si el agente no consigue mantener el mástil erguido (como se indica en el enunciado), o por el contrario si se mantiene en pie durante suficiente tiempo (por defecto 200 \textit{timesteps}).
+    \item \textbf{Fin} (boolean): la señal cambiará a \texttt{True} si el agente no consigue mantener el mástil erguido (como se indica en el enunciado) o, por el contrario, si se mantiene en pie durante suficiente tiempo (por defecto 200 \textit{timesteps}).
 \end{itemize}
 \begin{table}[]
     \centering
@@ -118,7 +118,7 @@ Centrémonos por un momento en el objetivo más básico del problema: mantener e
 \figura{Bitmap/QLearningEnAccion/cartpole_01}{width=0.7\textwidth}{fig:cartpole_01}%
        {Simplificación de estados, fuente propia}
 
-Por supuesto, esta discretización es demasiado ingenua para resolver el problema de una forma eficiente; es necesario probar otras divisiones de estados y tener en cuenta las demás observaciones. Puesto que experimentar manualmente cuál de las cuatro observaciones es más descriptiva (y por tanto, hace que nuestro agente diferencie situaciones mejor), crearemos una función parametrizable, la cual decide en cuántos estados dividir cada observación. Así podemos decidir de una forma sencilla a qué observaciones damos más importancia, creando más o menos estados distintos en función a éstas, como podemos apreciar en la Figura \ref{fig:cartpole_02}.
+Por supuesto, esta discretización es demasiado simple para resolver el problema de una forma eficiente; es necesario probar otras divisiones de estados y tener en cuenta las demás observaciones. Puesto que experimentar manualmente cuál de las cuatro observaciones es más descriptiva (y por tanto, hace que nuestro agente diferencie situaciones mejor), crearemos una función parametrizable, la cual decide en cuántos estados dividir cada observación. Así podemos decidir de una forma sencilla a qué observaciones damos más importancia, creando más o menos estados distintos en función a éstas, como podemos apreciar en la Figura \ref{fig:cartpole_02}.
 
 \figura{Bitmap/QLearningEnAccion/cartpole_02}{width=0.7\textwidth}{fig:cartpole_02}%
        {División de las observaciones, fuente propia}
@@ -132,7 +132,7 @@ Este aumento en el número de estados permite que nuestro agente sea capaz de es
     CartPole define como solucionado el problema al obtener una recompensa media de 195.0 durante 100 episodios consecutivos.
 \end{quote}
 
-Para nuestra implementación usamos los siguientes hiperparámetros explicados en la sección \ref{sec:mdp} y configuración de estados (\ref{code:cartpole_rl}). Es común establecer un mínimo de exploración para que, pese a encontrarnos en un estado muy avanzado de la simulación, siempre tener una pequeña probabilidad de ir a parar a un estado nunca visitado que pueda mejorar nuestro resultado.
+Para nuestra implementación usamos los siguientes hiperparámetros explicados en la sección \ref{sec:mdp} y configuración de estados (\ref{code:cartpole_rl}). Es común establecer un mínimo de exploración para que, pese a encontrarnos en un estado muy avanzado de la simulación, siempre tengamos una pequeña probabilidad de ir a parar a un estado nunca visitado que pueda mejorar nuestro resultado.
 
 \begin{minipage}{0.9\linewidth}%
     \begin{lstlisting}[frame=tb, language=Python, caption=Hiperparámetros y configuración de estados, label=code:cartpole_rl]
@@ -146,26 +146,26 @@ Para nuestra implementación usamos los siguientes hiperparámetros explicados e
     \end{lstlisting}%
 \end{minipage}
 
-Para realizar las mediciones, creamos una cola con una longitud máxima de 100 elementos. En ella añadimos el resultado de cada simulación, de forma que el resultado número 101 elimina el número 1. De esta forma podemos calcular la media sobre la estructura de datos y comprobar si el problema se consideraría resuelto por OpenAI Gym. Además dibujaremos esta media de la estructura tras cada episodio en una gráfica, con el fin de que los resultados sean más fáciles de apreciar y analizar. Las gráficas resultantes tienen variaciones tras cada ejecución, pero el caso más común es el mostrado en la Figura \ref{fig:cartpole_03}.
+Para realizar las mediciones, creamos una cola con una longitud máxima de 100 elementos. En ella añadimos el resultado de cada simulación, de forma que el resultado número 101 elimina el número 1. De esta forma, podemos calcular la media sobre la estructura de datos y comprobar si el problema se consideraría resuelto por OpenAI Gym. Además dibujaremos esta media de la estructura tras cada episodio en una gráfica, con el fin de que los resultados sean más fáciles de apreciar y analizar. Las gráficas resultantes tienen variaciones tras cada ejecución, pero el caso más común es el mostrado en la Figura \ref{fig:cartpole_03}.
 
 \figura{Bitmap/QLearningEnAccion/cartpole_03}{width=0.7\textwidth}{fig:cartpole_03}%
        {Visualización de los resultados del agente RL}
 
 En dicha gráfica se pueden apreciar tres etapas distintas en el rendimiento del agente:
 \begin{itemize}
-    \item Episodios 1-50: durante las primeras simulaciones el agente aún ha de rellenar la tabla-Q. Se encuentra ante situaciones nuevas ante las que aún no sabe como reaccionar. Además hay que tener en cuenta que su rendimiento se calcula en base a la media con los primeros resultados, por lo que en la etapa final de esta fase aún es lastrado por esos primeros episodios.
-    \item Episodios 50-300: suponen el despegue en rendimiento del agente. En ellos se empieza a librar del lastre de las primeras simulaciones, además de que su tabla interna ya se encuentra en un estado bastante estable y es capaz de generar mejores resultados.
+    \item Episodios 1-50: durante las primeras simulaciones el agente aún ha de rellenar la tabla-Q. Se encuentra en situaciones nuevas ante las que aún no sabe cómo reaccionar. También hay que tener en cuenta que su rendimiento se calcula en base a la media con los primeros resultados, por lo que en la etapa final de esta fase aún es lastrado por esos primeros episodios.
+    \item Episodios 50-300: suponen el despegue en rendimiento del agente. En ellos se empieza a liberar del lastre de las primeras simulaciones, además de que su tabla interna ya se encuentra en un estado bastante estable y es capaz de generar mejores resultados.
     \item A partir del episodio 300: el agente alcanza su meta y el algoritmo comienza a estabilizarse.
 \end{itemize}
 
-Como hemos indicado anteriormente, estos resultados han sido obtenidos con una configuración en la discretización de \texttt{(1, 1, 3, 6)}. Utilizar \texttt{'1'} para las observaciones de la velocidad y posición del carro quiere decir que ignoramos las mismas. Aunque esto pueda parecer contraproducente, durante nuestras simulaciones descubrimos que el principal motivo de finalización de un episodio era la caída del mástil. En la mayoría de las ocasiones el mástil cae mucho antes de que el carro alcance los límites laterales. Esto nos permite ignorar las dos primeras observaciones (posición del carro y velocidad del carro) reduciendo notablemente la dimensionalidad del problema, con un resultado de tan solo $1*1*3*6=18$ estados. De esta forma, el agente aprende mucho antes y no consume tantos recursos.
+Como hemos indicado anteriormente, estos resultados han sido obtenidos con una configuración en la discretización de \texttt{(1, 1, 3, 6)}. Utilizar \texttt{'1'} para las observaciones de la velocidad y posición del carro quiere decir que ignoramos las mismas. Aunque esto pueda parecer contraproducente, durante nuestras simulaciones descubrimos que el principal motivo de finalización de un episodio era la caída del mástil. En la mayoría de las ocasiones el mástil cae mucho antes de que el carro alcance los límites laterales. Esto nos permite ignorar las dos primeras observaciones (posición del carro y velocidad del carro), reduciendo notablemente la dimensionalidad del problema, con un resultado de tan solo $1*1*3*6=18$ estados. De esta forma, el agente aprende mucho antes y no consume tantos recursos.
 
 
 \subsubsection{Otras configuraciones}
 
 Para comprender mejor el comportamiento del agente, realizamos pruebas con otras configuraciones en la discretización del estado durante simulaciones más extendidas. En concreto, probamos la discretización expuesta en la imagen \ref{fig:cartpole_01}, la cual es demasiado simple como para conseguir aprender. Para el agente todas las situaciones a las que se enfrenta son la misma, por lo tanto cuando mejora su rendimiento una situación concreta también lo empeora para otras.
 
-Otra configuración probada fue \texttt{(1, 2, 3, 8)}, la cuál es más detallada que la usada en \ref{fig:cartpole_03}. Por ello, cabe esperar que el agente tarde más en tener buenos resultados, ya que al haber un mayor número de estados tardará más en visitarlos todos y reforzarlos consecuentemente. Por otra parte, cabría esperar una mayor estabilidad cuando el agente ha entrenado durante mucho tiempo. Los resultados de las pruebas pueden verse en la gráfica \ref{fig:cartpole_04}.
+Otra configuración probada fue \texttt{(1, 2, 3, 8)}, la cuál es más detallada que la usada en \ref{fig:cartpole_03}. Por ello, cabe esperar que el agente tarde más en obtener buenos resultados, ya que al haber un mayor número de estados tardará más en visitarlos todos y reforzarlos consecuentemente. Por otra parte, cabría esperar una mayor estabilidad cuando el agente ha entrenado durante mucho tiempo. Los resultados de las pruebas pueden verse en la gráfica \ref{fig:cartpole_04}.
 
 \figura{Bitmap/QLearningEnAccion/cartpole_04}{width=0.7\textwidth}{fig:cartpole_04}%
        {Distintas configuraciones de discretización}
@@ -175,6 +175,6 @@ Otra configuración probada fue \texttt{(1, 2, 3, 8)}, la cuál es más detallad
 
 A lo largo de este capítulo hemos introducido el \textit{Aprendizaje por Refuerzo} como método de aprendizaje, las ventajas que tiene sobre otros métodos, sus mecánicas y elementos, algunos de sus algoritmos... Pero también nos hemos encontrado ciertos problemas.
 
-El más importante es el que vimos durante la discretización del estado, cómo a medida que aumentan las dimensiones el número de estados se dispara. Este problema es conocido como la \textbf{maldición de la dimensión} (\textit{curse of dimensionality}), expresión que fue acuñada por Richard E. Bellman (\citet{bellman1957dynamic}, \citet{bellman1961adaptive}) y en el Aprendizaje Automático hace referencia al aumento exponencial en el tamaño de las tablas de estados en la memoria de los agentes, aunque también está presente en otros dominios como Combinatoria, Muestreo, Optimización... El problema puede ser contenido hasta cierto punto a través de buenas aproximaciones en la discretización; no obstante, un entorno continuo lo bastante complejo acaba resultando inviable de afrontar.
+El más importante es el que vimos durante la discretización del estado, cómo a medida que aumentan las dimensiones el número de estados se dispara. Este problema es conocido como la \textbf{maldición de la dimensión} (\textit{curse of dimensionality}), expresión que fue acuñada por Richard E. Bellman (\citet{bellman1957dynamic}, \citet{bellman1961adaptive}) y que en el Aprendizaje Automático hace referencia al aumento exponencial en el tamaño de las tablas de estados en la memoria de los agentes, aunque también está presente en otros dominios como Combinatoria, Muestreo, Optimización... El problema puede ser contenido hasta cierto punto a través de buenas aproximaciones en la discretización. No obstante, un entorno continuo con bastante complejidad, acaba resultando inviable de afrontar.
 
-Otra solución ha surgido durante los últimos años y consiste en combinar el \textit{Aprendizaje por Refuerzo} con técnicas de \textit{Deep Learning}, que estudiaremos en los próximos capítulos.
+Otra solución ha surgido durante los últimos años y consiste en combinar el \textit{Aprendizaje por Refuerzo} con técnicas de \textit{Aprendizaje Profundo}, que estudiaremos en los próximos capítulos.
