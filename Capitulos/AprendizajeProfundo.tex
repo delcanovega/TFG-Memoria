@@ -1,43 +1,43 @@
 \chapter{Redes Neuronales y Q-Learning}
 \label{cap:deepLearning}
 
-\chapterquote{En otras actividades más allá del puro pensamiento lógico, nuestras mentes funcionan mucho más rápido que cualquier ordenador jamás concebido.}{Daniel Crevier}
+\chapterquote{En otras actividades más allá del puro pensamiento lógico, nuestras mentes funcionan mucho más rápido que cualquier ordenador jamás concebido}{Daniel Crevier}
 
 \section{Redes Neuronales: definición y elementos}
 En vistas a solucionar problemas cada vez más complejos, como por ejemplo reconocimiento de patrones, surgió la necesidad de buscar diferentes modelos computacionales. Una rama a destacar sería la de \textbf{Aprendizaje Profundo} (o \textit{Deep Learning}), englobada dentro de Aprendizaje Automático, que decidió diseñar estos nuevos modelos basándose en la estructura del cerebro humano, desarrollando de esta forma las primeras neuronas artificiales. Éstas se crearon para conseguir la resolución de dichos problemas a partir del diseño de Redes Neuronales y procesos de auto-aprendizaje vistos en capítulos anteriores.
 
 \subsection{Neuronas}
-La neurona es el elemento básico de una red neuronal. Al igual que las existentes en el cerebro humano, estas neuronas son células de procesamiento; reciben varias entradas de datos y devuelven una única salida. Cada neurona contiene uno o varios pesos propios, en función del número de variables que reciba, que se relacionan con éstas de la siguiente forma.
+La neurona es el elemento básico de una red neuronal. Al igual que las existentes en el cerebro humano, estas neuronas son células de procesamiento; reciben varias entradas de datos y devuelven una única salida. Cada neurona contiene uno o varios pesos propios, en función del número de variables que reciba, que se relacionan con ellas de la siguiente forma:
 
 $$Y = f(x\ w\ + b)$$
 
-Echando un vistazo a la representación de la neurona en la imagen \ref{fig:esquema_neurona}, distinguiremos las $x$ como las variables de entrada y $w$ los pesos que les asigna la propia neurona. La variable $b$ es el \textit{bias}, o desplazamiento, que se suma a la multiplicación entre las variables y sus respectivos pesos y $f$ es la \textbf{función de activación}, que nos devolverá la salida de la neurona $Y$.
+Echando un vistazo a la representación de la neurona en la imagen \ref{fig:esquema_neurona}, distinguiremos las $x$ como las variables de entrada y $w$ los pesos que les asigna la propia neurona. La variable $b$ es el \textit{bias}, o desplazamiento, que se suma a la multiplicación entre las variables y sus respectivos pesos y $f$ es la \textbf{función de activación}, que nos devolverá la salida $Y$ de la neurona.
 
 \figura{Bitmap/AprendizajeProfundo/Neuron}{width=0.8\textwidth}{fig:esquema_neurona}%
-       {Esquema de una neurona artificial.}
+       {Esquema de una neurona artificial}
 
 Sin embargo, dentro de estas neuronas existen varios tipos. Las que nos interesan y trataremos en profundidad son las especializadas en no linealidad, manteniendo ésta característica en su función de activación. Este tipo de neuronas produce respuestas acotadas, terminando así con los problemas de fluctuación y la falta de adecuación a diversos tamaños de señales. A continuación, listaremos las más utilizadas y las que podremos observar en la gráfica \ref{fig:func_neurona}.
 
 \begin{itemize}
-    \item Sigmoide: $f(z) = \frac{1}{(1+e^{-z})}$: esta función logit marca una diferenciación clara entre valores pequeños y grandes, agrupándolos en 0 o 1 respectivamente. Entre estos dos extremos, las salidas de las neuronas adoptarán una forma de S.
-    \item Tanh: $f(z)= tanh(z)$: este tipo de neurona tiene una salida muy parecida a las tipo sigmoide, manteniendo la forma de S, pero con la diferencia de que el marco esta entre -1 y 1. Suele ser usada con más asiduidad debido a que está centrada en 0.
-    \item ReLu: $f(z) = max(0,z)$: la neurona de linealidad restringida o ReLu (Restricted Linear Unit) utiliza un distinto tipo de no linealidad. A pesar de su simplicidad, ha sido la función de activación utilizada para la resolución de los diferentes problemas debido a su mayor facilidad de convergencia y facilidad computacional \citep{Enyinna2018}.
+    \item Sigmoide $f(z) = \frac{1}{(1+e^{-z})}$: esta función logit marca una diferenciación clara entre valores pequeños y grandes, agrupándolos en 0 o 1 respectivamente. Entre estos dos extremos, las salidas de las neuronas adoptarán una forma de S.
+    \item Tanh $f(z)= tanh(z)$: este tipo de neurona tiene una salida muy parecida a las tipo sigmoide, manteniendo la forma de S, pero con la diferencia de que el marco está entre -1 y 1. Suele ser usada con más asiduidad debido a que está centrada en 0.
+    \item ReLu $f(z) = max(0,z)$: la neurona de linealidad restringida o ReLu (Restricted Linear Unit) utiliza un distinto tipo de no linealidad. A pesar de su simplicidad, ha sido la función de activación utilizada para la resolución de diferentes problemas debido a su mayor facilidad de convergencia y facilidad computacional \citep{Enyinna2018}.
 \end{itemize}
 
 \figura{Bitmap/AprendizajeProfundo/Func_Neuron}{width=0.8\textwidth}{fig:func_neurona}%
-       {Comparación entre funciones Sigmoide, Tanh y ReLu.}
+       {Comparación entre funciones Sigmoide, Tanh y ReLu}
 
 \subsection{Estructura y funcionamiento}
 Ya que las funcionalidades de una neurona son limitadas, nos resultaría imposible resolver un problema de Aprendizaje Automático con ella. Para ello, de nuevo basándose en el modelo de un cerebro humano, las neuronas se encuentran agrupadas por capas, formando así una red neuronal. Cada capa consta de un número finito de neuronas del mismo tipo, recibiendo todas los mismos tipos y cantidades de datos devueltos por las neuronas de la capa anterior pero, como hemos mencionado antes, devolviendo resultados diferentes cada una.
 
-Las Redes Neuronales están compuestas generalmente por varias capas, de forma que las salidas de la anterior forman las entradas de la siguiente, tal y como podemos observar en la imagen \ref{fig:red_neuronal}. Entre ellas, podemos distinguir la capa de entrada, que es la que recibe los datos a analizar, la capa de salida, que es la que devuelve los resultados en el formato que nos interesa en función del problema, y las capas intermedias u ocultas. Éstas son las encargadas de abstraer todos los datos recibidos por la capa anterior para que sea más fácil procesarlos y analizarlos. 
+Las redes neuronales están compuestas generalmente por varias capas, de forma que las salidas de la anterior forman las entradas de la siguiente, tal y como podemos observar en la imagen \ref{fig:red_neuronal}. Entre ellas, podemos distinguir la capa de entrada, que es la que recibe los datos a analizar, la capa de salida, que es la que devuelve los resultados en el formato que nos interesa en función del problema, y las capas intermedias u ocultas. Éstas son las encargadas de abstraer todos los datos recibidos por la capa anterior para que sea más fácil procesarlos y analizarlos. 
 
 \figura{Bitmap/AprendizajeProfundo/Red_Neuronal}{width=1\textwidth}{fig:red_neuronal}%
        {Esquema de estructura de una red neuronal profunda}
 
 Las redes con múltiples capas intermedias son conocidas como \textbf{Redes Neuronales Profundas}, o \textit{Deep Neural Networks} (DNNs). El ejemplo más conocido para el que podemos utilizar estas redes es el de reconocimiento de objetos en imágenes. Existen múltiples formas de utilizar las DNNs en este ámbito, así que utilizaremos el ejemplo que podemos ver en la imagen \ref{fig:dnn}. 
 
-La capa de entrada comienza recibiendo un conjunto de bits de distintos colores. Las capas intermedias se encargan de distinguir el objeto, ya sea diferenciando los píxeles según sus colores y su proximidad, distinguiendo siluetas o bien reconociendo patrones que puedan distinguir al coche del resto de la fotografía. Con una sola capa intermedia nos sería imposible resolver este problema, ya que el proceso requiere varios pasos entre neuronas (por ejemplo, reconocer los faros, las ventanas, la matrícula, etc.). Finalmente, la capa de salida se encarga de marcar las regiones en las que el coche es visible, o más bien, en las que existe el objeto coche. En otros casos, las capas intermedias también pueden ser utilizadas para disminuir las dimensiones del problema, como reduciendo el número de píxeles de una imagen desde una magnitud de miles a una de decenas.
+La capa de entrada comienza recibiendo un conjunto de bits de distintos colores. Las capas intermedias se encargan de distinguir el objeto, ya sea diferenciando los píxeles según sus colores y su proximidad, distinguiendo siluetas o bien reconociendo patrones que puedan distinguir al coche del resto de la fotografía. Con una sola capa intermedia nos sería imposible resolver este problema, ya que el proceso requiere varios pasos entre neuronas (por ejemplo, reconocer los faros, las ventanas, la matrícula...). Finalmente, la capa de salida se encarga de marcar las regiones en las que el coche es visible, o más bien, en las que existe el objeto coche. En otros casos, las capas intermedias también pueden ser utilizadas para disminuir las dimensiones del problema, como reduciendo el número de píxeles de una imagen desde una magnitud de miles a una de decenas.
 
 \figura{Bitmap/AprendizajeProfundo/DNN_ejemplo}{width=1\textwidth}{fig:dnn}%
        {Ejemplo de uso de una DNN \citep{NIPS2013_5207}}    
@@ -56,28 +56,29 @@ El descenso de gradiente resulta útil a la hora de asignar pesos a una neurona,
 
 \subsubsection{Optimizadores}
 Antes hemos hablado de la tasa de aprendizaje, pero no hemos llegado a ver qué supone un menor o mayor valor. Concretamente, la tasa influye sobre todo dependiendo del tamaño del problema: mientras que un ratio pequeño puede aproximarse mejor al error mínimo, en problemas de gran magnitud puede resultar demasiado lento. Con un ratio de aprendizaje demasiado grande, ocurre exactamente lo contrario: aprenderá más rápidamente pero puede resultar muy difícil converger en un mínimo error local. 
-Para evitar que ocurran este tipo de problemas, se estudiaron múltiples algoritmos de optimización, de forma que dicho ratio se pudiera modificar dinámicamente durante el entrenamiento. A continuación explicaremos los optimizadores más utilizados \citep{NIPS2017_7003}:
+
+Para evitar que ocurrieran este tipo de problemas, se estudiaron múltiples algoritmos de optimización, de forma que dicho ratio se pudiera modificar dinámicamente durante el entrenamiento. A continuación explicaremos los optimizadores más utilizados \citep{NIPS2017_7003}:
 
 \begin{itemize}
     \item \textbf{AdaGrad}: intenta adaptar la tasa de aprendizaje global a partir de la acumulación del historial de gradientes. Para ser específicos, mantiene un seguimiento de la tasa de cada parámetro, de forma que éste sea inversamente proporcional a la raíz de la suma de los cuadrados del historial de gradiente de todos los estados.
     \item \textbf{RMSProp}: este algoritmo utiliza el de descenso de gradiente con momento que, en resumen, se trata de un descenso de gradiente donde los pasos para reducir el error son cada vez más cortos, de forma que se pueda converger en un error mínimo sin problemas. Combinando este algoritmo con el historial de gradientes de AdaGrad, obtenemos el optimizador RMSProp. 
-    \item \textbf{Adam}: mientras que RMSProp utiliza la media de los gradientes que guarda Adagrad (primer momento), Adam utiliza la media de la varianza (segundo momento). Hay que tener en cuenta que ya que los momentos están inicializados a cero, es necesario un factor de corrección para obtener el valor real de ellos. Adam será el optimizador que utilizaremos, por ser más eficiente y poder adaptarse a la mayoría de problemas.\citep[cap. 4]{Buduma:general}  
+    \item \textbf{Adam}: mientras que RMSProp utiliza la media de los gradientes que guarda Adagrad (primer momento), Adam utiliza la media de la varianza (segundo momento). Hay que tener en cuenta que, ya que los momentos están inicializados a cero, es necesario un factor de corrección para obtener el valor real de ellos. Adam será el optimizador que utilizaremos, por ser más eficiente y poder adaptarse a la mayoría de problemas \citep[cap. 4]{Buduma:general}.  
 \end{itemize}
 
 \subsection{Problemas de clasificación}
 \label{sec:classif_NN}
 Los problemas de clasificación consisten, a grandes rasgos, en asignar un dato recibido a una categoría de un conjunto ya establecido. El ejemplo más claro de esta categoría sería proveer de imágenes de perros y gatos a una red neuronal, y que sea ésta la que decida de qué animal se trata en cada caso. Modificando el comportamiento del ojo humano, la red recibiría dichas imágenes como un conjunto de píxeles y a partir ellos, crearía contornos y buscaría patrones para distinguir entre un animal u otro.
 
-En nuestro ejemplo de aprendizaje supervisado sobre clasificación, hemos elegido otro conjunto de datos conocido: reconocimiento de cifras escritas a mano \citep{lecun-mnisthandwrittendigit-2010}. Este consiste en un conjunto de 4500 imágenes de diferentes cifras escritas a mano de distintas formas, como se ve en la imagen \ref{fig:cifras}, incluyendo la respuesta correcta para comprobar los resultados de nuestro clasificador.
+En nuestro ejemplo de aprendizaje supervisado sobre clasificación, hemos elegido otro conjunto de datos conocido: reconocimiento de cifras escritas a mano \citep{lecun-mnisthandwrittendigit-2010}. Éste consiste en un conjunto de 4500 imágenes de diferentes cifras escritas a mano de distintas formas, como se ve en la imagen \ref{fig:cifras}, incluyendo la respuesta correcta para comprobar los resultados de nuestro clasificador.
 
 \figura{Bitmap/AprendizajeProfundo/Ejemplo_Cifras}{width=1\textwidth}{fig:cifras}%
        {Imagen del conjunto de datos de cifras escritas a mano de MNIST \citep{Lecun98gradient-basedlearning}} 
 
 Para este caso, hemos establecido una red neuronal de tres capas, la de entrada, la de salida y una capa intermedia u oculta para que la red realice los cálculos necesarios. Hemos utilizado un optimizador Adam, de forma que el descenso de gradiente se realice de forma más efectiva y los valores de los pesos en la red se reajusten más rápidamente. Además, puede regular automáticamente el valor de la tasa de aprendizaje, comenzando en un valor de 0.001.
 
-Tanto la capa de entrada como la oculta, son del tipo \textit{ReLu}, visto anteriormente. La capa de entrada se encarga de procesar los 400 píxeles que representan la imagen de una cifra escrita a mano. A modo de salida, hemos utilizado un tipo especial de capa llamado \textit{softmax}. En ella, se da la condición de que la suma de todas las salidas sea igual a 1. De esta forma, las probabilidades que reflejan las distintas salidas se encuentran normalizadas y son excluyentes entre sí, dejando que haya una probabilidad que destaque por encima de las demás en su conjunto; ésa será nuestra predicción. 
+Tanto la capa de entrada como la oculta, son de tipo \textit{ReLu}. La capa de entrada se encarga de procesar los 400 píxeles que representan la imagen de una cifra escrita a mano. A modo de salida, hemos utilizado un tipo especial de capa llamado \textit{softmax}. En ella, se da la condición de que la suma de todas las salidas sea igual a 1. De esta forma, las probabilidades que reflejan las distintas salidas se encuentran normalizadas y son excluyentes entre sí, dejando que haya una probabilidad que destaque por encima de las demás en su conjunto; ésa será nuestra predicción. 
 
-Además, para comprobar que nuestra red neuronal entrena y aprende correctamente, hemos utilizado validación cruzada en K-iteraciones (\textbf{K-Fold cross-validation}). La técnica de validación cruzada consiste en dividir en varios grupos el conjunto de datos proporcionado y entrenar varias veces el modelo sobre ellos, alternando la función de dichos grupos entre entrenamiento y prueba. El algoritmo K-Fold nos permite barajar el conjunto de datos y dividirlo en k grupos, todos para entrenamiento a excepción de uno que se reserva para el prueba. De esta forma, podemos comprobar las distintas formas en las que ha aprendido, en función de los grupos formados durante la aplicación del K-Fold.
+Además, para comprobar que nuestra red neuronal entrena y aprende correctamente, hemos utilizado validación cruzada en K-iteraciones (\textbf{K-Fold cross-validation}). La técnica de validación cruzada consiste en dividir en varios grupos el conjunto de datos proporcionado y entrenar varias veces el modelo sobre ellos, alternando la función de dichos grupos entre entrenamiento y prueba. El algoritmo de \textit{K-Fold} nos permite barajar el conjunto de datos y dividirlo en k grupos, todos destinados a entrenamiento, a excepción de uno que se reserva para la prueba. De esta forma, podemos comprobar las distintas formas en las que ha aprendido, en función de los grupos formados durante la aplicación del K-Fold.
 
 \subsection{Problemas de regresión}
 \label{sec:regres_NN}
@@ -92,9 +93,9 @@ La red neuronal se compone de tres capas, igual que en el ejemplo visto de clasi
 Además, para asegurarnos de la fiabilidad de la red neuronal y comprobar que no se ha dado una situación de \textbf{sobreentrenamiento} (\textit{overfitting}), en el conjunto de datos disponemos dos partes separadas, una para entrenamiento y otra para la prueba de validación, en una proporción de 80\% frente a un 20\%, respectivamente. De esta forma, mientras entrenamos la red con la primera, se puede comprobar la diferencia de errores con la segunda, como podemos apreciar en la imagen \ref{fig:regresion}.
 
 \figura{Bitmap/AprendizajeProfundo/regresion}{width=1\textwidth}{fig:regresion}%
-       {Disminución del error sobre el entrenamiento respecto a la validación.} 
+       {Disminución del error sobre el entrenamiento respecto a la validación} 
 
-En los casos de regresión haremos uso del \textbf{error cuadrático medio} (ECM), el más utilizado de los múltiples métodos de cálculo de error existentes. En nuestro caso, $Ypred$ se refiere al valor calculado por la red neuronal mientras que $Yreal$ es el valor real del precio de las casas. El cálculo del ECM nos indicará la diferencia entre ambos, pudiendo así comprobar lo cerca que han estado las predicciones de la red neuronal de los valores reales.
+En los casos de regresión haremos uso del \textbf{error cuadrático medio} (o \textit{ECM}), el más utilizado de los múltiples métodos de cálculo de error existentes. En nuestro caso, $Ypred$ se refiere al valor calculado por la red neuronal mientras que $Yreal$ es el valor real del precio de las casas. El cálculo del \textit{ECM} nos indicará la diferencia entre ambos, pudiendo así comprobar lo cerca que han estado las predicciones de la red neuronal de los valores reales.
 
 $$ECM = 1/n \sum^n_{i=1}(Ypred_i - Yreal_i)^2$$
 
@@ -102,7 +103,7 @@ $$ECM = 1/n \sum^n_{i=1}(Ypred_i - Yreal_i)^2$$
 
 Al hablar de Aprendizaje por Refuerzo anteriormente, nos centramos en el método de Q-Learning. Observamos que las soluciones planteadas eran válidas, pero el mayor problema que presentaba se debía al tamaño de las tabla-Q: ésta terminaba con tamaños intratables incluso con problemas de complejidad baja. 
 
-Buscando la forma de arreglar este problema, se generó la posibilidad de realizar aproximaciones a la función-Q a través del uso de una red neuronal, de forma que no fuera necesario recorrer todos los pares estado-valor constantemente. Es así como surgieron las Redes-Q Profundas (\textit{Deep Q-Networks} o \textbf{DQNs}, como nos referiremos a ellas). 
+Buscando la forma de arreglar este problema, descubrimos la posibilidad de realizar aproximaciones a la función-Q a través del uso de una red neuronal, de forma que no fuera necesario recorrer todos los pares estado-valor constantemente. Es así como surgieron las Redes-Q Profundas (\textit{Deep Q-Networks} o \textbf{DQNs}, como nos referiremos a ellas). 
 
 Las transiciones creadas a partir de las DQNs se pueden representar como un vector de valores de la siguiente forma: 
 
