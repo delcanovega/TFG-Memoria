@@ -49,17 +49,17 @@ En este punto nos dimos cuenta de que, aunque en ocasiones si llegaba a alcanzar
 Por ello decidimos dar una recompensa desproporcionada a las partidas que alcanzaran la meta \ref{fig:mountaincar_031}.
 
 \figura{Bitmap/ApendiceA/Main3SinPenalAlcanzaDisting.png}{width=1\textwidth}{fig:mountaincar_031}%
-{Prototipo 31}
+{Prototipo 3.1}
 
 Tras las observaciones del Prototipo 2, optamos por dar más visibilidad a la velocidad, esto lo haríamos en primera instancia multiplicando la por 10.
 
 \figura{Bitmap/ApendiceA/main3_rewardX10.png}{width=1\textwidth}{fig:mountaincar_032}%
-{Prototipo 32}
+{Prototipo 3.2}
 
 Tras los buenos resultados del Prototipo 4, probamos a aplicar el mismo método en el Prototipo 3, pero esta vez le daríamos muchos más episodios para aprender \ref{fig:moutaincar_033}
 
 \figura{Bitmap/ApendiceA/1500itMain3RewardX100.png}{width=1\textwidth}{fig:mountaincar_033}%
-{Prototipo 33}
+{Prototipo 3.3}
 
 \section{Prototipo 4}
 Desarrollado poco después de comenzar con las pruebas del Prototipo 3 e implementando las correcciones de los errores de los prototipos 1 y 2.
@@ -87,11 +87,12 @@ Comenzamos a explorar las posibles causas de las bajadas en el aprendizaje que s
 Hasta el momento siempre habíamos utilizado el Optimizador Adam\ref{fig:mountaincar_061} pero hicimos algunas pruebas con Adadelta\ref{fig:mountaincar_062}.
 
 \figura{Bitmap/ApendiceA/main_3_2FinalSinBonusAdam200eps.png}{width=1\textwidth}{fig:mountaincar_061}%
-{RELLENAR}
+{Prototipo usando Adam}
 
 \figura{Bitmap/ApendiceA/main_3_2FinalSinBonusAdadelta200Mejor.png}{width=1\textwidth}{fig:mountaincar_062}%
-{RELLENAR}
+{Prototipo usando Adadelta}
 
+Aun siendo un poco más inestable, Adadelta obtiene una solución a nuestro problemas mucho antes que Adam. Ante esto solo faltaría mejorar la estabilidad de los resultados.
 \section{Prototipo 7}
 Ahora pasamos a crear unas gráficas más completas para poder ver bien la evolución de las ejecuciones.
 Retomamos la recompensa basada en la posición respecto al centro \ref{fig:mountaincar_070}. Y hacemos la correspondiente versión para la velocidad \ref{fig:mountaincar_071}.
@@ -110,23 +111,24 @@ Las gráficas \textbf{verdes} muestran la información referente a la \textbf{po
 Se puede ver claramente como el aprendizaje de los prototipos anteriores fluctúa bastante. Por ello creamos un nuevo agente más estable que añade una tercera red neuronal en la que guardara la mejor configuración encontrada hasta el momento de esa forma podemos prevenir la regresión en el aprendizaje.
 
 \figura{Bitmap/ApendiceA/MAIN10AGENT6.png}{width=1\textwidth}{fig:mountaincar_08}%
-{RELLENAR}
+{Prototipo 8.0}
 
 La gráfica inferior izquierda muestra los resultados de las competiciones entre las redes neuronales, las marcas verdes indican el resultado de las grandes competiciones, en las que se renueva la mejor red guardada.
 Además, cambiamos la configuración de las gráficas para prestar información más interesante.
 También añadimos una competición final al terminar la ejecución para comparar los resultados finales.
 
 \figura{Bitmap/ApendiceA/mountainCar_08.png}{width=1\textwidth}{fig:mountaincar_081}%
-{RELLENAR}
+{Ejecución de Double Agent Prototipo 8.1}
 
 \figura{Bitmap/ApendiceA/mountainCar_09.png}{width=1\textwidth}{fig:mountaincar_082}%
-{RELLENAR}
+{Otro ejemplo de Double Agent}
 
 \figura{Bitmap/ApendiceA/mountainCar_10.png}{width=1\textwidth}{fig:mountaincar_083}%
-{RELLENAR}
+{Ejecución Prototipo 8.2}
 
 En estas gráficas se puede ver la evolución de los resultados de las tres redes neuronales, así como la posición máxima alcanzada en cada episodio y por ultimo los resultados de las tres redes en una prueba para evaluar su aprendizaje.
-Las dos primeras corresponden al doble agente, y la siguiente muestra el resultado obtenido de Prototipo 8.
+Las dos primeras gráficas \ref{fig:mountaincar_081} y \ref{fig:mountaincar_082} representan ejecuciones del Double Agent. Se puede ver como, en el primer ejemplo, en la comprobación final, el agente mentor actúa mejor en el entorno, pero en la segunda prueba se puede ver como el aprendiz parece reaccionar mejor, esto probablemente se deba a una pequeña fluctuación o a mala suerte, no se puede asegurar debido a los pocos ejemplos que realizan en la prueba, pero si se tratase de una mejora real en la siguiente competición el mentor asimilaría esta nueva configuración.
+La gráfica \ref{fig:mountaincar_083} muestra el resultado obtenido del Prototipo 8.2, en esta ejecución le hemos dado una cantidad de episodios mayor de la normal para así poner a prueba su resistencia a las fluctuaciones, como es de esperar nuestro ``agente mentor'' y ``best'' van a la par en la prueba final, mientras que aprendiz ha sufrido caídas, demostrando así que esta técnica implementada funciona. 
 
 
 
