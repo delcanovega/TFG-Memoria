@@ -257,14 +257,14 @@ Teniendo en cuenta estos nuevos factores, los resultados obtenidos pueden verse 
 
 \subsubsection*{Velocidad}
 
-Otra opción explorada es la de usar la velocidad como recompensa. Al fin y al cabo, cuanta más velocidad consiga acumular el agente, más alto llegará escalando la rampa.
+Otra opción explorada es la de usar la velocidad como recompensa. Al fin y al cabo, cuanta más velocidad consiga acumular el agente, más alto llegará subiendo la rampa.
 
 \figura{Bitmap/DQNEnAccion/mountaincar_06}{width=0.7\textwidth}{fig:mountaincar_06}%
        {Resultados finales de la posición como recompensa}
 
-A diferencia de la posición, la velocidad devuelta por el entorno tiene unos valores muy pequeños, por lo que basar la recompensa en la velocidad recibida sería semejante a darle una recompensa constante, para cuando se alcance la meta darle una notablemente mayor, lo cual nos dejaría en una situación muy similar a la vista en \ref{fig:mountaincar_02}. Por ello decidimos multiplicarla por 100, haciéndola más visible y relevantes para el agente. 
+A diferencia de la posición, la velocidad devuelta por el entorno tiene unos valores muy pequeños, por lo que basar la recompensa en la velocidad recibida sería semejante a darle una recompensa constante. Cuando alcanzase la meta, sería necesario proporcionarle una notablemente mayor, lo que nos dejaría en una situación muy similar a la vista en \ref{fig:mountaincar_02}. Por ello decidimos multiplicarla por 100, haciéndola más visible y relevante para el agente. 
 
-Como vemos en la imagen \ref{fig:mountaincar_06} nos encontramos con un comportamiento muy similar al visto usando la posición en valores absolutos. El agente consigue resolver el problema en varias ocasiones pero no se estabiliza.
+Como vemos en la imagen \ref{fig:mountaincar_06}, nos encontramos con un comportamiento muy similar al visto usando la posición en valores absolutos. El agente consigue resolver el problema en varias ocasiones pero no se estabiliza.
 
 
 
@@ -272,7 +272,7 @@ Como vemos en la imagen \ref{fig:mountaincar_06} nos encontramos con un comporta
 
 Puesto que los resultados obtenidos por la posición y velocidad parecían haberse estancado, decidimos investigar otras piezas clave de nuestro modelo, como el optimizador. Empezamos a cuestionarnos si Adam \citep{kingma2014adam} era nuestra mejor opción, e hicimos algunas pruebas con Adadelta \citep{NIPS2017_7003}.
 
-Para poder comparar lo mejor posible los resultamos decidimos crear una serie de gráficas para cada ejemplo en el que no solo se viera mejor la evolución general de los resultados, sino que añadiera otros datos de interés como la recompensa original del entorno, la velocidad máxima, la posición máxima alcanzada. Así seríamos capaces de controlar en una sola simulación todas las variables.
+Para poder comparar lo mejor posible los resultados, decidimos crear una serie de gráficas para cada ejemplo, de forma que no sólo se apreciara mejor la evolución general de los resultados, sino que se añadieran otros datos de interés, como la recompensa original del entorno, la velocidad máxima, o la posición máxima alcanzada. Así seríamos capaces de controlar en una sola simulación todas las variables.
 
 \figura{Bitmap/DQNEnAccion/mountainCar_08}{width=1\textwidth}{fig:mountaincar_08}%
        {Resultados velocidad Adam}
@@ -280,21 +280,19 @@ Para poder comparar lo mejor posible los resultamos decidimos crear una serie de
 \figura{Bitmap/DQNEnAccion/mountainCar_09}{width=1\textwidth}{fig:mountaincar_09}%
        {Resultados velocidad Adadelta}
 
-Las imágenes cuenta con tres graficas:
+La imagen cuenta con tres gráficas:
 \begin{itemize}
-    \item La primera muestra la evolución general del sistema en función de los episodios, muestra los resultados de las dos redes neuronales, la azul para agente y la cian para el aprendiz- la línea roja representa la recompensa real que devuelve el entorno, y la negra muestra la media de las cien ultimas partidas, de esta forma tenemos una observación general y fácil de interpretar.
-    \item La grafica inferior izquierda muestra la posición máxima alcanzada durante la partida, esto nos permite ver lo cerca que se ha quedado de alcanzar la meta.
-    \item La grafica inferior derecha representa las puntuaciones obtenidas por las redes en una simulación al final de la ejecución, así podemos ver si realmente han aprendido. Esta simulación la haremos utilizando la recompensa original simplificando la interpretación de la misma.  
+    \item La primera muestra la evolución general del sistema en función de los episodios. Se pueden ver los resultados de las dos redes neuronales, la azul para agente y la cian para el aprendiz. La línea roja representa la recompensa real que devuelve el entorno, y la negra muestra la media de las cien ultimas partidas. Así tenemos una observación general y fácil de interpretar.
+    \item La gráfica inferior izquierda muestra la posición máxima alcanzada durante la partida. Esto nos permite ver lo cerca que se ha quedado el agente de alcanzar la meta.
+    \item La gráfica inferior derecha representa las puntuaciones obtenidas por ambas redes en una simulación al final de la ejecución, con el fin de comprobar si realmente han aprendido. Esta simulación se realiza utilizando la recompensa original, simplificando su interpretación.  
 \end{itemize}
 
-Se puede ver como Adadelta consigue alcanzar el objetivo varias iteraciones antes que Adam \ref{fig:mountaincar_09}. Y ambas se mantienen casi totalmente estables durante las siguientes episodios.
+Se puede ver claramente cómo Adadelta consigue alcanzar el objetivo varias iteraciones antes que Adam en la imagen \ref{fig:mountaincar_09}, y ambas se mantienen casi totalmente estables durante los siguientes episodios.
 
-Dado que seguíamos encontrando fluctuaciones en el aprendizaje de algunas ejecuciones, y en busca de una mayor estabilidad, decidimos añadir una tercera red neuronal que permitiera almacenar el mejor modelo encontrado hasta el momento. El objetivo de dicho modelo es intervenir eventualmente en competiciones para medir la progresión del aprendizaje y en caso de producirse una regresión, revertirla. De esta forma aseguramos una mayor estabilidad.
+Dado que seguíamos encontrando fluctuaciones en el aprendizaje de algunas ejecuciones y continuábamos en busca de una mayor estabilidad, decidimos añadir una tercera red neuronal que permitiera almacenar el mejor modelo encontrado hasta el momento. El objetivo de dicho modelo era intervenir eventualmente en ``competiciones'' para medir la progresión del aprendizaje y, en caso de producirse un empeoramiento en los resultados, revertir lo aprendido entre esa competición y la anterior.
 
 \figura{Bitmap/DQNEnAccion/mountaincar_07}{width=1\textwidth}{fig:mountaincar_10}%
        {Resultado Final}
 
-En la imagen \ref{fig:mountaincar_10} se puede ver como una vez alcanza el máximo, el agente se mantienen sin divergir y sin casi fluctuar. Se debe a la estabilidad de las dos redes, que le permiten retractar cualquier caída en el aprendizaje.
-
-
+En la imagen \ref{fig:mountaincar_10} se puede ver cómo, una vez alcanza el máximo, el agente se mantiene sin diverger y sin apenas fluctuar. Esto se debe a la estabilidad de las dos redes, que le permiten deshacer cualquier caída en los resultados del aprendizaje.
 
