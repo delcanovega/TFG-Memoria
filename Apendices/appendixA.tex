@@ -1,4 +1,117 @@
+
 \chapter{Título}
 \label{Appendix:Key1}
 
-Contenido del apéndice
+En continuación describiremos cronológicamente el desarrollo de prototipos durante el ejercicio de MountainCar:
+
+\subsection{Prototipo 0}
+ Este fue nuestro primer intento en el que simplemente probamos a entrenar directamente con la recompensa del entorno.
+ \figura{Bitmap\ApendiceA\Primer_paso.PNG}{width=1\textwidth}{fig:mountaincar_00}%
+       {Prototipo 0}
+
+ En las primeras ejecuciones de 200 y 500 episodios no conseguimos ningún resultado \ref{fig:mountaincar_00} así que probamos con 1500 y obtuvimos nuestro primer paso, era posible resolver el problema.
+ \figura{Bitmap\ApendiceA\laFuerzaBrutaSiempreGana.jpg}{width=1\textwidth}{fig:mountaincar_001}%
+        {Prototipo 00}
+ En este momento iniciamos nuestra investigación y análisis del entorno. Identificamos como posible causa la recompensa del entorno, y decidimos cambiarla por otra modificada para favorecer el aprendizaje.
+
+\subsection{Prototipo 1}
+ Desarrollamos nuestra primera función de recompensa, ``ourReward'', que recibe un estado y devuelve la recompensa en función de la posición absoluta añadiendo una bonificación de +1 en caso de que la posición sea mayor a 0.5 y la velocidad sea positiva. Inicialmente planteamos este prototipo con un factor de descuento \ref{fig:mountaincar_01} que para penalizar las soluciones lentas frente a las rápidas.
+ 
+ \figura{Bitmap\ApendiceA\CapturaCambiandoRewardAPosicion.PNG}{width=1\textwidth}{fig:mountaincar_01}%
+       {Prototipo 1}
+
+ Más tarde nos percatamos de que este factor de descuento entraba en conflicto con nuestro principio de basar la recompensa enteramente en el estado. De todas formas, pudimos comprobar un factor de penalización menor de 0.997 era excesivo. Y por otro lado caímos en la cuenta de que la posición absoluta no reflejaba el comportamiento que queríamos premiar. Nuestro objetivo era premiar al agente por alejar el avatar del centro, el punto más bajo entre las montañas, pero dado que este centro se encuentra en la posición -0.5, estábamos premiando la distancia respecto a la mitad de la montaña derecha. Lo cual claramente conlleva a evitar subir la ladera derecha.
+
+ 
+
+ 
+
+\subsection{Prototipo 2}
+Este prototipo fue desarrollado al mismo tiempo que el Prototipo 1 y más tarde descartado por las mismas razones.
+En este caso basamos la recompensa en la velocidad absoluta, añadiendo una bonificación si la posición absoluta es mayor que 0.5. Como ya explicamos antes, el centro no es 0 sino -0.5 por lo que esa bonificación se aplicará siempre que no alcance la mitad de la ladera derecha. Además, lo insignificantemente pequeña que es la velocidad comparada con el valor de la bonificación, hace que reciba siempre la misma recompensa. Por otro lado, al igual que Prototipo 1, esta cuenta con un factor de descuento.  
+
+ \figura{Bitmap\ApendiceA\FigureMain2.PNG}{width=1\textwidth}{fig:mountaincar_02}%
+        {Prototipo 2}
+
+Observando más detenidamente los resultados y el comportamiento del agente son percatamos de que esta recompensa se ajustaba bastante al comportamiento de la recompensa original del problema, la razón de esto es que las recompensas intermedias son invariantes durante toda la ejecución. 
+
+\subsection{Prototipo 3}
+ Este prototipo fue creado junto a Prototipo 1 y Prototipo 2, pero fuimos actualizando lo a medida que íbamos detectando fallos en los dos anteriores y puntos que mejorar en los siguiente.
+ Comenzó como otro prototipo basado en la Velocidad absoluta, sin factor de penalización y con una bonificación de +10 en caso de superar su mayor posición centro, de esta forma pretendíamos que al quedarse sin impulso hacia un lado buscara superar dicha altura por la ladera contraria y así favorecer el balanceo \ref{fig:mountaincar_03}. 
+
+  \figura{Bitmap\ApendiceA\Main_3SinPenalizacionAlcanzadoIndistin.png}{width=1\textwidth}{fig:mountaincar_030}%
+        {Prototipo 30}  
+
+ En este punto nos dimos cuenta de que, aunque en ocasiones si llegaba a alcanzar la meta, estas ejecuciones pasaban inadvertidas para el aprendizaje dado que en estos casos la recompensa no era especialmente mayor que las demás partidas. Incluso en otros prototipos que desarrollábamos al mismo tiempo, llegamos a ver ejemplos que priorizaban seguir con el balanceo y así ganar más puntos.
+ Por ello decidimos dar una recompensa desproporcionada a las partidas que alcanzaran la meta \ref{fig:mountaincar_031}.
+  \figura{Bitmap\ApendiceA\Main3SinPenalAlcanzaDisting.png}{width=1\textwidth}{fig:mountaincar_031}%
+        {Prototipo 31}  
+ Tras las observaciones del Prototipo 2, optamos por dar más visibilidad a la velocidad, esto lo haríamos en primera instancia multiplicando la por 10.
+  \figura{Bitmap\ApendiceA\main3_rewardX10.png}{width=1\textwidth}{fig:mountaincar_032}%
+        {Prototipo 32}
+ Tras los buenos resultados del Prototipo 4, probamos a aplicar el mismo método en el Prototipo 3, pero esta vez le daríamos muchos más episodios para aprender \ref{fig:moutaincar_033}
+  \figura{Bitmap\ApendiceA\1500itMain3RewardX100.png}{width=1\textwidth}{fig:mountaincar_033}%
+        {Prototipo 33}
+    
+\subsection{Prototipo 4}
+ Desarrollado poco después de comenzar con las pruebas del Prototipo 3 e implementando las correcciones de los errores de los prototipos 1 y 2. 
+ La función de recompensa consiste en la velocidad absoluta por 100, para así darle más visibilidad a la velocidad frente a las bonificaciones. Por otro lado, y al igual que Prototipo 3, este premia con un +10 cada vez que el avatar supera su posición más alejada del centro. Además, este fue nuestro primer prototipo que no tenía el factor de descuento que invalidaba casi todas las pruebas anteriores.
+  \figura{Bitmap\ApendiceA\Main_4SolorecompSiGTmaxMas0.1.png}{width=1\textwidth}{fig:mountaincar_04}%
+ {Prototipo 4}
+  
+ \subsection{Prototipo 5}
+ Viendo el poco éxito que habíamos tenido hasta el momento, decidimos regresar a los orígenes, para ver si con pequeñas modificaciones de la recompensa original conseguíamos alguna mejora notable.
+ La recompensa volvía a ser -1 para todo estado no final, pero si supera su posición más alejada del centro en 0.1, la recompensa pasa a ser 1. De esta forma planteamos una serie de recompensas intermedias como los prototipos anteriores, pero reduciendo el número de estas. Esta estrategia premia solo superar las metas y penaliza por el paso del tiempo.
+
+   \figura{Bitmap\ApendiceA\main5PremiarGTmaxMas0.1else-1.png}{width=1\textwidth}{fig:mountaincar_05}%
+  {Prototipo 5}
+ 
+ En este momento fue cuando caímos en la cuenta de que todos los bonus, que habíamos estado basando en la posición máxima alcanzada, eran erróneos, dado que la posición máxima alcanzada varía según el momento de la partida, es decir, la recompensa no se basaba únicamente en el estado y por tanto no era valida.
+ 
+\subsection{Prototipo 6}
+Ante las últimas revelaciones optamos por volver a modelos mucho más simples. Comenzando como una nueva variante del Prototipo 3, basado en la velocidad absoluta y dando una recompensa exageradamente alta para reforzar los caminos correctos. Además de empotrar el ``Doble Agente'' en este ejercicio.
+
+   \figura{Bitmap\ApendiceA\main3.1_prueba3ExageraRecompensa.png}{width=1\textwidth}{fig:mountaincar_06}%
+{Prototipo 6}
+
+Comenzamos a explorar las posibles causas de las bajadas en el aprendizaje que se ven en algunas de las gráficas. 
+Hasta el momento siempre habíamos utilizado el Optimizador Adam\ref{fig:mountaincar_061} pero hicimos algunas pruebas con Adadelta\ref{fig:mountaincar_062}.
+
+\figura{Bitmap\ApendiceA\main.3.2FinalSinBonusAdam200eps.png}{width=1\textwidth}{fig:mountaincar_061}%
+
+\figura{Bitmap\ApendiceA\main.3.2FinalSinBonusAdadelta200Mejor.png}{width=1\textwidth}{fig:mountaincar_062}%
+
+\subsection{Prototipo 7}
+Ahora pasamos a crear unas gráficas más completas para poder ver bien la evolución de las ejecuciones.
+Retomamos la recompensa basada en la posición respecto al centro \ref{fig:mountaincar_070}. Y hacemos la correspondiente versión para la velocidad \ref{fig:mountaincar_071}.
+
+\figura{Bitmap\ApendiceA\mainPosCentradaGraficaCompleta.png}{width=1\textwidth}{fig:mountaincar_070}%
+{Prototipo Gráfica mejorada Posición Centro}
+
+\figura{Bitmap\ApendiceA\mainVelocidadGraficaCompleta.png}{width=1\textwidth}{fig:mountaincar_071}%
+{Prototipo Gráfica mejorada velocidad absoluta}
+
+La primera grafica representa los datos referentes a la recompensa, tanto la recompensa del \textbf{entorno} en \textbf{rojo} y como la que nosotros le asignamos en \textbf{azul}. 
+Las gráficas \textbf{moradas} muestran respectivamente la \textbf{velocidad} máxima alcanzada y la velocidad acumulada durante toda cada episodio. 
+Las gráficas \textbf{verdes} muestran la información referente a la \textbf{posición} siendo la primera la posición máxima alcanzada, si es 0.5 implica terminar la partida y la posición acumulada, para así medir claramente el desplazamiento del avatar durante sus episodios.
+
+\subsection{Prototipo 8}
+Se puede ver claramente como el aprendizaje de los prototipos anteriores fluctúa bastante. Por ello creamos un nuevo agente más estable que añade una tercera red neuronal en la que guardara la mejor configuración encontrada hasta el momento de esa forma podemos prevenir la regresión en el aprendizaje.
+
+\figura{Bitmap\ApendiceA\Buenas decepciones\MAIN10AGENT6.png}{width=1\textwidth}{fig:mountaincar_08}%
+
+La gráfica inferior izquierda muestra los resultados de las competiciones entre las redes neuronales, las marcas verdes indican el resultado de las grandes competiciones, en las que se renueva la mejor red guardada.
+Además, cambiamos la configuración de las gráficas para prestar información más interesante.
+También añadimos una competición final al terminar la ejecución para comparar los resultados finales.
+
+\figura{Bitmap\ApendiceA\mountainCar_08.png}{width=1\textwidth}{fig:mountaincar_081}%
+
+\figura{Bitmap\ApendiceA\mountainCar_09.png}{width=1\textwidth}{fig:mountaincar_082}%
+
+\figura{Bitmap\ApendiceA\mountainCar_10.png}{width=1\textwidth}{fig:mountaincar_083}
+
+En estas gráficas se puede ver la evolución de los resultados de las tres redes neuronales, así como la posición máxima alcanzada en cada episodio y por ultimo los resultados de las tres redes en una prueba para evaluar su aprendizaje.  
+Las dos primeras corresponden al doble agente, y la siguiente muestra el resultado obtenido de Prototipo 8. 
+
+
+
