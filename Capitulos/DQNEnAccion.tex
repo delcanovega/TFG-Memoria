@@ -154,7 +154,7 @@ Tras la implementación de este método, comprobamos que existe una mayor consis
 
 Gracias a este método se han logrado grandes hitos en el campo del Aprendizaje por Refuerzo Profundo. Por ejemplo, hacer que una red neuronal sea capaz de jugar a juegos de Atari a nivel profesional utilizando tan solo los píxeles como entrada \citep{mnih2013playing}
 
-Por otro lado, este método no es perfecto, en la imagen \ref{fig:CartPole-DoubleAgent} se puede ver una pequeña caída al final de la ejecución. Inicialmente achacamos este comportamiento a una desafortunada conjunción probabilística. Pero tras investigarlo, descubrimos que se trataba de un fenómeno mucho más cotidiano: el causante era el propio método de Deep Q-Learning. Como ya hemos visto previamente, en este sistema se pretende aproximar los valores de la tabla Q por medio de una red neuronal de regresión. El problema es que de por sí las redes neuronales de regresión tienen dificultades para aproximar funciones no lineales. En teoría, si contáramos con tiempo infinito terminaría consiguiendo cuadrar todos los valores.
+Por otro lado, este método no es perfecto, en la imagen \ref{fig:CartPole-DoubleAgent} se puede ver una pequeña caída al final de la ejecución. Inicialmente achacamos este comportamiento a una desafortunada conjunción probabilística. Pero tras investigarlo, descubrimos que se trataba de un fenómeno mucho más cotidiano: el causante era el propio método de Deep Q-Learning. Se ha observado como algoritmos basados en Q-Learning que buscan aproximar la función Q con modelos no lineales, como una red neuronal, sufren de esta inestabilidad. A este problema nos enfrentaremos más afondo en el siguiente capítulo, pero en el apartado de CartPole nos damos por satisfechos. 
 
 \section{MountainCar}
 
@@ -192,7 +192,7 @@ Los resultados tan pobres obtenidos puede que sorprendan, viendo el rendimiento 
 
 \subsubsection{Nueva topología e hiperparámetros}
 
-Modificando el agente para usar la siguiente red e hiperparámetros:
+Modificando el agente para usar la siguiente red\ref{fig:nn_mountainCar} e hiperparámetros:
 
 \figura{Bitmap/DQNEnAccion/nn_mountainCar}{width=0.7\textwidth}{fig:nn_mountainCar}%
        {Topología MountainCar}
@@ -206,11 +206,12 @@ Modificando el agente para usar la siguiente red e hiperparámetros:
     \end{lstlisting}%
 \end{minipage}
 
-Gracias a la nueva topología, y mediante un entrenamiento bastante largo, en la imagen \ref{fig:mountaincar_02} podemos comprobar que el agente llega a ser capaz de resolver el problema. No obstante, creemos que el resultado tiene un gran margen de mejora, por lo que seguiremos explorando otras soluciones que permitan al agente aprender de una forma más eficiente
+Gracias a la nueva topología, y mediante un entrenamiento bastante largo, en la imagen \ref{fig:mountaincar_02} podemos comprobar que el agente llega a ser capaz de resolver el problema. No obstante, creemos que el resultado tiene un gran margen de mejora, por lo que seguiremos explorando otras soluciones que permitan al agente aprender de una forma más eficiente.
 
 \figura{Bitmap/DQNEnAccion/mountainCar_02}{width=0.7\textwidth}{fig:mountaincar_02}%
        {Resultados de la nueva topología}
 
+La gráfica \ref{fig:mountaincar_02} representa las puntuaciones obtenidas durante nuestra simulación. En este punto de desarrollo, la puntuación representa la inversa de los pasos que ha tardado el avatar en llegar a la meta, dado que la recompensa que da el entorno para el estado objetivo es 0 y -1 a cualquier otro, la puntuación -200 implica que la meta no se ha alcanzado y la puntuación -199 implica que ha llegado en el paso 200. 
 
 \subsubsection{Función de recompensa}
 
@@ -291,7 +292,7 @@ Se puede ver claramente cómo Adadelta consigue alcanzar el objetivo varias iter
 
 Dado que seguíamos encontrando fluctuaciones en el aprendizaje de algunas ejecuciones y continuábamos en busca de una mayor estabilidad, decidimos añadir una tercera red neuronal que permitiera almacenar el mejor modelo encontrado hasta el momento. El objetivo de dicho modelo era intervenir eventualmente en ``competiciones'' para medir la progresión del aprendizaje y, en caso de producirse un empeoramiento en los resultados, revertir lo aprendido entre esa competición y la anterior.
 
-\figura{Bitmap/DQNEnAccion/mountaincar_07}{width=1\textwidth}{fig:mountaincar_10}%
+\figura{Bitmap/DQNEnAccion/mountaincar_10}{width=1\textwidth}{fig:mountaincar_10}%
        {Resultado Final}
 
 En la imagen \ref{fig:mountaincar_10} se puede ver cómo, una vez alcanza el máximo, el agente se mantiene sin diverger y sin apenas fluctuar. Esto se debe a la estabilidad de las dos redes, que le permiten deshacer cualquier caída en los resultados del aprendizaje.
