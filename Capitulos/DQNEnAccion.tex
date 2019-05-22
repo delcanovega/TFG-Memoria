@@ -219,7 +219,7 @@ El primer obstáculo a superar para acelerar la curva de aprendizaje, es la func
 
 Nuestra solución pasa por sustituir la recompensa dada por el entorno \citep{mediumTim}, reemplazando ese resultado binario de \textit{meta} o \textit{no meta} por algo más descriptivo, que empuje al agente a mejorar su funcionamiento. Utilizando la \textbf{velocidad} o la \textbf{posición} del agente como recompensa, motiva al mismo a tomar las decisiones que lo llevan a moverse más lejos, hasta que finalmente termine alcanzando la meta.
 
-\figura{Bitmap/DQNEnAccion/mountainCar/mainPosNoAbsNew3}{width=0.8\textwidth}{fig:mountaincar_03}%
+\figura{Bitmap\DQNEnAccion\mountainCar_03}{width=0.8\textwidth}{fig:mountaincar_03}%
        {Visualización de la recompensa modificada}
 
 Fijándonos en la imagen \ref{fig:mountaincar_03}, podemos ver que usando una recompensa modificada favorecemos que el coche se mueva e intente llegar cada vez más lejos, a diferencia de la recompensa original con que el coche solía quedarse estancado en la parte más baja de la curva.
@@ -231,7 +231,7 @@ A continuación, evaluaremos en mayor detalle cada una de las opciones disponibl
 
 La posición es el primer candidato para utilizar como recompensa. Al fin y al cabo, si conseguimos que el coche avance lo suficiente, terminará llegando a la meta. Hicimos una serie de pruebas en las que directamente reemplazábamos el valor de la recompensa por el valor de la posición, obteniendo los resultados de \ref{fig:mountaincar_04}. Para ser capaces de apreciar en qué momento se alcanzaba la meta, le otorgamos una recompensa significativamente más grande cuando lo conseguía, con la esperanza de que esto reforzase mucho más ese comportamiento.
 
-\figura{Bitmap/DQNEnAccion/mountaincar_04}{width=0.7\textwidth}{fig:mountaincar_04}%
+\figura{Bitmap/DQNEnAccion/mountainCar/mainPosNoAbsNew3}{width=0.7\textwidth}{fig:mountaincar_04}%
        {Visualización de la recompensa modificada}
 
 Como podemos ver, el rendimiento de la gráfica \ref{fig:mountaincar_04} sigue siendo muy parecido al visto en  \ref{fig:mountaincar_02}, la línea azul representa la puntuación modificada por nosotros y la roja la que devuelve el entorno. No es hasta después de los 1200 episodios cuando el agente consigue alcanzar la meta. A partir de los nuevos resultados podemos hacer las siguientes observaciones:
