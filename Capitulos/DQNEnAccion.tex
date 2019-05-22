@@ -282,14 +282,15 @@ Para poder comparar lo mejor posible los resultados, decidimos crear una serie d
 \figura{Bitmap/DQNEnAccion/mountainCar_09}{width=1\textwidth}{fig:mountaincar_09}%
        {Resultados velocidad Adadelta}
 
+Se puede ver claramente cómo Adadelta consigue alcanzar el objetivo varias iteraciones antes que Adam en la imagen \ref{fig:mountaincar_09}, y ambas se mantienen casi totalmente estables durante los siguientes episodios.
+
+       
 La imagen cuenta con tres gráficas:
 \begin{itemize}
     \item La primera muestra la evolución general del sistema en función de los episodios. Se pueden ver los resultados de las dos redes neuronales, la azul para agente y la cian para el aprendiz. La línea roja representa la recompensa real que devuelve el entorno. La negra muestra la media de las cien ultimas partidas. Así tenemos una observación general y fácil de interpretar.
     \item La gráfica inferior izquierda muestra la posición máxima alcanzada durante la partida. Esto nos permite ver lo cerca que se ha quedado el agente de alcanzar la meta.
     \item La gráfica inferior derecha representa las puntuaciones obtenidas por ambas redes en una simulación al final de la ejecución, con el fin de comprobar si realmente han aprendido. Esta simulación se realiza utilizando la recompensa original, simplificando su interpretación.  
 \end{itemize}
-
-Se puede ver claramente cómo Adadelta consigue alcanzar el objetivo varias iteraciones antes que Adam en la imagen \ref{fig:mountaincar_09}, y ambas se mantienen casi totalmente estables durante los siguientes episodios.
 
 Dado que seguíamos encontrando fluctuaciones en el aprendizaje de algunas ejecuciones y continuábamos en busca de una mayor estabilidad, decidimos añadir una tercera red neuronal que permitiera almacenar el mejor modelo encontrado hasta el momento. El objetivo de dicho modelo era intervenir eventualmente en ``competiciones'' para medir la progresión del aprendizaje y, en caso de producirse un empeoramiento en los resultados, revertir lo aprendido entre esa competición y la anterior.
 
