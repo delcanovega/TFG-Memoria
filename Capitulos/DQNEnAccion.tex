@@ -231,7 +231,7 @@ A continuación, evaluaremos en mayor detalle cada una de las opciones disponibl
 
 La posición es el primer candidato para utilizar como recompensa. Al fin y al cabo, si conseguimos que el coche avance lo suficiente, terminará llegando a la meta. Hicimos una serie de pruebas en las que directamente reemplazábamos el valor de la recompensa por el valor de la posición, obteniendo los resultados de \ref{fig:mountaincar_04}. Para ser capaces de apreciar en qué momento se alcanzaba la meta, le otorgamos una recompensa significativamente más grande cuando lo conseguía, con la esperanza de que esto reforzase mucho más ese comportamiento.
 
-\figura{Bitmap/DQNEnAccion/mountainCar/mainPosNoAbsNew3}{width=0.7\textwidth}{fig:mountaincar_04}%
+\figura{Bitmap/DQNEnAccion/mountainCar/mainPosNoAbsNew}{width=0.7\textwidth}{fig:mountaincar_04}%
        {Visualización de la recompensa modificada}
 
 Como podemos ver, el rendimiento de la gráfica \ref{fig:mountaincar_04} sigue siendo muy parecido al visto en  \ref{fig:mountaincar_02}, la línea azul representa la puntuación modificada por nosotros y la roja la que devuelve el entorno. No es hasta después de los 1200 episodios cuando el agente consigue alcanzar la meta. A partir de los nuevos resultados podemos hacer las siguientes observaciones:
@@ -244,10 +244,10 @@ Como podemos ver, el rendimiento de la gráfica \ref{fig:mountaincar_04} sigue s
     % \item Por último, el agente no recibe ningún estímulo que lo lleve a resolver el problema cuanto antes, por lo que volveremos a introducir una penalización por cada paso tomado, de forma similar a la recompensa original del entorno.
 \end{itemize}
 
-\figura{Bitmap/DQNEnAccion/mountaincar_05}{width=0.7\textwidth}{fig:mountaincar_05}%
+\figura{Bitmap/DQNEnAccion/mountainCar/mainPosFinalNew}{width=0.7\textwidth}{fig:mountaincar_05}%
        {Resultados finales de la posición como recompensa}
 
-Teniendo en cuenta estos nuevos factores, los resultados obtenidos pueden verse en la gráfica \ref{fig:mountaincar_05}. Claramente, conseguimos que el problema se resuelva mucho más rápido: 500 episodios frente a los 1400 anteriores. Sin embargo la estabilidad aún sigue lejos de parecerse a la vista en el problema de CartPole. Siguen existiendo situaciones en las que el agente consigue resolver el problema en algunas partidas, pero luego vuelve a fracasar en las siguientes.
+Teniendo en cuenta estos nuevos factores, los resultados obtenidos pueden verse en la gráfica \ref{fig:mountaincar_05}. Claramente, conseguimos que el problema se resuelva mucho más rápido: 300 episodios frente a los 400 anteriores. Sin embargo la estabilidad aún sigue lejos de parecerse a la vista en el problema de CartPole. Siguen existiendo situaciones en las que el agente consigue resolver el problema en algunas partidas, pero luego vuelve a fracasar en las siguientes.
 
 % La grafica representa claramente como la puntuación converge a un valor, esto se debe a que la penalización crece demasiado.
 % Penalización inicial empieza en 1, sin penalización, y a cada Step esta se multiplica por 0.995, de forma que la penalización del último Step es de 0.36695. Esto hace que las puntuaciones de los últimos Steps de la partida sean despreciables para el sistema, de tal forma que se optimicen solo las recompensas iniciales e ignorando las de los últimos. Así llegando a la convergencia. 
