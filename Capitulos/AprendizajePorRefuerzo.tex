@@ -69,10 +69,10 @@ Podemos apreciar la relación de estos elementos en la figura \ref{fig:rl-diagra
 \figura{Bitmap/AprendizajePorRefuerzo/MDP-Diagram}{width=0.6\textwidth}{fig:rl-diagram}{Modelo de interacción del aprendizaje por refuerzo}
 
 
-\subsection{Problemas de Decisión de Markov}
+\subsection{Proceso de decisión de Markov}
 \label{sec:mdp}
 
-El Proceso de Decisión de Markov \citep{Puterman1994}, al cual nos referiremos como $MDP$, llamado así por el matemático ruso Andrei Markov, es un modelo matemático mediante el cual podemos modelar la resolución de cierta clase de problemas relacionados con la toma de decisiones. Para comprender mejor cómo funciona, definiremos los elementos que componen nuestro MDP:
+El proceso de decisión de Markov \citep{Puterman1994}, al cual nos referiremos como $MDP$, llamado así por el matemático ruso Andrei Markov, es un modelo matemático mediante el cual podemos modelar la resolución de cierta clase de problemas relacionados con la toma de decisiones. Para comprender mejor cómo funciona, definiremos los elementos que componen nuestro MDP:
 
 \begin{itemize}
     \item \textbf{S}: conjunto de estados finitos en los que nos podemos encontrar en un determinado momento.
@@ -156,7 +156,7 @@ Podemos relacionar esta tasa de aprendizaje ($\alpha$) y la ecuación antes prop
 
 $$Q^*(s_{t}, a_{t}) = (1-\alpha ) Q(s_{t}, a_{t}) + \alpha [r(s_{t}, a_{t}) + \gamma\ max_{a'}\ Q^*(s_{t+1}, a')]$$
 
-Combinando todos estos factores, podemos definir el pseudocódigo del funcioniamiento de Q-Learning como apreciamos en el Listing \ref{code:q-learning}, de manera que relacionemos todos los hiperparámetros y conceptos vistos hasta ahora. Cabe destacar la variable \textbf{\texttt{env}}, que corresponte al entorno sobre el que estamos trabajando, siendo la función \textbf{\texttt{env.reset()}} la cual nos proporciona un estado inicial aleatorio dentro del entorno, la función \textbf{\texttt{env.step()}} la que simula la ejecución de la acción tomada y devolviendo el estado-siguiente y la recompensa, el booleano \textbf{\texttt{end}} que nos indica si el episodio ha terminado o no, y la variable \textbf{\texttt{next\_max}} que se corresponde al valor-Q máximo en el estado-siguiente.
+Combinando todos estos factores, podemos definir el pseudocódigo del funcioniamiento de Q-Learning como apreciamos en el Listing \ref{code:q-learning}, de manera que relacionemos todos los hiperparámetros y conceptos vistos hasta ahora. Cabe destacar la variable \textbf{\texttt{env}}, cuyas funciones abordaremos en el punto \ref{sec:openai}, que corresponte al entorno sobre el que estamos trabajando, siendo la función \textbf{\texttt{env.reset()}} la cual nos proporciona un estado inicial aleatorio dentro del entorno, la función \textbf{\texttt{env.step()}} la que simula la ejecución de la acción tomada y devolviendo el estado-siguiente y la recompensa, el booleano \textbf{\texttt{end}} que nos indica si el episodio ha terminado o no, y la variable \textbf{\texttt{next\_max}} que se corresponde al valor-Q máximo en el estado-siguiente.
 
 \begin{minipage}{0.9\linewidth}%
 \begin{lstlisting}[frame=tb, language=python, caption=Pseudocódigo Aprendizaje por Refuerzo, label={code:q-learning}]
