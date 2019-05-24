@@ -234,23 +234,22 @@ A continuación, evaluaremos en mayor detalle cada una de las opciones disponibl
 
 La posición es el primer candidato para utilizar como recompensa. Al fin y al cabo, si conseguimos que el coche avance lo suficiente, terminará llegando a la meta. Hicimos una serie de pruebas en las que directamente reemplazábamos el valor de la recompensa por el valor de la posición, obteniendo los resultados de \ref{fig:mountaincar_04}. Para ser capaces de apreciar en qué momento se alcanzaba la meta, le otorgamos una recompensa significativamente más grande cuando lo conseguía, con la esperanza de que esto reforzase mucho más ese comportamiento.
 
-\figura{Bitmap/DQNEnAccion/mountainCar/mainPosNoAbsNew}{width=0.7\textwidth}{fig:mountaincar_04}%
+\figura{Bitmap/DQNEnAccion/mountaincar_04}{width=0.7\textwidth}{fig:mountaincar_04}%
        {Visualización de la recompensa modificada}
 
-Como podemos ver, el rendimiento de la gráfica \ref{fig:mountaincar_04} sigue siendo muy parecido al visto en  \ref{fig:mountaincar_02}, la línea azul representa la puntuación modificada por nosotros y la roja la que devuelve el entorno. No es hasta después de los 400 episodios cuando el agente consigue alcanzar la meta. A partir de los nuevos resultados podemos hacer las siguientes observaciones:
+Como podemos ver, el rendimiento de la gráfica \ref{fig:mountaincar_04} sigue siendo muy parecido al visto en  \ref{fig:mountaincar_02}, la línea azul representa la media de las recompensas de los últimos 100 episodios, por lo que la repentina subida entorno al episodio 1400, se traduce en alcanzar la meta puntualmente. No es hasta después de los 1400 episodios cuando el agente consigue alcanzar la meta. A partir de los nuevos resultados podemos hacer las siguientes observaciones:
 
 \begin{itemize}
     % \item En primer lugar, dimos una recompensa exageradamente alta al alcanzar la meta, no solo para que ese camino se refuerce más que con la recompensa original, para acelerar el aprendizaje, sino para además permitirnos distinguir más fácilmente (en la gráfica) las partidas que llegan a la meta de las que no.  
     \item Nuestra nueva recompensa sólo empuja al agente a intentar escalar la rampa de la derecha, ya que es la dirección que hace crecer el valor de la \texttt{posición}. No obstante, para conseguir ascender por la derecha también necesita tomar impulso desde la izquierda, lo que se corresponde con valores negativos de la posición. Como solución, deberemos considerar usar una posición definida con valores absolutos para conseguir un mejor resultado.
     \item Otro detalle observado es que la posición central no se corresponde con \texttt{0}, sino con \texttt{-0.5}. También tendremos que corregir esta desviación.
-    \item Además se puede apreciar que las partidas que consiguen alcanzar la meta no tienen una puntuación mucho mayor que las demás, por lo que es comprensible que el agente las pase por alto y no refuerce dicho comportamiento. Ante este fallo responderemos dando una puntuación notablemente más alta a las partidas que alcanzan la meta para así reforzar sus caminos.  
     % \item Por último, el agente no recibe ningún estímulo que lo lleve a resolver el problema cuanto antes, por lo que volveremos a introducir una penalización por cada paso tomado, de forma similar a la recompensa original del entorno.
 \end{itemize}
 
-\figura{Bitmap/DQNEnAccion/mountainCar/mainPosFinalNew}{width=0.7\textwidth}{fig:mountaincar_05}%
+\figura{Bitmap/DQNEnAccion/mountaincar_05}{width=0.7\textwidth}{fig:mountaincar_05}%
        {Resultados finales de la posición como recompensa}
 
-Teniendo en cuenta estos nuevos factores, los resultados obtenidos pueden verse en la gráfica \ref{fig:mountaincar_05}. Claramente, conseguimos que el problema se resuelva más rápido: 300 episodios frente a los 400 anteriores. Y además, al ajustar correctamente la recompensa, conseguimos una estabilidad mucho mayor, que las vistas en pruebas anteriores. Siguen existiendo situaciones en las que el agente falla intentando alcanzar el objetivo pero se puede ver como la frecuencia en la que esto sucede parece ir reduciéndose.
+Teniendo en cuenta estos nuevos factores, los resultados obtenidos pueden verse en la gráfica \ref{fig:mountaincar_05}. Claramente, conseguimos que el problema se resuelva mucho más rápido: 400-500 episodios frente a los 1400 anteriores.  Sin embargo la estabilidad aún sigue lejos de parecerse a la vista en el problema de CartPole. Siguen existiendo situaciones en las que el agente consigue resolver el problema en algunas partidas, pero luego vuelve a fracasar en las siguientes.
 
 % La grafica representa claramente como la puntuación converge a un valor, esto se debe a que la penalización crece demasiado.
 % Penalización inicial empieza en 1, sin penalización, y a cada Step esta se multiplica por 0.995, de forma que la penalización del último Step es de 0.36695. Esto hace que las puntuaciones de los últimos Steps de la partida sean despreciables para el sistema, de tal forma que se optimicen solo las recompensas iniciales e ignorando las de los últimos. Así llegando a la convergencia. 
@@ -262,7 +261,7 @@ Teniendo en cuenta estos nuevos factores, los resultados obtenidos pueden verse 
 
 \subsubsection*{Velocidad}
 
-Otra opción explorada es la de usar la velocidad como recompensa. Al fin y al cabo, cuanta más velocidad consiga acumular el agente, más alto llegará subiendo la rampa.^^^^^^^^^^^^
+Otra opción explorada es la de usar la velocidad como recompensa. Al fin y al cabo, cuanta más velocidad consiga acumular el agente, más alto llegará subiendo la rampa.
 
 \figura{Bitmap/DQNEnAccion/mountaincar_06}{width=0.7\textwidth}{fig:mountaincar_06}%
        {Resultados finales de la posición como recompensa}
@@ -295,10 +294,10 @@ La imagen cuenta con tres gráficas:
     \item La gráfica inferior derecha representa las puntuaciones obtenidas por ambas redes en una simulación al final de la ejecución, con el fin de comprobar si realmente han aprendido. Esta simulación se realiza utilizando la recompensa original, simplificando su interpretación.  
 \end{itemize}
 
-Dado que seguíamos encontrando fluctuaciones en el aprendizaje de algunas ejecuciones y continuábamos en busca de una mayor estabilidad, decidimos añadir una tercera red neuronal que permitiera almacenar el mejor modelo encontrado hasta el momento. El objetivo de dicho modelo era intervenir eventualmente en ``competiciones'' para medir la progresión del aprendizaje y, en caso de producirse un empeoramiento en los resultados, revertir lo aprendido entre esa competición y la anterior.
+Dado que seguíamos encontrando fluctuaciones en el aprendizaje de algunas ejecuciones y continuábamos en busca de una mayor estabilidad, decidimos añadir una tercera red neuronal que permitiera almacenar el mejor modelo encontrado hasta el momento, como una copia de seguridad. El objetivo de dicho modelo era intervenir eventualmente en ``competiciones'' para medir la progresión del aprendizaje y, en caso de producirse un empeoramiento en los resultados, imponer la configuración de la copia de seguridad, y en caso contrario, guardar la nueva mejor configuración en la copia de seguridad. 
 
 \figura{Bitmap/DQNEnAccion/mountaincar_10}{width=1\textwidth}{fig:mountaincar_10}%
        {Resultado Final}
 
-En la imagen \ref{fig:mountaincar_10} se puede ver cómo, una vez alcanza el máximo, el agente se mantiene sin diverger y sin apenas fluctuar. Esto se debe a la estabilidad de las dos redes, que le permiten deshacer cualquier caída en los resultados del aprendizaje.
+En la imagen \ref{fig:mountaincar_10} se puede ver cómo, una vez alcanza el máximo, el agente se mantiene sin divergir y sin apenas fluctuar. Esto se debe a la estabilidad de las dos redes, que le permiten deshacer cualquier caída en los resultados del aprendizaje.
 
