@@ -136,16 +136,20 @@ constantes,guionado,Cascaras/bibliografia,config%
 \pagestyle{fancy}
 \restauraCabecera
 
+
+
+\include{Capitulos/Introduccion}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Si el TFM se escribe en ingles, comentar las siguientes líneas 
 % porque no hace falta incluir nuevamente la Introducción en inglés
+\setcounter{chapter}{\thechapter -1} 
 \begin{otherlanguage}{english}
 \include{Capitulos/Introduction}
 \end{otherlanguage}
 \addtocounter{chapter}{-1} 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\include{Capitulos/Introduccion}
+% \include{Capitulos/Introduccion}
 \include{Capitulos/AprendizajePorRefuerzo}
 \include{Capitulos/QLearningEnAccion}
 \include{Capitulos/AprendizajeProfundo}
