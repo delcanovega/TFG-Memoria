@@ -292,10 +292,10 @@ La imagen cuenta con tres gráficas:
     \item La gráfica inferior derecha representa las puntuaciones obtenidas por ambas redes en una simulación al final de la ejecución, con el fin de comprobar si realmente han aprendido. Esta simulación se realiza utilizando la recompensa original, simplificando su interpretación.  
 \end{itemize}
 
-Dado que seguíamos encontrando fluctuaciones en el aprendizaje de algunas ejecuciones y continuábamos en busca de una mayor estabilidad, decidimos añadir una tercera red neuronal que permitiera almacenar el mejor modelo encontrado hasta el momento, como una copia de seguridad, introduciendo asi una especie de elitismo. El objetivo de dicho modelo era intervenir eventualmente en una seria de ``competiciones'' para medir la progresión del aprendizaje y, en caso de producirse un empeoramiento en los resultados, imponer la configuración de la copia de seguridad, y en caso contrario, guardar la nueva mejor configuración en la copia de seguridad. 
+Dado que seguíamos encontrando fluctuaciones en el aprendizaje de algunas ejecuciones y continuábamos en busca de una mayor estabilidad, decidimos añadir una tercera red neuronal que permitiera almacenar el mejor modelo encontrado hasta el momento, como una copia de seguridad, introduciendo así una especie de elitismo entre los episodios. El objetivo de dicho modelo es intervenir eventualmente para medir la progresión del aprendizaje del modelo y, en caso de producirse un empeoramiento en los resultados, imponer la configuración de la copia de seguridad, y en caso contrario, guardar la nueva mejor configuración. 
 
 \figura{Bitmap/DQNEnAccion/mountaincar_10}{width=1\textwidth}{fig:mountaincar_10}%
        {Resultado Final}
 
-En la imagen \ref{fig:mountaincar_10} se puede ver cómo, una vez alcanza el máximo, el agente se mantiene sin divergir y sin apenas fluctuar. Esto se debe a la estabilidad de las dos redes, que le permiten deshacer cualquier caída en los resultados del aprendizaje.
+En la imagen \ref{fig:mountaincar_10} se puede ver cómo, una vez alcanza el máximo, el modelo se mantiene sin divergir y sin apenas fluctuar, no dista demasiado con respecto a los últimos prototipos, que ya mantenían un alto nivel de convergencia, por lo que podemos concluir que este último añadido, no aporta demasiado al modelo. 
 
