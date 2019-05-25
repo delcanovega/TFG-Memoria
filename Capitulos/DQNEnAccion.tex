@@ -37,7 +37,7 @@ Para \textbf{predecir acciones} utilizamos la red neuronal, a la cual introducim
 
 Como cabía esperar con una modificación tan ingenua, los resultados no son buenos, como podemos apreciar en la imagen \ref{fig:CartPole-SimpleAgent}. El agente no logra aprender de una forma estable. Si miramos atrás, en nuestra solución con una tabla-Q, el único estado que es modificado tras un entrenamiento es aquel en el que nos encontramos. Por otra parte, cuando trabajamos con una red neuronal esto no es posible. Entrenar una red neuronal implica que toda la red se modificará, buscando satisfacer el nuevo ejemplo de entrenamiento proporcionado \citep[cap. 2]{Buduma:general}. En otras palabras, el agente mejora su rendimiento en el estado actual, pero al mismo tiempo empeora en todos los demás.
 
-Los hiperparámetros usados también son una ligera modificación de los usados en la solución de Aprendizaje por Refuerzo. Como puede verse en \ref{code:cartpole_drl}, el mayor cambio es en la tasa de aprendizaje, la cual debe ser mucho menor para intentar evitar grandes modificaciones en la red.
+Los hiperparámetros usados también son una ligera modificación de los usados en la solución de aprendizaje por refuerzo. Como puede verse en \ref{code:cartpole_drl}, el mayor cambio es en la tasa de aprendizaje, la cual debe ser mucho menor para intentar evitar grandes modificaciones en la red.
 
 \begin{minipage}{0.9\linewidth}%
     \begin{lstlisting}[frame=tb, language=Python, caption=Hiperparámetros, label=code:cartpole_drl]
@@ -54,23 +54,23 @@ Los hiperparámetros usados también son una ligera modificación de los usados 
 \subsection{Añadir memoria al agente: \texttt{BatchAgent}}
 \label{sec:cartpoledqn2}
 
-Otra manera de conseguir estabilidad es añadiendo una memoria adicinal al agente. Para hacerlo recurriremos al reproductor de experiencias (o \textit{Experience Replay} \citep{Lin1992}), también conocidas como valores-Q, al que nos referiremos como \textbf{replay}. Éste método consiste en almacenar múltiples experiencias pasadas del agente en una memoria y para más tarde tomar una muestra del conjunto de experiencias, acumuladas a lo largo de varios episodios, para entrenar \ref{code:cartpole_drl2}.
+Otra manera de conseguir estabilidad es añadiendo una memoria adicional al agente. Para hacerlo recurriremos al reproductor de experiencias (o \textit{Experience Replay} \citep{Lin1992}), también conocidas como valores-Q, al que nos referiremos como \textbf{replay}. Este método consiste en almacenar múltiples experiencias pasadas del agente en una memoria y para más tarde tomar una muestra del conjunto de experiencias, acumuladas a lo largo de varios episodios, para entrenar \ref{code:cartpole_drl2}.
 
 En nuestra memoria guardamos todos los datos necesarios para la perfecta representación de lo sucedido en pasos de ejecución anteriores, lo que se traduce en: \textbf{estado-actual}, \textbf{acción-tomada}, \textbf{recompensa}, \textbf{estado-siguiente} y \textbf{finalizado}.
 
 \begin{minipage}{0.9\linewidth}%
-\begin{lstlisting}[frame=tb, caption=Pseudocódigo BatchAgent, inputencoding=latin1, label=code:cartpole_drl2]
+\begin{lstlisting}[frame=tb, caption=Pseudocódigo funcion Replay de BatchAgent, inputencoding=latin1, label=code:cartpole_drl2]
        #Create a iterator to go through the memory starting in the last position 
        iter = reversed(memory)
        
        for _ in range(BATCH_SIZE):
               state, action, reward, next_state, final = next(iter)
 
-              q_update = -reward if done else self.bellman(reward, next_state)
-              target = self.model.predict(state)
+              q_update = -reward if done else bellman(reward, next_state)
+              target = model.predict(state)
               target[0][action] = q_update
 
-              self.model.fit(state, target, verbose=0)
+              model.fit(state, target, verbose=0)
               
 \end{lstlisting}%
 \end{minipage}
@@ -120,7 +120,7 @@ Con el fin de en estabilizar el aprendizaje, intentando evitar esos escollos que
 
 $$Y^Q_{t} \equiv R_{t+1} + \gamma max_{a} Q(S_{t+1}, a; \theta_{t})$$
 
-Como derivación de este método existe otro conocido como \textbf{Double Q-Network}, en esta, se cuenta con dos redes que llamaremos ``agente'' y ``aprendiz''. La red agente se utiliza para guardar los estados con los que tomar las decisiones en cuanto a los movimientos a ejecutar, mientras que la red de aprendizaje se encarga de guardar los valores de la ejecución actualizados: cada cierto número de episodios ambas redes son comparadas, guardando la que haya dado mejores resultados como agente, para la toma de decisiones, y como aprendiz para seguir desarrollando el aprendizaje de ese modelo.
+Como derivación de este método existe otro conocido como \textbf{Double Q-Network}, en esta, se cuenta con dos redes que llamaremos “target” y “agent”. La red target se utiliza para guardar los estados con los que tomar las decisiones en cuanto a los movimientos a ejecutar, mientras que la red de aprendizaje, agent, se encarga de guardar los valores de la ejecución actualizados: cada cierto número de pasos ambas redes son comparadas, guardando la que haya dado mejores resultados como target, para la toma de decisiones, y utilizando la otra para el aprendizaje.
 
 $$Y^Q_{t} = R_{t+1} + \gamma Q(S_{t+1}, argmax_{a} Q(S_{t+1}, a; \theta_{t}); \theta_{t})$$
 
@@ -144,9 +144,6 @@ El principal inconveniente que mostraba nuestro agente hasta el momento se debí
   if agent.performance() > target.performance():
     # the agent becomes the target to improve his solution
     target = agent
-  else :
-    # the target becomes the agent to generate better results
-    agent = target
         
 \end{lstlisting}%
 \end{minipage}
@@ -295,7 +292,7 @@ La imagen cuenta con tres gráficas:
     \item La gráfica inferior derecha representa las puntuaciones obtenidas por ambas redes en una simulación al final de la ejecución, con el fin de comprobar si realmente han aprendido. Esta simulación se realiza utilizando la recompensa original, simplificando su interpretación.  
 \end{itemize}
 
-Dado que seguíamos encontrando fluctuaciones en el aprendizaje de algunas ejecuciones y continuábamos en busca de una mayor estabilidad, decidimos añadir una tercera red neuronal que permitiera almacenar el mejor modelo encontrado hasta el momento, como una copia de seguridad. El objetivo de dicho modelo era intervenir eventualmente en ``competiciones'' para medir la progresión del aprendizaje y, en caso de producirse un empeoramiento en los resultados, imponer la configuración de la copia de seguridad, y en caso contrario, guardar la nueva mejor configuración en la copia de seguridad. 
+Dado que seguíamos encontrando fluctuaciones en el aprendizaje de algunas ejecuciones y continuábamos en busca de una mayor estabilidad, decidimos añadir una tercera red neuronal que permitiera almacenar el mejor modelo encontrado hasta el momento, como una copia de seguridad, introduciendo asi una especie de elitismo. El objetivo de dicho modelo era intervenir eventualmente en una seria de ``competiciones'' para medir la progresión del aprendizaje y, en caso de producirse un empeoramiento en los resultados, imponer la configuración de la copia de seguridad, y en caso contrario, guardar la nueva mejor configuración en la copia de seguridad. 
 
 \figura{Bitmap/DQNEnAccion/mountaincar_10}{width=1\textwidth}{fig:mountaincar_10}%
        {Resultado Final}
