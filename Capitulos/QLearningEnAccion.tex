@@ -19,7 +19,7 @@ Más adelante también utilizaremos Keras. Keras \citep{chollet2015keras} es una
 
 \section{OpenAI}
 
-OpenAI es una iniciativa cuyo objetivo es asegurar que la \textbf{anteligencia artificial general} (AGI) beneficie a toda la humanidad. En su web se encuentra el siguiente manifiesto \citep{OpenAI_charter}:
+OpenAI es una iniciativa cuyo objetivo es asegurar que la \textbf{inteligencia artificial general} (AGI) beneficie a toda la humanidad. En su web se encuentra el siguiente manifiesto \citep{OpenAI_charter}:
 
 \begin{quote}
     La misión de OpenAI es asegurar que la inteligencia artificial general - refiriéndose a sistemas altamente autónomos que superen el rendimiento humano en el trabajo más valioso económicamente - beneficie a toda la humanidad. Intentaremos desarrollar AGI de una forma segura y beneficiosa, pero también consideraremos nuestra misión completa si nuestro trabajo ayuda a otros a conseguir esta meta. 
@@ -134,7 +134,7 @@ Este aumento en el número de estados permite que nuestro agente sea capaz de es
 
 Para nuestra implementación usamos los siguientes hiperparámetros explicados en la sección \ref{sec:mdp} y configuración de estados (Listing \ref{code:cartpole_rl}). Es común establecer un mínimo de exploración para que, pese a encontrarnos en un estado muy avanzado de la simulación, siempre tengamos una pequeña probabilidad de ir a parar a un estado nunca visitado que pueda mejorar nuestro resultado.
 
-Siguiendo con esta idea, después de que un episodio finalice reduciremos el hiperparámetro de exploración actual, en nuestro caso multiplicándolo por \texttt{0.99}, con el fin de que, con la sucesión de los episodios, vaya dejando de explorar para explotar los conocientos adquiridos previamente.
+Siguiendo con esta idea, después de cada episodio reduciremos el hiperparámetro de exploración, en nuestro caso multiplicándolo por \texttt{0.99}. De esta forma a medida que los episodios se suceden las decisiones tomadas por el agente se centran más en explotar los caminos ya conocidos en lugar de explorar otros nuevos, facilitando así la convergencia.
 
 \begin{minipage}{0.9\linewidth}%
     \begin{lstlisting}[frame=tb, language=Python, caption=Hiperparámetros y configuración de estados, label=code:cartpole_rl]
@@ -160,14 +160,14 @@ En dicha gráfica se pueden apreciar tres etapas distintas en el rendimiento del
     \item A partir del episodio 300: el agente alcanza su meta y el algoritmo comienza a estabilizarse.
 \end{itemize}
 
-Como hemos indicado anteriormente, estos resultados han sido obtenidos con una configuración en la discretización de \texttt{(1, 1, 3, 6)}, correspondiéndose estos números con el número de posibles estados discretizados para la posición del carro, velocidad del carro, ángulo del poste y velocidad del poste respectivamente. 
+Como hemos indicado anteriormente, estos resultados han sido obtenidos con una configuración en la discretización de \texttt{(1, 1, 3, 6)}. La memoria del agente es una tabla multidimensional de estados, cada observación representa una dimensión y lo que se indica en la configuración es el tamaño de cada dimensión, provistas en el orden: posición del carro, velocidad del carro, ángulo del poste y velocidad del poste respectivamente.
 
 Utilizar \texttt{'1'} para las observaciones de la velocidad y posición del carro quiere decir que ignoramos las mismas. Aunque esto pueda parecer contraproducente, durante nuestras simulaciones descubrimos que el principal motivo de finalización de un episodio era la caída del mástil. En la mayoría de las ocasiones el mástil cae mucho antes de que el carro alcance los límites laterales que veíamos en la figura \ref{fig:cartpole_01}. Esto nos permite ignorar las dos primeras observaciones (posición del carro y velocidad del carro), reduciendo notablemente la dimensionalidad del problema, con un resultado de tan solo $1*1*3*6=18$ estados. De esta forma, el agente aprende mucho antes y no consume tantos recursos.
 
 
 \subsubsection{Otras configuraciones}
 
-Para comprender mejor el comportamiento del agente, realizamos pruebas con otras configuraciones en la discretización del estado durante simulaciones con un mayor número de episodios. En concreto, probamos la discretización expuesta en la imagen \ref{fig:cartpole_01}, la cual es demasiado simple como para conseguir aprender. Para el agente todas las situaciones a las que se enfrenta son la misma, por lo tanto cuando mejora su rendimiento una situación concreta también lo empeora para otras.
+Para comprender mejor el comportamiento del agente, realizamos pruebas con otras configuraciones en la discretización del estado durante simulaciones con un mayor número de episodios. En concreto, probamos la discretización expuesta en la imagen \ref{fig:cartpole_01}, la cual es demasiado simple como para conseguir aprender. La memoria del agente es demasiado pequeña (tan sólo dos estados), por lo tanto cuando mejora su rendimiento una situación concreta lo hará a costa de empeorarlo para otras.
 
 Otra configuración probada fue \texttt{(1, 2, 3, 8)}, la cuál es más detallada que la usada en \ref{fig:cartpole_03}. Por ello, cabe esperar que el agente tarde más en obtener buenos resultados, ya que al haber un mayor número de estados tardará más en visitarlos todos y reforzarlos consecuentemente. Por otra parte, cabría esperar una mayor estabilidad cuando el agente ha entrenado durante mucho tiempo. Los resultados de las pruebas pueden verse en la gráfica \ref{fig:cartpole_04}.
 
@@ -177,10 +177,10 @@ Otra configuración probada fue \texttt{(1, 2, 3, 8)}, la cuál es más detallad
 
 \section{Los límites de la tabla-Q}
 
-A lo largo de este capítulo hemos introducido el \textit{aprendizaje por refuerzo} como método de aprendizaje, las ventajas que tiene sobre otros métodos, sus mecánicas y elementos, su algoritmo de Q-Learning... Pero también nos hemos encontrado ciertos problemas.
+A lo largo de este capítulo hemos introducido el aprendizaje por refuerzo como método de aprendizaje, las ventajas que tiene sobre otros métodos, sus mecánicas y elementos, su algoritmo de Q-Learning... Pero también nos hemos encontrado ciertos problemas.
 
 El más importante es el que vimos durante la discretización del estado, cómo a medida que aumentan las dimensiones el número de estados se dispara. Este problema es conocido como la \textbf{maldición de la dimensión} (\textit{curse of dimensionality}), expresión que fue acuñada por Richard E. Bellman \citep{bellman1957dynamic} \citep{bellman1961adaptive} y que en el aprendizaje automático hace referencia al aumento exponencial en el tamaño de las tablas de estados en la memoria de los agentes, aunque también está presente en otros dominios como combinatoria, muestreo, optimización... El problema puede ser contenido hasta cierto punto a través de buenas aproximaciones en la discretización. No obstante, abordar un entorno finito con cierto grado de complejidad puede acabar resultando inviable.
 
-Por ejemplo, en el juego de conecta 4 se dispone de un tablero de 6x7 casillas, las cuales puedes estar vacias, ocupadas por una ficha roja u ocupadas por una ficha amarilla, lo que resulta en una combinación de $3^{(7*6}) = 4531985219092$ estados diferentes \citep{Edelkamp:2008:SCG:1433357.1433383}, convirténdolo así en un problema demasiado grande para ser abarcado mediante el Q-Learning.
+Por ejemplo, en el juego de conecta 4 se dispone de un tablero de 6x7 casillas, las cuales puedes estar vacias, ocupadas por una ficha roja u ocupadas por una ficha amarilla, lo que resulta en una combinación de $3^{(7*6)} = 4531985219092$ estados diferentes \citep{Edelkamp:2008:SCG:1433357.1433383}, convirténdolo así en un problema demasiado grande para ser abarcado mediante el Q-Learning.
 
 Otra solución ha surgido durante los últimos años y consiste en combinar el \textit{aprendizaje por refuerzo} con técnicas de \textit{aprendizaje profundo}, que estudiaremos en los próximos capítulos.
