@@ -3,16 +3,17 @@
 
 \chapterquote{La vida sólo puede entenderse hacia atrás, pero debe vivirse hacia adelante}{Søren Kierkegaard}
 
+En este capitulo hablaremos de las distintas técnicas y procedimientos aplicados en nuestra resolución de los problemas de aprendizaje profundo por refuerzo a los que nos hemos enfrentando, pueden ver la implementación de las mismas en nuestro repositorio de gitHub.
 
 \section{CartPole}
 \label{sec:cartpoleDQN}
 
-El primer problema que trataremos al trabajar con DQNs se corresponde con el de CartPole, ya descrito en el punto \ref{cartpole-sec}, en el que jugamos con un carro cuyo objetivo es moverse a derecha o izquierda para evitar que el poste vertical que hay sobre él se caiga.
+El primer problema que trataremos al trabajar con aprendizaje profundo por refuerzo se corresponde con el de CartPole, ya descrito en el punto \ref{cartpole-sec}, en el que jugamos con un carro cuyo objetivo es moverse a derecha o izquierda para evitar que el poste vertical que hay sobre él se caiga.
 
 
 \subsection{Reemplazar la tabla-Q: \texttt{SimpleAgent}}
 
-Como primer paso para la resolución del problema, sustituimos la tabla-Q y su consecuente discretización de estados por una red neuronal figura:\ref{fig:nn_cartpole}, abandonando por fin los problemas y limitaciones que habíamos observado anteriormente. La red neuronal recibe como entrada el \textbf{estado} actual (posición del carro, velocidad del carro, posición del péndulo y velocidad del péndulo), cuenta con dos capas internas de 24 neuronas y produce dos salidas: los valores Q, aproximados por la red neuronal, asociados a cada una de las acciones disponibles, ejercer fuerza hacia la izquierda o hacia la derecha. Después de ejecutar cada movimiento, se aplicaba la ecuación de Bellman para entrenar la red e intentar que el agente aprendiese a jugar.
+Como primer paso para la resolución del problema, sustituimos la tabla-Q y su consecuente discretización de estados por una red neuronal\ref{fig:nn_cartpole}, abandonando por fin los problemas y limitaciones que habíamos observado anteriormente. La red neuronal\ref{fig:nn_cartpole} recibe como entrada el \textbf{estado} actual (posición del carro, velocidad del carro, posición del péndulo y velocidad del péndulo), cuenta con dos capas internas de 24 neuronas y produce dos salidas: los valores Q, aproximados por la red neuronal, asociados a cada una de las acciones disponibles, ejercer fuerza hacia la izquierda o hacia la derecha. Después de ejecutar cada movimiento, se aplicaba la ecuación de Bellman para entrenar la red e intentar que el agente aprendiese a jugar. El optimizador que utilizamos es el Adam, debido a su popular uso en este tipo de problemas.
 
 \figura{Bitmap/DQNEnAccion/nn_cartpole.png}{width=1\textwidth}{fig:nn_cartpole}%
        {Estructura de la red usada}
@@ -53,23 +54,23 @@ Los hiperparámetros usados también son una ligera modificación de los usados 
 \subsection{Añadir memoria al agente: \texttt{BatchAgent}}
 \label{sec:cartpoledqn2}
 
-Otra manera de conseguir estabilidad es añadiendo una memoria al agente. Para hacerlo recurriremos al reproductor de experiencias (o \textit{Experience Replay} \citep{Lin1992}), también conocidas como valores-Q, al que nos referiremos como \textbf{replay}. Éste método consiste en almacenar múltiples experiencias pasadas del agente y, antes de cada entrenamiento, tomar una muestra del conjunto de experiencias acumuladas a lo largo de varios episodios.
+Otra manera de conseguir estabilidad es añadiendo una memoria adicinal al agente. Para hacerlo recurriremos al reproductor de experiencias (o \textit{Experience Replay} \citep{Lin1992}), también conocidas como valores-Q, al que nos referiremos como \textbf{replay}. Éste método consiste en almacenar múltiples experiencias pasadas del agente en una memoria y para más tarde tomar una muestra del conjunto de experiencias, acumuladas a lo largo de varios episodios, para entrenar \ref{code:cartpole_drl2}.
 
 En nuestra memoria guardamos todos los datos necesarios para la perfecta representación de lo sucedido en pasos de ejecución anteriores, lo que se traduce en: \textbf{estado-actual}, \textbf{acción-tomada}, \textbf{recompensa}, \textbf{estado-siguiente} y \textbf{finalizado}.
 
 \begin{minipage}{0.9\linewidth}%
 \begin{lstlisting}[frame=tb, caption=Pseudocódigo BatchAgent, inputencoding=latin1, label=code:cartpole_drl2]
-  state = env.reset()
+       #Create a iterator to go through the memory starting in the last position 
+       iter = reversed(memory)
+       
+       for _ in range(BATCH_SIZE):
+              state, action, reward, next_state, final = next(iter)
 
-  while not done:
-    action = agent.predict_action(state)
-    next, reward, done = env.step(action)
+              q_update = -reward if done else self.bellman(reward, next_state)
+              target = self.model.predict(state)
+              target[0][action] = q_update
 
-       agent.remember(state, action, reward, next, done)
-    # Takes the last N memories and trains with them
-    agent.learn_by_replay()
-
-    state = next
+              self.model.fit(state, target, verbose=0)
               
 \end{lstlisting}%
 \end{minipage}
