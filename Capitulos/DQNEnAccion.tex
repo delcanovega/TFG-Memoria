@@ -3,19 +3,18 @@
 
 \chapterquote{La vida sólo puede entenderse hacia atrás, pero debe vivirse hacia adelante}{Søren Kierkegaard}
 
-
 \section{CartPole}
 \label{sec:cartpoleDQN}
 
-El primer problema que trataremos al trabajar con DQNs se corresponde con el de CartPole, ya descrito en el punto \ref{cartpole-sec}, en el que jugamos con un carro cuyo objetivo es moverse a derecha o izquierda para evitar que el poste vertical que hay sobre él se caiga.
+El primer problema que trataremos al trabajar con aprendizaje por refuerzo profundo se corresponde con el de CartPole, ya descrito en el apartado \ref{cartpole-sec}, en el que jugamos con un carro cuyo objetivo es moverse a derecha o izquierda para evitar que el poste vertical que hay sobre él se caiga. Todas las técnicas aplicadas para resolverlo han sido implementadas desde cero y su código se encuentra en el repositorio de nuestro proyecto.
 
 
 \subsection{Reemplazar la tabla-Q: \texttt{SimpleAgent}}
 
-Como primer paso para la resolución del problema, sustituimos la tabla-Q y su consecuente discretización de estados por una red neuronal \ref{fig:nn_cartpole}, abandonando por fin los problemas y limitaciones que habíamos observado anteriormente. La red neuronal recibía como entrada el \textbf{estado} actual (posición del carro, velocidad del carro, posición del péndulo y velocidad del péndulo) y producía dos salidas: los resultados de la partida, aproximados por la red, si el agente ejerciese fuerza hacia la izquierda o si lo hiciese hacia la derecha. Después de ejecutar cada movimiento, se aplicaba la ecuación de Bellman para entrenar la red e intentar que el agente aprendiese a jugar.
+Como primer paso para la resolución del problema, sustituimos la tabla-Q y su consecuente discretización de estados por una red neuronal como la de la figura \ref{fig:nn_cartpole}, abandonando por fin los problemas y limitaciones que habíamos observado anteriormente. La red recibe como entrada el \textbf{estado} actual (posición del carro, velocidad del carro, posición del péndulo y velocidad del péndulo) y cuenta con dos capas ocultas tipo \textit{ReLu}, de 24 neuronas. La última capa, de tipo \textit{Linear} produce dos salidas que son los valores Q aproximados por la red neuronal, asociados a cada una de las acciones disponibles: ejercer fuerza hacia la izquierda o hacia la derecha. Después de ejecutar cada movimiento, se aplica la ecuación de Bellman para entrenar la red e intentar que el agente aprenda a jugar. El optimizador que utilizamos es el Adam, debido a su popular uso en este tipo de problemas.
 
 \figura{Bitmap/DQNEnAccion/nn_cartpole.png}{width=1\textwidth}{fig:nn_cartpole}%
-       {Estructura de la red usada}
+       {Estructura de la red neuronal en \texttt{SimpleAgent}}
 
 En el fragmento de código \ref{code:dqn} podemos ver que la implementación del algoritmo es muy similar a la usada en \ref{code:q-learning}, con unas modificaciones que describiremos a continuación.
 
@@ -34,9 +33,9 @@ En el fragmento de código \ref{code:dqn} podemos ver que la implementación del
 
 Para \textbf{predecir acciones} utilizamos la red neuronal, a la cual introducimos el estado actual para que nos devuelva los resultados de ambas acciones, de los que nos quedaremos con el mejor. Una vez ejecutada la acción disponemos del estado siguiente y la recompensa, lo cual podemos usar para \textbf{entrenar} la red neuronal de nuevo.
 
-Como cabía esperar con una modificación tan ingenua, los resultados no son buenos, como podemos apreciar en la imagen \ref{fig:CartPole-SimpleAgent}. El agente no logra aprender de una forma estable. Si miramos atrás, en nuestra solución con una tabla-Q, el único estado que es modificado tras un entrenamiento es aquel en el que nos encontramos. Por otra parte, cuando trabajamos con una red neuronal esto no es posible. Entrenar una red neuronal implica que toda la red se modificará, buscando satisfacer el nuevo caso de entrenamiento proporcionado \citep[cap. 2]{Buduma:general}. En otras palabras, el agente mejora su rendimiento en el estado actual, pero al mismo tiempo empeora en todos los demás.
+Como cabía esperar con una modificación tan ingenua, los resultados no son buenos, tal y como podemos apreciar en la imagen \ref{fig:CartPole-SimpleAgent}. El agente no logra aprender de una forma estable. Si miramos atrás, en nuestra solución con una tabla-Q, el único estado que es modificado tras un paso de simulación es aquel en el que nos encontramos. Por otra parte, cuando trabajamos con una red neuronal esto no es posible. Entrenar una red neuronal implica que toda la red se modificará, buscando satisfacer el nuevo ejemplo de entrenamiento proporcionado \citep[cap. 2]{Buduma:general}. En otras palabras, el agente mejora su rendimiento en el estado actual, pero al mismo tiempo empeora en todos los demás.
 
-Los hiperparámetros usados también son una ligera modificación de los usados en la solución de Aprendizaje por Refuerzo. Como puede verse en \ref{code:cartpole_drl}, el mayor cambio es en la tasa de aprendizaje, la cual debe ser mucho menor para intentar evitar grandes modificaciones en la red.
+Los hiperparámetros usados también son una ligera modificación de los usados en la solución de aprendizaje por refuerzo. Como puede verse en \ref{code:cartpole_drl}, el mayor cambio es en la tasa de aprendizaje, la cual debe ser mucho menor para intentar evitar grandes modificaciones en la red.
 
 \begin{minipage}{0.9\linewidth}%
     \begin{lstlisting}[frame=tb, language=Python, caption=Hiperparámetros, label=code:cartpole_drl]
@@ -53,23 +52,23 @@ Los hiperparámetros usados también son una ligera modificación de los usados 
 \subsection{Añadir memoria al agente: \texttt{BatchAgent}}
 \label{sec:cartpoledqn2}
 
-Otra manera de conseguir estabilidad es añadiendo una memoria al agente. Para hacerlo recurriremos al reproductor de experiencias (o \textit{Experience Replay} \citep{Lin1992}), también conocidas como valores-Q, al que nos referiremos como \textbf{replay}. Éste método consiste en almacenar múltiples experiencias pasadas del agente y, antes de cada entrenamiento, tomar una muestra del conjunto de experiencias acumuladas a lo largo de varios episodios.
+Otra manera de conseguir estabilidad es añadiendo una memoria adicional al agente. Para hacerlo recurriremos al reproductor de experiencias (o \textit{Experience Replay} \citep{Lin1992}), también conocidas como valores-Q, al que nos referiremos como \textbf{replay}. Este método consiste en almacenar múltiples experiencias pasadas del agente en una memoria y para más tarde tomar una muestra del conjunto de experiencias, acumuladas a lo largo de varios episodios, para entrenar \ref{code:cartpole_drl2}.
 
 En nuestra memoria guardamos todos los datos necesarios para la perfecta representación de lo sucedido en pasos de ejecución anteriores, lo que se traduce en: \textbf{estado-actual}, \textbf{acción-tomada}, \textbf{recompensa}, \textbf{estado-siguiente} y \textbf{finalizado}.
 
 \begin{minipage}{0.9\linewidth}%
-\begin{lstlisting}[frame=tb, caption=Pseudocódigo BatchAgent, inputencoding=latin1, label=code:cartpole_drl2]
-  state = env.reset()
+\begin{lstlisting}[frame=tb, caption=Pseudocódigo función Replay de BatchAgent, inputencoding=latin1, label=code:cartpole_drl2]
+       #Create a iterator to go through the memory starting in the last position 
+       iter = reversed(memory)
+       
+       for _ in range(BATCH_SIZE):
+              state, action, reward, next_state, final = next(iter)
 
-  while not done:
-    action = agent.predict_action(state)
-    next, reward, done = env.step(action)
+              q_update = -reward if done else bellman(reward, next_state)
+              target = model.predict(state)
+              target[0][action] = q_update
 
-       agent.remember(state, action, reward, next, done)
-    # Takes the last N memories and trains with them
-    agent.learn_by_replay()
-
-    state = next
+              model.fit(state, target, verbose=0)
               
 \end{lstlisting}%
 \end{minipage}
@@ -85,7 +84,7 @@ El problema es que los pasos tomados dentro de estos $batch$ están fuertemente 
 \subsection{Romper la cohesión de la memoria: \texttt{RandomBatchAgent}}
 \label{sec:cartpoledqn3}
 
-Por fortuna, solucionar el problema de la cohesión en el \texttt{BatchAgent} tiene fácil solución. Tan sólo necesitaremos que la memoria de nuestro agente sea lo bastante grande como para albergar experiencias muy variadas; después sólo tendremos que seleccionar elementos aleatorios de la memoria. Con esta solución, el agente debería tener una muestra más amplia respecto a los estados posibles y sería mucho más fácil que encuentre una solución con prontitud.
+Por fortuna, solucionar el problema de la cohesión en el \texttt{BatchAgent} tiene fácil solución. Tan sólo necesitaremos que la memoria que habíamos utilizado antes sea lo bastante grande como para albergar experiencias de todo tipo. Con este repertorio ya preparado, la mejor forma de romper la cohesión de los datos consiste en seleccionar elementos aleatorios dentro del mismo, a diferencia de tomar una muestra de elementos seguidos como habíamos hecho anteriormente. Con esta solución, el agente debería tener una muestra más amplia, variada y significativa respecto a los posibles estados en los que se puede encontrar y será mucho más fácil que encuentre una solución con prontitud.
   
 \begin{minipage}{0.9\linewidth}%
 \begin{lstlisting}[frame=tb, caption=Pseudocódigo RandomBatchAgent, inputencoding=latin1, label=code:cartpole_drl3]
@@ -119,7 +118,7 @@ Con el fin de en estabilizar el aprendizaje, intentando evitar esos escollos que
 
 $$Y^Q_{t} \equiv R_{t+1} + \gamma max_{a} Q(S_{t+1}, a; \theta_{t})$$
 
-Como derivación de este método existe otro conocido como \textbf{Double Q-Network}, donde las redes se dividen entre ``agente'' y ``aprendiz''. La red agente se utiliza para guardar los estados con los que tomar las decisiones en cuanto a los movimientos a ejecutar, mientras que la red de aprendizaje se encarga de guardar los valores de la ejecución actualizados: cada cierto número de pasos ambas redes son comparadas, guardando la que haya dado mejores resultados como agente, para la toma de decisiones, y utilizando la otra para el aprendizaje.
+Como derivación de este método existe otro conocido como \textbf{Double Q-Network}, en esta, se cuenta con dos redes que llamaremos “target” y “agent”. La red target se utiliza para guardar los estados con los que tomar las decisiones en cuanto a los movimientos a ejecutar, mientras que la red de aprendizaje, agent, se encarga de guardar los valores de la ejecución actualizados: cada cierto número de pasos ambas redes son comparadas, guardando la que haya dado mejores resultados como target, para la toma de decisiones, y utilizando la otra para el aprendizaje.
 
 $$Y^Q_{t} = R_{t+1} + \gamma Q(S_{t+1}, argmax_{a} Q(S_{t+1}, a; \theta_{t}); \theta_{t})$$
 
@@ -141,7 +140,7 @@ El principal inconveniente que mostraba nuestro agente hasta el momento se debí
 
   # If the agent's performance surpasses the target's
   if agent.performance() > target.performance():
-    # the agent becomes the target for now on
+    # the agent becomes the target to improve his solution
     target = agent
         
 \end{lstlisting}%
@@ -152,7 +151,7 @@ Tras la implementación de este método, comprobamos que existe una mayor consis
 \figura{Bitmap/DQNEnAccion/Results-DoubleAgent.png}{width=0.7\textwidth}{fig:CartPole-DoubleAgent}%
        {Resultados del \texttt{DoubleNetworkAgent}}
 
-Gracias a este método se han logrado grandes hitos en el campo del Aprendizaje por Refuerzo Profundo. Por ejemplo, hacer que una red neuronal sea capaz de jugar a juegos de Atari a nivel profesional utilizando tan solo los píxeles como entrada \citep{mnih2013playing}
+Gracias a este método se han logrado grandes hitos en el campo del aprendizaje por refuerzo profundo. Por ejemplo, hacer que una red neuronal sea capaz de jugar a juegos de Atari a nivel profesional utilizando tan solo los píxeles como entrada \citep{mnih2013playing}
 
 Por otro lado, este método no es perfecto, en la imagen \ref{fig:CartPole-DoubleAgent} se puede ver una pequeña caída al final de la ejecución. Inicialmente achacamos este comportamiento a una desafortunada conjunción probabilística. Pero tras investigarlo, descubrimos que se trataba de un fenómeno mucho más cotidiano: el causante era el propio método de Deep Q-Learning. Se ha observado como algoritmos basados en Q-Learning que buscan aproximar la función Q con modelos no lineales, como una red neuronal, sufren de esta inestabilidad. A este problema nos enfrentaremos más afondo en el siguiente capítulo, pero en el apartado de CartPole nos damos por satisfechos. 
 
@@ -192,7 +191,7 @@ Los resultados tan pobres obtenidos puede que sorprendan, viendo el rendimiento 
 
 \subsubsection{Nueva topología e hiperparámetros}
 
-Modificando el agente para usar la siguiente red\ref{fig:nn_mountainCar} e hiperparámetros:
+Modificando el agente para usar la siguiente red \ref{fig:nn_mountainCar} e hiperparámetros\ref{code:cartpole_drl}:
 
 \figura{Bitmap/DQNEnAccion/nn_mountainCar}{width=0.7\textwidth}{fig:nn_mountainCar}%
        {Topología MountainCar}
@@ -219,7 +218,7 @@ El primer obstáculo a superar para acelerar la curva de aprendizaje, es la func
 
 Nuestra solución pasa por sustituir la recompensa dada por el entorno \citep{mediumTim}, reemplazando ese resultado binario de \textit{meta} o \textit{no meta} por algo más descriptivo, que empuje al agente a mejorar su funcionamiento. Utilizando la \textbf{velocidad} o la \textbf{posición} del agente como recompensa, motiva al mismo a tomar las decisiones que lo llevan a moverse más lejos, hasta que finalmente termine alcanzando la meta.
 
-\figura{Bitmap\DQNEnAccion\mountainCar_03}{width=0.8\textwidth}{fig:mountaincar_03}%
+\figura{Bitmap/DQNEnAccion/mountainCar_03}{width=0.8\textwidth}{fig:mountaincar_03}%
        {Visualización de la recompensa modificada}
 
 Fijándonos en la imagen \ref{fig:mountaincar_03}, podemos ver que usando una recompensa modificada favorecemos que el coche se mueva e intente llegar cada vez más lejos, a diferencia de la recompensa original con que el coche solía quedarse estancado en la parte más baja de la curva.
@@ -231,38 +230,30 @@ A continuación, evaluaremos en mayor detalle cada una de las opciones disponibl
 
 La posición es el primer candidato para utilizar como recompensa. Al fin y al cabo, si conseguimos que el coche avance lo suficiente, terminará llegando a la meta. Hicimos una serie de pruebas en las que directamente reemplazábamos el valor de la recompensa por el valor de la posición, obteniendo los resultados de \ref{fig:mountaincar_04}. Para ser capaces de apreciar en qué momento se alcanzaba la meta, le otorgamos una recompensa significativamente más grande cuando lo conseguía, con la esperanza de que esto reforzase mucho más ese comportamiento.
 
-\figura{Bitmap/DQNEnAccion/mountainCar/mainPosNoAbsNew3}{width=0.7\textwidth}{fig:mountaincar_04}%
+\figura{Bitmap/DQNEnAccion/mountaincar_04}{width=0.7\textwidth}{fig:mountaincar_04}%
        {Visualización de la recompensa modificada}
 
-Como podemos ver, el rendimiento de la gráfica \ref{fig:mountaincar_04} sigue siendo muy parecido al visto en  \ref{fig:mountaincar_02}, la línea azul representa la puntuación modificada por nosotros y la roja la que devuelve el entorno. No es hasta después de los 1200 episodios cuando el agente consigue alcanzar la meta. A partir de los nuevos resultados podemos hacer las siguientes observaciones:
+Como podemos ver, el rendimiento de la gráfica \ref{fig:mountaincar_04} sigue siendo muy parecido al visto en  \ref{fig:mountaincar_02}, la línea azul representa la media de las recompensas de los últimos 100 episodios, por lo que la repentina subida entorno al episodio 1400, se traduce en alcanzar la meta puntualmente. No es hasta después de los 1400 episodios cuando el agente consigue alcanzar la meta. A partir de los nuevos resultados podemos hacer las siguientes observaciones:
 
 \begin{itemize}
     % \item En primer lugar, dimos una recompensa exageradamente alta al alcanzar la meta, no solo para que ese camino se refuerce más que con la recompensa original, para acelerar el aprendizaje, sino para además permitirnos distinguir más fácilmente (en la gráfica) las partidas que llegan a la meta de las que no.  
     \item Nuestra nueva recompensa sólo empuja al agente a intentar escalar la rampa de la derecha, ya que es la dirección que hace crecer el valor de la \texttt{posición}. No obstante, para conseguir ascender por la derecha también necesita tomar impulso desde la izquierda, lo que se corresponde con valores negativos de la posición. Como solución, deberemos considerar usar una posición definida con valores absolutos para conseguir un mejor resultado.
     \item Otro detalle observado es que la posición central no se corresponde con \texttt{0}, sino con \texttt{-0.5}. También tendremos que corregir esta desviación.
-    \item Además se puede apreciar que las partidas que consiguen alcanzar la meta no tienen una puntuación mucho mayor que las demás, por lo que es comprensible que el agente las pase por alto y no refuerce dicho comportamiento. Ante este fallo responderemos dando una puntuación notablemente más alta a las partidas que alcanzan la meta para así reforzar sus caminos.  
     % \item Por último, el agente no recibe ningún estímulo que lo lleve a resolver el problema cuanto antes, por lo que volveremos a introducir una penalización por cada paso tomado, de forma similar a la recompensa original del entorno.
 \end{itemize}
 
 \figura{Bitmap/DQNEnAccion/mountaincar_05}{width=0.7\textwidth}{fig:mountaincar_05}%
        {Resultados finales de la posición como recompensa}
 
-Teniendo en cuenta estos nuevos factores, los resultados obtenidos pueden verse en la gráfica \ref{fig:mountaincar_05}. Claramente, conseguimos que el problema se resuelva mucho más rápido: 500 episodios frente a los 1400 anteriores. Sin embargo la estabilidad aún sigue lejos de parecerse a la vista en el problema de CartPole. Siguen existiendo situaciones en las que el agente consigue resolver el problema en algunas partidas, pero luego vuelve a fracasar en las siguientes.
-
-% La grafica representa claramente como la puntuación converge a un valor, esto se debe a que la penalización crece demasiado.
-% Penalización inicial empieza en 1, sin penalización, y a cada Step esta se multiplica por 0.995, de forma que la penalización del último Step es de 0.36695. Esto hace que las puntuaciones de los últimos Steps de la partida sean despreciables para el sistema, de tal forma que se optimicen solo las recompensas iniciales e ignorando las de los últimos. Así llegando a la convergencia. 
-% Además, nos dimos cuenta de que este tipo de penalización incumplía lo establecido de basar la recompensa únicamente en el estado, sin tener en cuenta factores externos como, en el caso de la penalización, el número de Steps que lleva la partida.
-% Ante los inconvenientes de la penalización optamos por descartar ese método y en su lugar añadir una pequeña disminución de la recompensa, en caso de alcanzar la meta, según el número de pasos realizados al final del Episodio para reforzar las soluciones rápidas frente a las lentas.
-
-% RESULTADOS: mainPosicion
+Teniendo en cuenta estos nuevos factores, los resultados obtenidos pueden verse en la gráfica \ref{fig:mountaincar_05}. Claramente, conseguimos que el problema se resuelva mucho más rápido: 400-500 episodios frente a los 1400 anteriores.  Sin embargo la estabilidad aún sigue lejos de parecerse a la vista en el problema de CartPole. Siguen existiendo situaciones en las que el agente consigue resolver el problema en algunas partidas, pero luego vuelve a fracasar en las siguientes.
 
 
 \subsubsection*{Velocidad}
 
-Otra opción explorada es la de usar la velocidad como recompensa. Al fin y al cabo, cuanta más velocidad consiga acumular el agente, más alto llegará subiendo la rampa.
+Otra opción explorada es la de usar la velocidad como recompensa. Al fin y al cabo, cuanta más velocidad consiga acumular el coche, más alto llegará subiendo la rampa.
 
 \figura{Bitmap/DQNEnAccion/mountaincar_06}{width=0.7\textwidth}{fig:mountaincar_06}%
-       {Resultados finales de la posición como recompensa}
+       {Resultados finales de la velocidad como recompensa}
 
 A diferencia de la posición, la velocidad devuelta por el entorno tiene unos valores muy pequeños, por lo que basar la recompensa en la velocidad recibida sería semejante a darle una recompensa constante. Cuando alcanzase la meta, sería necesario proporcionarle una notablemente mayor, lo que nos dejaría en una situación muy similar a la vista en \ref{fig:mountaincar_02}. Por ello decidimos multiplicarla por 100, haciéndola más visible y relevante para el agente. 
 
@@ -292,10 +283,10 @@ La imagen cuenta con tres gráficas:
     \item La gráfica inferior derecha representa las puntuaciones obtenidas por ambas redes en una simulación al final de la ejecución, con el fin de comprobar si realmente han aprendido. Esta simulación se realiza utilizando la recompensa original, simplificando su interpretación.  
 \end{itemize}
 
-Dado que seguíamos encontrando fluctuaciones en el aprendizaje de algunas ejecuciones y continuábamos en busca de una mayor estabilidad, decidimos añadir una tercera red neuronal que permitiera almacenar el mejor modelo encontrado hasta el momento. El objetivo de dicho modelo era intervenir eventualmente en ``competiciones'' para medir la progresión del aprendizaje y, en caso de producirse un empeoramiento en los resultados, revertir lo aprendido entre esa competición y la anterior.
+Dado que seguíamos encontrando fluctuaciones en el aprendizaje de algunas ejecuciones y continuábamos en busca de una mayor estabilidad, decidimos añadir una tercera red neuronal que permitiera almacenar el mejor modelo encontrado hasta el momento, como una copia de seguridad, introduciendo así una especie de elitismo entre los episodios. El objetivo de dicho modelo es intervenir eventualmente para medir la progresión del aprendizaje del modelo y, en caso de producirse un empeoramiento en los resultados, imponer la configuración de la copia de seguridad, y en caso contrario, guardar la nueva mejor configuración. 
 
 \figura{Bitmap/DQNEnAccion/mountaincar_10}{width=1\textwidth}{fig:mountaincar_10}%
        {Resultado Final}
 
-En la imagen \ref{fig:mountaincar_10} se puede ver cómo, una vez alcanza el máximo, el agente se mantiene sin diverger y sin apenas fluctuar. Esto se debe a la estabilidad de las dos redes, que le permiten deshacer cualquier caída en los resultados del aprendizaje.
+En la imagen \ref{fig:mountaincar_10} se puede ver cómo, una vez alcanza el máximo, el modelo se mantiene sin divergir y sin apenas fluctuar, no dista demasiado con respecto a los últimos prototipos, que ya mantenían un alto nivel de convergencia, por lo que podemos concluir que este último añadido, no aporta demasiado al modelo. 
 
