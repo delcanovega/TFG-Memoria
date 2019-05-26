@@ -3,20 +3,18 @@
 
 \chapterquote{La vida sólo puede entenderse hacia atrás, pero debe vivirse hacia adelante}{Søren Kierkegaard}
 
-En este capitulo hablaremos de las distintas técnicas y procedimientos aplicados en nuestra resolución de los problemas de aprendizaje profundo por refuerzo a los que nos hemos enfrentando, pueden ver la implementación de las mismas en nuestro repositorio de gitHub.
-
 \section{CartPole}
 \label{sec:cartpoleDQN}
 
-El primer problema que trataremos al trabajar con aprendizaje profundo por refuerzo se corresponde con el de CartPole, ya descrito en el punto \ref{cartpole-sec}, en el que jugamos con un carro cuyo objetivo es moverse a derecha o izquierda para evitar que el poste vertical que hay sobre él se caiga.
+El primer problema que trataremos al trabajar con aprendizaje por refuerzo profundo se corresponde con el de CartPole, ya descrito en el apartado \ref{cartpole-sec}, en el que jugamos con un carro cuyo objetivo es moverse a derecha o izquierda para evitar que el poste vertical que hay sobre él se caiga. Todas las técnicas aplicadas para resolverlo han sido implementadas desde cero y su código se encuentra en el repositorio de nuestro proyecto.
 
 
 \subsection{Reemplazar la tabla-Q: \texttt{SimpleAgent}}
 
-Como primer paso para la resolución del problema, sustituimos la tabla-Q y su consecuente discretización de estados por una red neuronal\ref{fig:nn_cartpole}, abandonando por fin los problemas y limitaciones que habíamos observado anteriormente. La red neuronal\ref{fig:nn_cartpole} recibe como entrada el \textbf{estado} actual (posición del carro, velocidad del carro, posición del péndulo y velocidad del péndulo), cuenta con dos capas internas de 24 neuronas y produce dos salidas: los valores Q, aproximados por la red neuronal, asociados a cada una de las acciones disponibles, ejercer fuerza hacia la izquierda o hacia la derecha. Después de ejecutar cada movimiento, se aplicaba la ecuación de Bellman para entrenar la red e intentar que el agente aprendiese a jugar. El optimizador que utilizamos es el Adam, debido a su popular uso en este tipo de problemas.
+Como primer paso para la resolución del problema, sustituimos la tabla-Q y su consecuente discretización de estados por una red neuronal como la de la figura \ref{fig:nn_cartpole}, abandonando por fin los problemas y limitaciones que habíamos observado anteriormente. La red recibe como entrada el \textbf{estado} actual (posición del carro, velocidad del carro, posición del péndulo y velocidad del péndulo) y cuenta con dos capas ocultas tipo \textit{ReLu}, de 24 neuronas. La última capa, de tipo \textit{Linear} produce dos salidas que son los valores Q aproximados por la red neuronal, asociados a cada una de las acciones disponibles: ejercer fuerza hacia la izquierda o hacia la derecha. Después de ejecutar cada movimiento, se aplica la ecuación de Bellman para entrenar la red e intentar que el agente aprenda a jugar. El optimizador que utilizamos es el Adam, debido a su popular uso en este tipo de problemas.
 
 \figura{Bitmap/DQNEnAccion/nn_cartpole.png}{width=1\textwidth}{fig:nn_cartpole}%
-       {Estructura de la red usada}
+       {Estructura de la red neuronal en \texttt{SimpleAgent}}
 
 En el fragmento de código \ref{code:dqn} podemos ver que la implementación del algoritmo es muy similar a la usada en \ref{code:q-learning}, con unas modificaciones que describiremos a continuación.
 
@@ -35,7 +33,7 @@ En el fragmento de código \ref{code:dqn} podemos ver que la implementación del
 
 Para \textbf{predecir acciones} utilizamos la red neuronal, a la cual introducimos el estado actual para que nos devuelva los resultados de ambas acciones, de los que nos quedaremos con el mejor. Una vez ejecutada la acción disponemos del estado siguiente y la recompensa, lo cual podemos usar para \textbf{entrenar} la red neuronal de nuevo.
 
-Como cabía esperar con una modificación tan ingenua, los resultados no son buenos, como podemos apreciar en la imagen \ref{fig:CartPole-SimpleAgent}. El agente no logra aprender de una forma estable. Si miramos atrás, en nuestra solución con una tabla-Q, el único estado que es modificado tras un entrenamiento es aquel en el que nos encontramos. Por otra parte, cuando trabajamos con una red neuronal esto no es posible. Entrenar una red neuronal implica que toda la red se modificará, buscando satisfacer el nuevo ejemplo de entrenamiento proporcionado \citep[cap. 2]{Buduma:general}. En otras palabras, el agente mejora su rendimiento en el estado actual, pero al mismo tiempo empeora en todos los demás.
+Como cabía esperar con una modificación tan ingenua, los resultados no son buenos, tal y como podemos apreciar en la imagen \ref{fig:CartPole-SimpleAgent}. El agente no logra aprender de una forma estable. Si miramos atrás, en nuestra solución con una tabla-Q, el único estado que es modificado tras un paso de simulación es aquel en el que nos encontramos. Por otra parte, cuando trabajamos con una red neuronal esto no es posible. Entrenar una red neuronal implica que toda la red se modificará, buscando satisfacer el nuevo ejemplo de entrenamiento proporcionado \citep[cap. 2]{Buduma:general}. En otras palabras, el agente mejora su rendimiento en el estado actual, pero al mismo tiempo empeora en todos los demás.
 
 Los hiperparámetros usados también son una ligera modificación de los usados en la solución de aprendizaje por refuerzo. Como puede verse en \ref{code:cartpole_drl}, el mayor cambio es en la tasa de aprendizaje, la cual debe ser mucho menor para intentar evitar grandes modificaciones en la red.
 
@@ -59,7 +57,7 @@ Otra manera de conseguir estabilidad es añadiendo una memoria adicional al agen
 En nuestra memoria guardamos todos los datos necesarios para la perfecta representación de lo sucedido en pasos de ejecución anteriores, lo que se traduce en: \textbf{estado-actual}, \textbf{acción-tomada}, \textbf{recompensa}, \textbf{estado-siguiente} y \textbf{finalizado}.
 
 \begin{minipage}{0.9\linewidth}%
-\begin{lstlisting}[frame=tb, caption=Pseudocódigo funcion Replay de BatchAgent, inputencoding=latin1, label=code:cartpole_drl2]
+\begin{lstlisting}[frame=tb, caption=Pseudocódigo función Replay de BatchAgent, inputencoding=latin1, label=code:cartpole_drl2]
        #Create a iterator to go through the memory starting in the last position 
        iter = reversed(memory)
        
@@ -86,7 +84,7 @@ El problema es que los pasos tomados dentro de estos $batch$ están fuertemente 
 \subsection{Romper la cohesión de la memoria: \texttt{RandomBatchAgent}}
 \label{sec:cartpoledqn3}
 
-Por fortuna, solucionar el problema de la cohesión en el \texttt{BatchAgent} tiene fácil solución. Tan sólo necesitaremos que la memoria de nuestro agente sea lo bastante grande como para albergar experiencias muy variadas; después sólo tendremos que seleccionar elementos aleatorios de la memoria. Con esta solución, el agente debería tener una muestra más amplia respecto a los estados posibles y sería mucho más fácil que encuentre una solución con prontitud.
+Por fortuna, solucionar el problema de la cohesión en el \texttt{BatchAgent} tiene fácil solución. Tan sólo necesitaremos que la memoria que habíamos utilizado antes sea lo bastante grande como para albergar experiencias de todo tipo. Con este repertorio ya preparado, la mejor forma de romper la cohesión de los datos consiste en seleccionar elementos aleatorios dentro del mismo, a diferencia de tomar una muestra de elementos seguidos como habíamos hecho anteriormente. Con esta solución, el agente debería tener una muestra más amplia, variada y significativa respecto a los posibles estados en los que se puede encontrar y será mucho más fácil que encuentre una solución con prontitud.
   
 \begin{minipage}{0.9\linewidth}%
 \begin{lstlisting}[frame=tb, caption=Pseudocódigo RandomBatchAgent, inputencoding=latin1, label=code:cartpole_drl3]
@@ -153,7 +151,7 @@ Tras la implementación de este método, comprobamos que existe una mayor consis
 \figura{Bitmap/DQNEnAccion/Results-DoubleAgent.png}{width=0.7\textwidth}{fig:CartPole-DoubleAgent}%
        {Resultados del \texttt{DoubleNetworkAgent}}
 
-Gracias a este método se han logrado grandes hitos en el campo del Aprendizaje por Refuerzo Profundo. Por ejemplo, hacer que una red neuronal sea capaz de jugar a juegos de Atari a nivel profesional utilizando tan solo los píxeles como entrada \citep{mnih2013playing}
+Gracias a este método se han logrado grandes hitos en el campo del aprendizaje por refuerzo profundo. Por ejemplo, hacer que una red neuronal sea capaz de jugar a juegos de Atari a nivel profesional utilizando tan solo los píxeles como entrada \citep{mnih2013playing}
 
 Por otro lado, este método no es perfecto, en la imagen \ref{fig:CartPole-DoubleAgent} se puede ver una pequeña caída al final de la ejecución. Inicialmente achacamos este comportamiento a una desafortunada conjunción probabilística. Pero tras investigarlo, descubrimos que se trataba de un fenómeno mucho más cotidiano: el causante era el propio método de Deep Q-Learning. Se ha observado como algoritmos basados en Q-Learning que buscan aproximar la función Q con modelos no lineales, como una red neuronal, sufren de esta inestabilidad. A este problema nos enfrentaremos más afondo en el siguiente capítulo, pero en el apartado de CartPole nos damos por satisfechos. 
 
