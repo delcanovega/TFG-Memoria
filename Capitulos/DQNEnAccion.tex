@@ -52,12 +52,12 @@ Los hiperparámetros usados también son una ligera modificación de los usados 
 \subsection{Añadir memoria al agente: \texttt{BatchAgent}}
 \label{sec:cartpoledqn2}
 
-Otra manera de conseguir estabilidad es añadiendo una memoria adicional al agente. Para hacerlo recurriremos al reproductor de experiencias (o \textit{Experience Replay} \citep{Lin1992}), también conocidas como valores-Q, al que nos referiremos como \textbf{replay}. Este método consiste en almacenar múltiples experiencias pasadas del agente en una memoria y para más tarde tomar una muestra del conjunto de experiencias, acumuladas a lo largo de varios episodios, para entrenar \ref{code:cartpole_drl2}.
-
-En nuestra memoria guardamos todos los datos necesarios para la perfecta representación de lo sucedido en pasos de ejecución anteriores, lo que se traduce en: \textbf{estado-actual}, \textbf{acción-tomada}, \textbf{recompensa}, \newline \textbf{estado-siguiente} y \textbf{finalizado}.
+Una forma de conseguir estabilidad es añadir una memoria adicional al agente, en la que se almacenen las decisiones tomadas con los resultados obtenidos, de forma que a la hora de entrenar la red se puedan usar varias experiencias en lugar de sólo una. 
+% Para hacerlo recurriremos al reproductor de experiencias (o \textit{Experience Replay} \citep{Lin1992}), también conocidas como valores-Q, al que nos referiremos como \textbf{replay}. Este método consiste en almacenar múltiples experiencias pasadas del agente en una memoria y para más tarde tomar una muestra del conjunto de experiencias, acumuladas a lo largo de varios episodios, para entrenar \ref{code:cartpole_drl2}.
+En nuestra memoria guardamos todos los datos necesarios para la perfecta representación de lo sucedido en pasos de ejecución anteriores, lo que se traduce en: \textbf{estado-actual}, \textbf{acción-tomada}, \textbf{recompensa}, \textbf{estado-siguiente} y \textbf{finalizado}.
 
 \begin{minipage}{0.9\linewidth}%
-\begin{lstlisting}[frame=tb, caption=Pseudocódigo función Replay de BatchAgent, inputencoding=latin1, label=code:cartpole_drl2]
+\begin{lstlisting}[frame=tb, caption=Pseudocódigo función Replay de BatchAgent, label=code:cartpole_drl2]
 # Create a iterator to go through the memory 
 # starting in the last position 
 iter = reversed(memory)
@@ -89,22 +89,28 @@ El problema es que los pasos tomados dentro de estos $batch$ están fuertemente 
 \subsection{Romper la cohesión de la memoria: \texttt{RandomBatchAgent}}
 \label{sec:cartpoledqn3}
 
-Por fortuna, solucionar el problema de la cohesión en el \texttt{BatchAgent} tiene fácil solución. Tan sólo necesitaremos que la memoria que habíamos utilizado antes sea lo bastante grande como para albergar experiencias de todo tipo. Con este repertorio ya preparado, la mejor forma de romper la cohesión de los datos consiste en seleccionar elementos aleatorios dentro del mismo, a diferencia de tomar una muestra de elementos seguidos como habíamos hecho anteriormente. Con esta solución, el agente debería tener una muestra más amplia, variada y significativa respecto a los posibles estados en los que se puede encontrar y será mucho más fácil que encuentre una solución con prontitud.
+Para solucionar el problema de la cohesión en el \texttt{BatchAgent} tendremos que, en lugar de utilizar las últimas $N$ experiencias, elegir experiencias pasadas suficientemente diferentes para que el entrenamiento de la red no esté sesgado hacia un tipo de situación concreta. Tan sólo necesitaremos que la memoria que habíamos utilizado antes sea lo bastante grande como para albergar experiencias de varias partidas. Con este repertorio ya preparado, la mejor forma de romper la cohesión de los datos consiste en seleccionar elementos aleatorios dentro del mismo, a diferencia de tomar una muestra de elementos seguidos como habíamos hecho anteriormente. Con esta solución, el agente debería tener una muestra más amplia, variada y significativa respecto a los posibles estados en los que se puede encontrar y así rendirá mejor en la mayoría de las situaciones.
   
 \begin{minipage}{0.9\linewidth}%
 \begin{lstlisting}[frame=tb, caption=Pseudocódigo RandomBatchAgent, inputencoding=latin1, label=code:cartpole_drl3]
-  state = env.reset()
+# We get a random sample of past experiences
+batch = random.sample(self.memory, BATCH_SIZE)
 
-  while not done:
-    action = agent.predict_action(state)
-    next, reward, done = env.step(action)
+for experience in batch:
+  state,action,reward,next_state,done = experience
 
-    agent.remember(state, action, reward, next, done)
-    # Takes the N random memories and trains with them
-    agent.learn_by_replay()
+  # We calculate the new Q-value
+  if done:
+    q_update = -reward
+  else:
+    q_update = bellman(reward, next_state)
 
-    state = next
-              
+  # We update the Q-value of our action...
+  target = model.predict(state)
+  target[action] = q_update
+
+  # ...and try to approximate it
+  model.fit(state, target)
 \end{lstlisting}%
 \end{minipage}
 
@@ -158,7 +164,7 @@ Tras la implementación de este método, comprobamos que existe una mayor consis
 
 Gracias a este método se han logrado grandes hitos en el campo del aprendizaje por refuerzo profundo. Por ejemplo, hacer que una red neuronal sea capaz de jugar a juegos de Atari a nivel profesional utilizando tan solo los píxeles como entrada \citep{mnih2013playing}
 
-Por otro lado, este método no es perfecto, en la imagen \ref{fig:CartPole-DoubleAgent} se puede ver una pequeña caída al final de la ejecución. Inicialmente achacamos este comportamiento a una desafortunada conjunción probabilística. Pero tras investigarlo, descubrimos que se trataba de un fenómeno mucho más cotidiano: el causante era el propio método de Deep Q-Learning. Se ha observado como algoritmos basados en Q-Learning que buscan aproximar la función Q con modelos no lineales, como una red neuronal, sufren de esta inestabilidad. A este problema nos enfrentaremos más afondo en el siguiente capítulo, pero en el apartado de CartPole nos damos por satisfechos. 
+Por otro lado, este método no es perfecto, en la imagen \ref{fig:CartPole-DoubleAgent} se puede ver una pequeña caída al final de la ejecución. Inicialmente achacamos este comportamiento a una desafortunada conjunción probabilística. Pero tras investigarlo, descubrimos que se trataba de un fenómeno mucho más cotidiano: el causante era el propio método de Deep Q-Learning. Se ha observado cómo algoritmos basados en Q-Learning que buscan aproximar la función Q con modelos no lineales, como una red neuronal, sufren de esta inestabilidad. A este problema nos enfrentaremos más a fondo en el siguiente capítulo, pero en el apartado de CartPole nos damos por satisfechos. 
 
 \section{MountainCar}
 
