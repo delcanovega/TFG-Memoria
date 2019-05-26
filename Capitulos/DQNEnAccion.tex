@@ -68,7 +68,7 @@ for _ in range(BATCH_SIZE):
     if done:
        q_update = -reward
     else:
-       bellman(reward, next_state)
+       q_update = bellman(reward, next_state)
 
     target = model.predict(state)
     target[action] = q_update
