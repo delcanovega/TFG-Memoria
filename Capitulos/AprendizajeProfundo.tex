@@ -4,7 +4,7 @@
 \chapterquote{En otras actividades más allá del puro pensamiento lógico, nuestras mentes funcionan mucho más rápido que cualquier ordenador jamás concebido}{Daniel Crevier}
 
 \section{Redes Neuronales: definición y elementos}
-En vistas a solucionar problemas, más complejos que los vistos anteriormente, surgió la necesidad de buscar diferentes modelos computacionales. Una rama a destacar sería la de \textbf{Aprendizaje Profundo} (o \textit{Deep Learning}), englobada dentro de Aprendizaje Automático, que decidió diseñar estos nuevos modelos basándose en la estructura del cerebro humano, desarrollando de esta forma las primeras neuronas artificiales.
+En vistas a solucionar problemas, más complejos que los vistos anteriormente, surgió la necesidad de buscar diferentes modelos computacionales. Una rama a destacar sería la de \textbf{aprendizaje profundo} (o \textit{Deep Learning}), englobada dentro de aprendizaje automático, que decidió diseñar estos nuevos modelos basándose en la estructura del cerebro humano, desarrollando de esta forma las primeras neuronas artificiales.
 
 \subsection{Neuronas}
 La neurona es el elemento básico de una red neuronal. Al igual que las existentes en el cerebro humano, estas neuronas son células de procesamiento; reciben varias entradas de datos y devuelven una única salida. Cada neurona contiene uno o varios pesos propios, en función del número de variables que reciba, que se relacionan con ellas de la siguiente forma:
@@ -28,14 +28,14 @@ Sin embargo, dentro de estas neuronas existen varios tipos. Las que nos interesa
        {Comparación entre funciones Sigmoide, Tanh y ReLu}
 
 \subsection{Estructura y funcionamiento}
-A pesar de que una neurona podría resolver cualquier problema linealmente separable, nos resultaría muy difícil resolver problemas de Aprendizaje Automático más complejos a través de una sola de ellas. Para ello, de nuevo basándose en el modelo de un cerebro humano, las neuronas se encuentran agrupadas por capas, formando así una red neuronal. Cada capa consta de un número finito de neuronas del mismo tipo, recibiendo todas los mismos tipos y cantidades de datos devueltos por las neuronas de la capa anterior pero, como hemos mencionado antes, devolviendo resultados diferentes cada una.
+A pesar de que una neurona podría resolver cualquier problema linealmente separable, nos resultaría muy difícil resolver problemas de aprendizaje automático más complejos a través de una sola de ellas. Para ello, de nuevo basándose en el modelo de un cerebro humano, las neuronas se encuentran agrupadas por capas, formando así una red neuronal. Cada capa consta de un número finito de neuronas del mismo tipo, recibiendo todas los mismos tipos y cantidades de datos devueltos por las neuronas de la capa anterior pero, como hemos mencionado antes, devolviendo resultados diferentes cada una.
 
 Las redes neuronales están compuestas generalmente por varias capas, de forma que las salidas de la anterior forman las entradas de la siguiente, tal y como podemos observar en la imagen \ref{fig:red_neuronal}. Entre ellas, podemos distinguir la capa de entrada, que es la que recibe los datos a analizar, la capa de salida, que es la que devuelve los resultados en el formato que nos interesa en función del problema, y las capas intermedias u ocultas. Éstas son las encargadas de abstraer todos los datos recibidos por la capa anterior para que sea más fácil procesarlos y analizarlos. 
 
 \figura{Bitmap/AprendizajeProfundo/Red_Neuronal}{width=1\textwidth}{fig:red_neuronal}%
        {Esquema de estructura de una red neuronal profunda}
 
-Las redes con múltiples capas intermedias son conocidas como \textbf{Redes Neuronales Profundas}, o \textit{Deep Neural Networks} (DNNs). El ejemplo más conocido para el que podemos utilizar estas redes es el de reconocimiento de objetos en imágenes. Existen múltiples formas de utilizar las DNNs en este ámbito, así que utilizaremos el ejemplo que podemos ver en la imagen \ref{fig:dnn}. 
+Las redes con múltiples capas intermedias son conocidas como \textbf{redes neuronales profundas}, o \textit{Deep Neural Networks} (DNNs). El ejemplo más conocido para el que podemos utilizar estas redes es el de reconocimiento de objetos en imágenes. Existen múltiples formas de utilizar las DNNs en este ámbito, así que utilizaremos el ejemplo que podemos ver en la imagen \ref{fig:dnn}. 
 
 La capa de entrada comienza recibiendo un conjunto de píxeles de distintos colores. Las capas intermedias se encargan de distinguir el objeto, ya sea diferenciando los píxeles según sus colores y su proximidad, distinguiendo siluetas o bien reconociendo patrones que puedan distinguir al coche del resto de la fotografía. Sin conocer como tal la forma exacta en que se ha resuelto el problema, podríamos intuir que con una sola capa intermedia nos sería imposible, o realmente difícil, resolver este problema, ya que el proceso requiere varios pasos entre neuronas (por ejemplo, reconocer los faros, las ventanas, la matrícula...). Observando el esquema, la capa de salida sería la encargada de marcar las regiones en las que el coche es visible, o más bien, en las que existe el objeto coche. En otros casos, las capas intermedias también podrían ser utilizadas para disminuir las dimensiones del problema, reduciendo el número de píxeles de una imagen desde una magnitud de miles a una de decenas.
 
@@ -120,30 +120,27 @@ $$Q(s, . ; T )$$
 
 Donde $T$ son los parámetros de la red y $s$ es el estado actual. Esto significa que la red es capaz de calcular múltiples valores-Q de forma dinámica para todas las acciones posibles en un estado, sin abandonar la representación que suponía la tabla-Q. Además, permite generalizar estados no visitados pero sí muy parecidos a otros que ya ha visitado, ya que la red ya tendrá calculadas las decisiones para éstos también.
 
-Podemos ver el funcionamiento de las DQNs en el pseudo-código \ref{code:dqn}, sin embargo esta es una versión bastante simplificada y para conseguir un verdadero éxito habrá que probar otras técnicas a mayores que veremos en el siguiente capítulo.
+Podemos ver el funcionamiento de las DQNs en el pseudo-código \ref{code:cap4_dqn}, sin embargo esta es una versión bastante simplificada y para conseguir un verdadero éxito habrá que probar otras técnicas a mayores que veremos en el siguiente capítulo.
 
 \begin{minipage}{0.9\linewidth}%
-    \begin{lstlisting}[frame=tb, language=python, caption=Pseudocódigo DQN,   inputencoding=latin1, label={code:dqn}]
+\begin{lstlisting}[frame=tb, language=python, caption=Pseudocódigo DQN, inputencoding=latin1, label={code:cap4_dqn}]
+for i in range(EPISODES):       
+  while not done:  
+    # Choose between a random choice (exploration)
+    # or the best valued action (exploitation)
+    action = agent.predict_action(state)
 
-    Initialize environment and agent;
-    
-    for i in range(EPISODES):
-            Initialize current-state   
-            
-            while not done:
-         
-                //Choose between a random choice (exploration) or based in the enviroment memory.
-                action = agent.predict_action(state)
-                //Take de chosen action and save the new data.
-                next_state, reward, done, _ = env.step(action)
-                agent.update_model(state, action, reward, next_state, done)
-                
-                //execute the bellman algorithm
-                agent.replay()
-                //update state
-                state = next_state
-                
-                //update the exploration ratio (random choice)
-                agent.update_hyperparameters()
-    \end{lstlisting}%
+    # Perform the action
+    next_state, reward, done = env.step(action)
+    # Remember the result
+    agent.update_model(state, action, reward, next_state, done)
+
+    # Apply the Bellman's equation with a set of
+    # randomly selected memories (experience replay)
+    agent.replay()
+
+    state = next_state
+    # Decrease exploration ratio
+    agent.update_hyperparameters()
+\end{lstlisting}%
 \end{minipage}
