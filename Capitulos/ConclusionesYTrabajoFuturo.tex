@@ -25,12 +25,9 @@ Finalmente, gracias al uso de una memoria para que nuestro agente también apren
 
 El último paso al que llegamos en nuestro proyecto fue a trasladar todo lo aprendido y lo conseguido en el CartPole a otro entorno para comprobar que el agente seguía aprendiendo correctamente. Esta vez se trataba de el juego de MountainCar, también disponible en la librería de OpenAI Gym. 
 
-El principal problema al que nos enfrentamos aquí fue al cambio en las variables respecto al problema anterior. 
-%TODO Meter más conclusiones MountainCar
+El principal problema al que nos enfrentamos aquí fue a la velocidad de aprendizaje. Tras observar como se desenvolvía nuestro sistema en el nuevo entrono, nos dimos cuenta de que la recompensa no trasmitía una información útil para el aprendizaje del modelo, no hasta que se alcanzaba el objetivo final, lo cual implicaba un entrenamiento muy largo. Por ello decidimos centrarnos en cambiar la recompensa. Tras muchas pruebas con diversas ideas, llegamos a acelerar el aprendizaje, sorprendentemente las soluciones más simples fueron las que nos dieron mejores resultados.  
 
-
-
-Tras una serie de adaptaciones y algunos nuevos componentes menores, obtuvimos resultados exitosos, por lo que concluimos que habíamos conseguido desarrollar una IA capaz de jugar. 
+Una vez solucionado el aprendizaje nos enfrentamos a la divergencia, pero esta vez supuso un problema mayor de lo que esperábamos. De todas formas aplicando lo aprendido en CartPole realizando una serie de adaptaciones y algunos nuevos componentes menores, obtuvimos resultados exitosos, por lo que concluimos que habíamos conseguido desarrollar una IA capaz de jugar a videojuegos.
 
 
 Tal vez en un primer momento la idea de hacer un trabajo de investigación, con una meta que cada vez pueda resultar más lejana, no suene muy atractiva. Sin embargo, para nosotros esto ha resultado mucho más provechoso que centrarnos en terminar un producto final. Este proyecto nos ha abierto una puerta hacia el aprendizaje por refuerzo profundo, las técnicas que lo componen y los avances que se siguen haciendo en este campo. 
