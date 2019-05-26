@@ -249,20 +249,13 @@ Como podemos ver, el rendimiento de la gráfica \ref{fig:mountaincar_04} sigue s
 
 Teniendo en cuenta estos nuevos factores, los resultados obtenidos pueden verse en la gráfica \ref{fig:mountaincar_05}. Claramente, conseguimos que el problema se resuelva mucho más rápido: 400-500 episodios frente a los 1400 anteriores.  Sin embargo la estabilidad aún sigue lejos de parecerse a la vista en el problema de CartPole. Siguen existiendo situaciones en las que el agente consigue resolver el problema en algunas partidas, pero luego vuelve a fracasar en las siguientes.
 
-% La grafica representa claramente como la puntuación converge a un valor, esto se debe a que la penalización crece demasiado.
-% Penalización inicial empieza en 1, sin penalización, y a cada Step esta se multiplica por 0.995, de forma que la penalización del último Step es de 0.36695. Esto hace que las puntuaciones de los últimos Steps de la partida sean despreciables para el sistema, de tal forma que se optimicen solo las recompensas iniciales e ignorando las de los últimos. Así llegando a la convergencia. 
-% Además, nos dimos cuenta de que este tipo de penalización incumplía lo establecido de basar la recompensa únicamente en el estado, sin tener en cuenta factores externos como, en el caso de la penalización, el número de Steps que lleva la partida.
-% Ante los inconvenientes de la penalización optamos por descartar ese método y en su lugar añadir una pequeña disminución de la recompensa, en caso de alcanzar la meta, según el número de pasos realizados al final del Episodio para reforzar las soluciones rápidas frente a las lentas.
-
-% RESULTADOS: mainPosicion
-
 
 \subsubsection*{Velocidad}
 
-Otra opción explorada es la de usar la velocidad como recompensa. Al fin y al cabo, cuanta más velocidad consiga acumular el agente, más alto llegará subiendo la rampa.
+Otra opción explorada es la de usar la velocidad como recompensa. Al fin y al cabo, cuanta más velocidad consiga acumular el coche, más alto llegará subiendo la rampa.
 
 \figura{Bitmap/DQNEnAccion/mountaincar_06}{width=0.7\textwidth}{fig:mountaincar_06}%
-       {Resultados finales de la posición como recompensa}
+       {Resultados finales de la velocidad como recompensa}
 
 A diferencia de la posición, la velocidad devuelta por el entorno tiene unos valores muy pequeños, por lo que basar la recompensa en la velocidad recibida sería semejante a darle una recompensa constante. Cuando alcanzase la meta, sería necesario proporcionarle una notablemente mayor, lo que nos dejaría en una situación muy similar a la vista en \ref{fig:mountaincar_02}. Por ello decidimos multiplicarla por 100, haciéndola más visible y relevante para el agente. 
 
