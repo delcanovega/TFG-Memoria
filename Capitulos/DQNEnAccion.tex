@@ -157,7 +157,7 @@ Por otro lado, este método no es perfecto, en la imagen \ref{fig:CartPole-Doubl
 
 \section{MountainCar}
 
-Con el fin de comprobar la versatilidad de nuestro agente, lo pondremos a prueba en un entorno distinto, en este caso el problema del MountainCar, con el siguiente enunciado:
+Con el fin de comprobar la versatilidad de nuestro agente, lo pondremos a prueba en un entorno distinto. En este caso será el problema de MountainCar, descrito por primera vez por A. \citet{Moore90efficientmemory-based}, y con el siguiente enunciado en OpenAI:
 
 \begin{quote}
     Un coche se encuentra en una pista unidimensional, posicionado entre dos "montañas". El objetivo es alcanzar la cima de la montaña derecha; sin embargo, el motor del coche no es lo bastante potente como para alcanzar la cima de la montaña con un único impulso. Por ello, la única forma de lograrlo es conducir hacia delante y hacia atrás aumentando el impulso.
@@ -166,7 +166,6 @@ Con el fin de comprobar la versatilidad de nuestro agente, lo pondremos a prueba
 \figura{Bitmap/DQNEnAccion/MountainCar_01}{width=0.7\textwidth}{fig:mountaincar_01}%
        {Entorno de simulación MountainCar, \citet{brockman2016openai}}
 
-Este problema fue descrito por primera vez por A. \citet{Moore90efficientmemory-based}.
 
 \subsection{Especificación del problema}
 
@@ -191,13 +190,13 @@ Los resultados tan pobres obtenidos puede que sorprendan, viendo el rendimiento 
 
 \subsubsection{Nueva topología e hiperparámetros}
 
-Modificando el agente para usar la siguiente red \ref{fig:nn_mountainCar} e hiperparámetros\ref{code:cartpole_drl}:
+Tras modificar al agente para usar la topología de red visible en la imagen \ref{fig:nn_mountainCar}, utilizar los siguientes hiperparámetros  (Listing \ref{code:mountaincar_drl}) y dejar al agente aprendiendo durante un largo entrenamiento, conseguimos que llegue a ser capaz de resolver el problema. 
 
 \figura{Bitmap/DQNEnAccion/nn_mountainCar}{width=0.7\textwidth}{fig:nn_mountainCar}%
        {Topología MountainCar}
 
 \begin{minipage}{0.9\linewidth}%
-    \begin{lstlisting}[frame=tb, language=Python, caption=Hiperparámetros MountainCar, label=code:cartpole_drl]
+    \begin{lstlisting}[frame=tb, language=Python, caption=Hiperparámetros MountainCar, label=code:mountaincar_drl]
     LEARNING_RATE = 0.0001  # Alpha
     DISCOUNT_FACTOR = 0.95  # Gamma
     EXPLORATION = 0.5       # Epsilon (initial)
@@ -205,18 +204,19 @@ Modificando el agente para usar la siguiente red \ref{fig:nn_mountainCar} e hipe
     \end{lstlisting}%
 \end{minipage}
 
-Gracias a la nueva topología, y mediante un entrenamiento bastante largo, en la imagen \ref{fig:mountaincar_02} podemos comprobar que el agente llega a ser capaz de resolver el problema. No obstante, creemos que el resultado tiene un gran margen de mejora, por lo que seguiremos explorando otras soluciones que permitan al agente aprender de una forma más eficiente.
-
 \figura{Bitmap/DQNEnAccion/mountainCar_02}{width=0.7\textwidth}{fig:mountaincar_02}%
        {Resultados de la nueva topología}
 
-La gráfica \ref{fig:mountaincar_02} representa las puntuaciones obtenidas durante nuestra simulación. En este punto de desarrollo, la puntuación representa la inversa de los pasos que ha tardado el avatar en llegar a la meta, dado que la recompensa que da el entorno para el estado objetivo es 0 y -1 a cualquier otro, la puntuación -200 implica que la meta no se ha alcanzado y la puntuación -199 implica que ha llegado en el paso 200. 
+La gráfica \ref{fig:mountaincar_02} representa las puntuaciones obtenidas durante nuestra simulación. En este punto de desarrollo, la puntuación representa la inversa de los pasos que ha tardado el avatar en llegar a la meta, dado que la recompensa que da el entorno para el estado objetivo es 0 y -1 a cualquier otro, la puntuación -200 implica que la meta no se ha alcanzado y la puntuación -199 implica que ha llegado en el paso 200.
+
+No obstante, creemos que este resultado tiene un gran margen de mejora, por lo que seguiremos explorando otras soluciones que permitan al agente aprender de una forma más eficiente.
+
 
 \subsubsection{Función de recompensa}
 
 El primer obstáculo a superar para acelerar la curva de aprendizaje, es la función de la recompensa. La recompensa proporcionada por el entorno no es lo bastante útil para el agente. Podríamos entenderlo como el siguiente ejemplo: al hacer un examen, sin importar las veces que se intente o las respuestas que se den, si no está todo contestado de forma correcta la nota obtenida siempre es cero. Viéndolo así, resulta casi imposible identificar qué puntos en particular es necesario reforzar.
 
-Nuestra solución pasa por sustituir la recompensa dada por el entorno \citep{mediumTim}, reemplazando ese resultado binario de \textit{meta} o \textit{no meta} por algo más descriptivo, que empuje al agente a mejorar su funcionamiento. Utilizando la \textbf{velocidad} o la \textbf{posición} del agente como recompensa, motiva al mismo a tomar las decisiones que lo llevan a moverse más lejos, hasta que finalmente termine alcanzando la meta.
+Nuestra solución, basada en la propuesta en \citep{mediumTim}, pasa por sustituir la recompensa dada por el entorno, reemplazando ese resultado binario de \textit{meta} o \textit{no meta} por algo más descriptivo, que empuje al agente a mejorar su funcionamiento. Utilizando la \textbf{velocidad} o la \textbf{posición} del agente como recompensa, motiva al mismo a tomar las decisiones que lo llevan a moverse más lejos, hasta que finalmente termine alcanzando la meta.
 
 \figura{Bitmap/DQNEnAccion/mountainCar_03}{width=0.8\textwidth}{fig:mountaincar_03}%
        {Visualización de la recompensa modificada}
@@ -228,12 +228,13 @@ A continuación, evaluaremos en mayor detalle cada una de las opciones disponibl
 
 \subsubsection*{Posición}
 
-La posición es el primer candidato para utilizar como recompensa. Al fin y al cabo, si conseguimos que el coche avance lo suficiente, terminará llegando a la meta. Hicimos una serie de pruebas en las que directamente reemplazábamos el valor de la recompensa por el valor de la posición, obteniendo los resultados de \ref{fig:mountaincar_04}. Para ser capaces de apreciar en qué momento se alcanzaba la meta, le otorgamos una recompensa significativamente más grande cuando lo conseguía, con la esperanza de que esto reforzase mucho más ese comportamiento.
+La posición es el primer candidato para utilizar como recompensa. Al fin y al cabo, si conseguimos que el coche avance lo suficiente, terminará llegando a la meta. Hicimos una serie de pruebas en las que directamente reemplazábamos el valor de la recompensa por el valor de la posición. Para ser capaces de apreciar en qué momento se alcanzaba la meta, le otorgamos una recompensa significativamente más grande cuando lo conseguía, con la esperanza de que esto reforzase mucho más ese comportamiento.
 
 \figura{Bitmap/DQNEnAccion/mountaincar_04}{width=0.7\textwidth}{fig:mountaincar_04}%
        {Visualización de la recompensa modificada}
 
-Como podemos ver, el rendimiento de la gráfica \ref{fig:mountaincar_04} sigue siendo muy parecido al visto en  \ref{fig:mountaincar_02}, la línea azul representa la media de las recompensas de los últimos 100 episodios, por lo que la repentina subida entorno al episodio 1400, se traduce en alcanzar la meta puntualmente. No es hasta después de los 1400 episodios cuando el agente consigue alcanzar la meta. A partir de los nuevos resultados podemos hacer las siguientes observaciones:
+%TODO: Añadir valor de recompensa
+Como podemos ver en la gráfica \ref{fig:mountaincar_04}, el rendimiento sigue siendo muy parecido al visto anteriormente en la imagen \ref{fig:mountaincar_02}. La repentina subida de puntuación en torno al episodio 1400, se traduce en que el coche ha conseguido alcanzar la meta, la cima de la montaña derecha. A partir de los nuevos resultados podemos hacer las siguientes observaciones:
 
 \begin{itemize}
     % \item En primer lugar, dimos una recompensa exageradamente alta al alcanzar la meta, no solo para que ese camino se refuerce más que con la recompensa original, para acelerar el aprendizaje, sino para además permitirnos distinguir más fácilmente (en la gráfica) las partidas que llegan a la meta de las que no.  
@@ -245,7 +246,8 @@ Como podemos ver, el rendimiento de la gráfica \ref{fig:mountaincar_04} sigue s
 \figura{Bitmap/DQNEnAccion/mountaincar_05}{width=0.7\textwidth}{fig:mountaincar_05}%
        {Resultados finales de la posición como recompensa}
 
-Teniendo en cuenta estos nuevos factores, los resultados obtenidos pueden verse en la gráfica \ref{fig:mountaincar_05}. Claramente, conseguimos que el problema se resuelva mucho más rápido: 400-500 episodios frente a los 1400 anteriores.  Sin embargo la estabilidad aún sigue lejos de parecerse a la vista en el problema de CartPole. Siguen existiendo situaciones en las que el agente consigue resolver el problema en algunas partidas, pero luego vuelve a fracasar en las siguientes.
+%TODO: Añadir valor recompensa
+Teniendo en cuenta estos nuevos factores, los resultados obtenidos pueden verse en la gráfica \ref{fig:mountaincar_05}. Claramente, conseguimos que el problema se resuelva mucho más rápido: 400-500 episodios frente a los 1400 anteriores. Sin embargo la estabilidad aún sigue lejos de parecerse a la vista en el problema de CartPole. Siguen existiendo situaciones en las que el agente consigue resolver el problema en algunas partidas, pero luego vuelve a fracasar en las siguientes.
 
 
 \subsubsection*{Velocidad}
@@ -259,8 +261,6 @@ A diferencia de la posición, la velocidad devuelta por el entorno tiene unos va
 
 Como vemos en la imagen \ref{fig:mountaincar_06}, nos encontramos con un comportamiento muy similar al visto usando la posición en valores absolutos. El agente consigue resolver el problema en varias ocasiones pero no se estabiliza.
 
-
-
 \subsubsection*{Otras pruebas}
 
 Puesto que los resultados obtenidos por la posición y velocidad parecían haberse estancado, decidimos investigar otras piezas clave de nuestro modelo, como el optimizador. Empezamos a cuestionarnos si Adam \citep{kingma2014adam} era nuestra mejor opción, e hicimos algunas pruebas con Adadelta \citep{NIPS2017_7003}.
@@ -273,17 +273,17 @@ Para poder comparar lo mejor posible los resultados, decidimos crear una serie d
 \figura{Bitmap/DQNEnAccion/mountainCar_09}{width=1\textwidth}{fig:mountaincar_09}%
        {Resultados velocidad Adadelta}
 
-Se puede ver claramente cómo Adadelta consigue alcanzar el objetivo varias iteraciones antes que Adam en la imagen \ref{fig:mountaincar_09}, y ambas se mantienen casi totalmente estables durante los siguientes episodios.
+Se puede ver claramente en los resultados de Adadelta (figura \ref{fig:mountaincar_09}) consigue alcanzar el objetivo varias iteraciones antes que Adam (figura \ref{fig:mountaincar_09}), y ambas se mantienen casi totalmente estables durante los siguientes episodios.
 
-       
+%TODO: elegir imagen  y explicarla bien
 La imagen cuenta con tres gráficas:
 \begin{itemize}
-    \item La primera muestra la evolución general del sistema en función de los episodios. Se pueden ver los resultados de las dos redes neuronales, la azul para agente y la cian para el aprendiz. La línea roja representa la recompensa real que devuelve el entorno. La negra muestra la media de las cien ultimas partidas. Así tenemos una observación general y fácil de interpretar.
+    \item La primera muestra la evolución general del sistema en función de los episodios. Se pueden ver los resultados de las dos redes neuronales, la azul para agente y la cian para el aprendiz. La línea roja representa la recompensa real que devuelve el entorno. La negra muestra la recompensa media de las cien ultimas partidas. Así tenemos una observación general y fácil de interpretar.
     \item La gráfica inferior izquierda muestra la posición máxima alcanzada durante la partida. Esto nos permite ver lo cerca que se ha quedado el agente de alcanzar la meta.
     \item La gráfica inferior derecha representa las puntuaciones obtenidas por ambas redes en una simulación al final de la ejecución, con el fin de comprobar si realmente han aprendido. Esta simulación se realiza utilizando la recompensa original, simplificando su interpretación.  
 \end{itemize}
 
-Dado que seguíamos encontrando fluctuaciones en el aprendizaje de algunas ejecuciones y continuábamos en busca de una mayor estabilidad, decidimos añadir una tercera red neuronal que permitiera almacenar el mejor modelo encontrado hasta el momento, como una copia de seguridad, introduciendo así una especie de elitismo entre los episodios. El objetivo de dicho modelo es intervenir eventualmente para medir la progresión del aprendizaje del modelo y, en caso de producirse un empeoramiento en los resultados, imponer la configuración de la copia de seguridad, y en caso contrario, guardar la nueva mejor configuración. 
+Dado que seguíamos encontrando fluctuaciones en el aprendizaje de algunas ejecuciones y continuábamos en busca de una mayor estabilidad, decidimos añadir una tercera red neuronal que permitiera almacenar el mejor modelo encontrado hasta el momento, como una copia de seguridad, introduciendo así una especie de elitismo entre los episodios. El objetivo de dicho modelo es intervenir eventualmente para medir la progresión del aprendizaje del modelo y, en caso de producirse un empeoramiento en los resultados, imponer la configuración de la copia de seguridad; en caso contrario se guarda la nueva mejor configuración. 
 
 \figura{Bitmap/DQNEnAccion/mountaincar_10}{width=1\textwidth}{fig:mountaincar_10}%
        {Resultado Final}
