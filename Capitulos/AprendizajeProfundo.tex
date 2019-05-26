@@ -4,7 +4,7 @@
 \chapterquote{En otras actividades más allá del puro pensamiento lógico, nuestras mentes funcionan mucho más rápido que cualquier ordenador jamás concebido}{Daniel Crevier}
 
 \section{Redes Neuronales: definición y elementos}
-En vistas a solucionar problemas, más complejos que los vistos anteriormente, surgió la necesidad de buscar diferentes modelos computacionales. Una rama a destacar sería la de \textbf{aprendizaje profundo} (o \textit{Deep Learning}), englobada dentro de aprendizaje automático, que decidió diseñar estos nuevos modelos basándose en la estructura del cerebro humano, desarrollando de esta forma las primeras neuronas artificiales.
+Una rama del aprendizaje automático en auge es la de \textbf{aprendizaje profundo} (o \textit{Deep Learning}), englobada dentro de aprendizaje automático, que decidió diseñar estos nuevos modelos basándose en la estructura del cerebro humano, desarrollando de esta forma las primeras neuronas artificiales.
 
 \subsection{Neuronas}
 La neurona es el elemento básico de una red neuronal. Al igual que las existentes en el cerebro humano, estas neuronas son células de procesamiento; reciben varias entradas de datos y devuelven una única salida. Cada neurona contiene uno o varios pesos propios, en función del número de variables que reciba, que se relacionan con ellas de la siguiente forma:
@@ -116,9 +116,9 @@ Buscando la forma de arreglar este problema, descubrimos la posibilidad de reali
 
 Las transiciones creadas a partir de las DQNs se pueden representar como un vector de valores de la siguiente forma: 
 
-$$Q(s, . ; T )$$ 
+$$Q(s, \cdotp ; T )$$ 
 
-Donde $T$ son los parámetros de la red y $s$ es el estado actual. Esto significa que la red es capaz de calcular múltiples valores-Q de forma dinámica para todas las acciones posibles en un estado, sin abandonar la representación que suponía la tabla-Q. Además, permite generalizar estados no visitados pero sí muy parecidos a otros que ya ha visitado, ya que la red ya tendrá calculadas las decisiones para éstos también.
+Donde $T$ son los parámetros de la red y $s, \cdotp$ son todos los estados, especificando $s$ como el estado actual. Esto significa que la red es capaz de calcular múltiples valores-Q de forma dinámica para todas las acciones posibles en un estado, sin abandonar la representación que suponía la tabla-Q. Además, permite generalizar estados no visitados pero sí muy parecidos a otros que ya ha visitado, ya que la red ya tendrá calculadas las decisiones para éstos también.
 
 Podemos ver el funcionamiento de las DQNs en el pseudo-código \ref{code:cap4_dqn}, sin embargo esta es una versión bastante simplificada y para conseguir un verdadero éxito habrá que probar otras técnicas a mayores que veremos en el siguiente capítulo.
 

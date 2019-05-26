@@ -137,7 +137,7 @@ constantes,guionado,Cascaras/bibliografia,config%
 \restauraCabecera
 
 
-% \setcounter{chapter}{\thechapter-1} 
+\setcounter{chapter}{\thechapter} 
 \include{Capitulos/Introduccion}
 \addtocounter{chapter}{-1}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -160,7 +160,7 @@ constantes,guionado,Cascaras/bibliografia,config%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Si el TFM se escribe en inglés, comentar las siguientes líneas 
 % porque no es necesario incluir nuevamente las Conclusiones en inglés
-\setcounter{chapter}{-1} 
+\setcounter{chapter}{\thechapter - 1} 
 \begin{otherlanguage}{english}
 \include{Capitulos/ConclusionsFutureWork}
 \end{otherlanguage}
@@ -170,14 +170,14 @@ constantes,guionado,Cascaras/bibliografia,config%
 
 
 % Apéndices
-\appendix
+% \appendix
 %\include{Apendices/appendixA}
 %\include{Apendices/appendixB}
 %\include{Apendices/appendixC}
 %\include{...}
 %\include{...}
 %\include{...}
-\backmatter
+% \backmatter
 
 %
 % Bibliografía
@@ -218,6 +218,6 @@ constantes,guionado,Cascaras/bibliografia,config%
 %
 % Final
 %
-\include{Cascaras/fin}
+% \include{Cascaras/fin}
 %\end{otherlanguage}
 \end{document}
