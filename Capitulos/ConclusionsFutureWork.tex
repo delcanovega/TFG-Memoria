@@ -13,7 +13,7 @@ We began by studying the basics of Machine Learning, taking as our starting poin
 
 After the previous study, it was time to do our first tests and learn how to use the environment. We started with a simple game: CartPole, available in the OpenAI Gym library. The environment was simple and the actions to be taken by the agent were reduced. In spite of that, the model used in Q-Learning could give us a lot of problems in larger environments, even though the idea was good at first: The required size of the representation for all possible states grew almost exponentially every time we introduced new environment variables or we modified the existing ones. That is why we needed to go one step further. 
 
-It was not easy to get used to Q-Learning. The concept was interesting and also simple, due to its similarity with a state machine. However, it was during the implementation when we started to notice the complexity that its use implies, even in an easy problem as it was the CartPole one. The fact of setting the problem representation was a challenge itself, since we were treating with continuous values. Multiple configurations were needed for discretizing these values, to see which one was the best for the algorithm.
+It was not easy to get used to Q-Learning. The concept was interesting and also simple, due to its similarity with a state machine. However, it was during the implementation when we started to notice the complexity that its use implies, even in an easy problem as it was the CartPole one. The fact of \textbf{setting the problem representation was a challenge itself}, since we were treating with continuous values. Multiple configurations were needed for discretizing these values, to see which one was the best for the algorithm.
 
 As a first contact with the elements that will form our future researchs, in this case, everything related to the CartPole example on Q-Learning, we can conclude that the results were satisfying and not only because our algorithm was finally able to predict correctly the moves in the game. It served us to be prepared for the kind of errors we would find later, besides learning this method's functioning and creating a theoretical base, in order to know how to apply it on future environments.
 
@@ -21,11 +21,11 @@ Almost simultaneously, we started looking for other ways to develop our project,
 
 Even though the concepts involving the DQNs' origination were already familiar for us, the very first results caught us by surprise. Our agent was not learning correctly and although we were expecting worse results than the Q-Learning implementation, for being our first attempt, we were not prepared for that bad. It was at this point when the research task took a crucial role for us, compeling us to get involved in it, until we realized our mistakes and the possible solutions to them.
 
-Finally, thanks to the use of an additional memory, for our agent to learn from its own mistakes, and a second network, for stabilizing its results, we achieved a correct learning. From this elements, we understood that it did not matter the quantity of the available data or the number of episodes that the agent was learning. The essential was how significant and representative should out data be, so that we could learn something useful from them. In the same way, we understood that the fact of learning something new was not necessarily good for our agent. The second neural network was very helpful to ``guide'' the agent along the best learning way, accomplishing better results in few episodes, compared to previous tests.
+Finally, thanks to the use of an additional memory, for our agent to learn from its own mistakes, and a second network, for stabilizing its results, we achieved a correct learning. From this elements, we understood that it did not matter the quantity of the available data or the number of episodes that the agent was learning. \textbf{The essential was how significant and representative should our data be}, so that we could learn something useful from them. In the same way, we understood that the fact of learning something new was not necessarily good for our agent. The second neural network was very helpful to ``guide'' the agent along the best learning way, accomplishing better results in fewer episodes, compared to previous tests.
 
 The last step we reached in our project was to transfer everything we learned and accomplished in CartPole to another environment to check that the agent was still learning correctly. This time it was the MountainCar game, also available in the OpenAI Gym library. 
 
-The main problem we had to face was the learning rate. After observing our agent's progress in this new environment, we realized that the reward was not giving us any helpful information for the model's learning; or, at least, not until the game goal was accomplished, which implied a very long lasting training.
+The main problem we had to face was the learning rate. After observing our agent's progress in this new environment, we realized that \textbf{the reward was not giving us any helpful information} for the model's learning; or, at least, not until the game goal was accomplished, which implied a very long lasting training.
 
 Because of this fact, we decide to focus on changing the reward. After many different approaches and tests to modify it, we finally achieved a faster learning for our agent. Surprisingly, the simplest solutions were also the most effective ones. These leads us to conclude that we had managed to develop an AI capable of playing.
 
@@ -33,7 +33,18 @@ Maybe at first sight, choosing a research project, with an increasingly distant 
 
 The research and time invested, has led us to understand the work involved in building an AI, even having a small initial base on which to stand. We have been able to experience personally the facilities of its use, applied to many projects, including ours. In addition to new knowledge, we have acquired new ideas and base on which build them.
 
-Deep Reinforcement Learning is field still growing, on which much remains to be learned. But if we can say something for sure is that its evolution is not over yet and that, in a not too distant future, it will gain much more importance than it already has. And luckily, we will be prepared to follow its progress.
+Deep Reinforcement Learning is a still growing field, on which much remains to be learned. But if we can say something for sure is that its evolution is not over yet and that, in a not too distant future, it will gain much more importance than it already has. And luckily, we will be prepared to follow its progress.
+
+\subsection{Lessons learned}
+
+\begin{itemize}
+    \item Finding a good representation of the state is a hard task for continuous environments.
+    \item A Neural Network can be used to approximate a Q-table and then avoid having to discretize the state.
+    \item Training a Neural Network must be done with representative information of as much states as possible. Otherwise, the agent might improve its performance for a specific subtask at the cost of getting worse at others.
+    \item Using a second Neural Network improves convergence, because the agent follows a more stable goal for longer periods.
+    \item A representative reward is vital for the agent's learning.
+\end{itemize}
+        
 
 \section{Achievement of objectives}
 

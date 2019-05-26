@@ -13,7 +13,7 @@ Comenzamos estudiando las bases del aprendizaje automático, tomando como punto 
 
 Tras el estudio previo, era el momento de hacer nuestras primeras pruebas y aprender cómo utilizar el entorno. Empezamos con un juego sencillo, el CartPole disponible en la librería de OpenAI Gym. El entorno era sencillo y las acciones que debía tomar el agente, reducidas. Sin embargo, el modelo utilizado en Q-Learning nos podía dar problemas en entornos mayores, a pesar de que el enfoque era bueno en un principio: el tamaño que requería la representación de los estados posibles crecía de forma casi exponencial cada vez que se introducían nuevas variables en el entorno, o aumentaba el rango de valores de las existentes. Por ello, necesitaríamos ir un paso más allá. 
 
-No fue fácil acostumbrarse al uso del método de Q-Learning. El concepto resultaba curioso a la vez que simple, debido a su parecido con una máquina de estados. No obstante, fue durante la implementación cuando más comenzamos a notar la complejidad que implicaba su uso, incluso en un problema a primera vista sencillo, como resultó ser el de CartPole. El hecho de plantear la representación del problema supuso un reto, ya que tratábamos con valores continuos, y fueron necesarias varias configuraciones para la discretización de dichos valores, hasta ver con cuál trabajaba mejor el algoritmo.
+No fue fácil acostumbrarse al uso del método de Q-Learning. El concepto resultaba curioso a la vez que simple, debido a su parecido con una máquina de estados. No obstante, fue durante la implementación cuando más comenzamos a notar la complejidad que implicaba su uso, incluso en un problema a primera vista sencillo, como resultó ser el de CartPole. El hecho de \textbf{plantear la representación del problema supuso un reto}, ya que tratábamos con valores continuos, y fueron necesarias varias configuraciones para la discretización de dichos valores, hasta ver con cuál trabajaba mejor el algoritmo.
 
 Como primera toma de contacto con los elementos que conformarían nuestras futuras investigaciones, en este caso todo lo aplicado sobre el ejemplo del CartPole en Q-Learning, podemos decir que los resultados fueron satisfactorios, y no solo porque el algoritmo consiguiese predecir correctamente los movimientos en el juego. Nos sirvió para prepararnos para los errores que podríamos encontrarnos más adelante, además de comprobar el funcionamiento de este método y crear lo que sería una base teórica para saber cómo aplicarlo a otros entornos en un futuro.
 
@@ -21,11 +21,11 @@ Simultáneamente, comenzamos buscando otros caminos por los que desarrollar nues
 
 A pesar de que los conceptos que implicaban la creación de las DQNs ya nos eran familiares, los resultados en un primer momento nos pillaron totalmente por sorpresa. El agente no aprendía correctamente, y aunque esperábamos peores resultados por ser nuestro primer intento, no nos habíamos planteado unos tan malos. Fue en este punto cuando la tarea de investigación tomó un papel vital para nosotros, obligándonos a todos a volcarnos en ella, hasta ver nuestros fallos y posibles soluciones a ellos. 
 
-Finalmente, gracias al uso de una memoria para que nuestro agente también aprendiese de sus propios errores y a una segunda red neuronal para estabilizar sus resultados, conseguimos un correcto aprendizaje. A partir de estos elementos, entendimos que no sólo importaba el volumen de los datos de los que disponíamos, o el número de episodios que dejásemos al agente aprendiendo. Lo importante era lo relevantes y representativos que debían ser éstos datos para que sirviera de algo aprender de ellos. De la misma forma, comprendimos que no siempre que nuestro agente aprendía algo nuevo, tenía que ser bueno. La segunda red nos fue muy útil para "guiar" al agente por la mejor ruta de aprendizaje, consiguiendo buenos resultados en pocos episodios, en comparación con todas las pruebas anteriores.  
+Finalmente, gracias al uso de una memoria para que nuestro agente también aprendiese de sus propios errores y a una segunda red neuronal para estabilizar sus resultados, conseguimos un correcto aprendizaje. A partir de estos elementos, entendimos que no sólo importaba el volumen de los datos de los que disponíamos, o el número de episodios que dejásemos al agente aprendiendo. \textbf{Lo importante era lo relevantes y representativos que debían ser éstos datos para que sirviera de algo aprender de ellos}. De la misma forma, comprendimos que no siempre que nuestro agente aprendía algo nuevo, tenía que ser bueno. La segunda red nos fue muy útil para "guiar" al agente por la mejor ruta de aprendizaje, consiguiendo buenos resultados en pocos episodios, en comparación con todas las pruebas anteriores.  
 
 El último paso al que llegamos en nuestro proyecto fue a trasladar todo lo aprendido y lo conseguido en el CartPole a otro entorno para comprobar que el agente seguía aprendiendo correctamente. Esta vez se trataba de el juego de MountainCar, también disponible en la librería de OpenAI Gym. 
 
-El principal problema al que nos enfrentamos aquí fue a la velocidad de aprendizaje. Tras observar cómo se desenvolvía nuestro agente en el nuevo entorno, nos dimos cuenta de que la recompensa no trasmitía una información útil para el aprendizaje del modelo; o por lo menos, no hasta que se alcanzaba el objetivo final, lo cual implicaba un entrenamiento muy largo. 
+El principal problema al que nos enfrentamos aquí fue a la velocidad de aprendizaje. Tras observar cómo se desenvolvía nuestro agente en el nuevo entorno, nos dimos cuenta de que \textbf{la recompensa no trasmitía una información útil para el aprendizaje} del modelo; o por lo menos, no hasta que se alcanzaba el objetivo final, lo cual implicaba un entrenamiento muy largo. 
 
 Fue por ello que decidimos centrarnos en cambiar la recompensa. Tras diferentes enfoques y pruebas para modificarla, conseguimos acelerar el aprendizaje de nuestro agente. Sorprendentemente, las soluciones más simples fueron las más efectivas y las que nos llevaron a concluir que habíamos conseguido desarrollar una IA capaz de jugar a videojuegos.
 
@@ -34,6 +34,16 @@ Tal vez en un primer momento la idea de hacer un trabajo de investigación, con 
 La investigación y el tiempo invertidos nos han llevado a comprender el trabajo que supone construir una IA de este tipo, incluso teniendo una pequeña base inicial en la que sostenerse. De la misma forma, hemos podido experimentar de primera mano las facilidades que supone su uso, sobre el nuestro y sobre otros proyectos. Además de nuevos conocimientos, hemos adquirido nuevas ideas y una base sobre la que construirlas. 
 
 El aprendizaje por refuerzo profundo es un campo que todavía está en crecimiento y del que nos queda mucho por aprender. Pero si algo podemos decir con seguridad es que su evolución todavía no ha acabado y que con el tiempo tendrá mucha más importancia de la que ya tiene a día de hoy. Y, con suerte para nosotros, estaremos preparados para seguir su avance.
+
+\subsection{Lecciones aprendidas}
+
+\begin{itemize}
+    \item Lograr una buena representación del estado es una tarea complicada en entornos continuos.
+    \item Puede usarse una red neuronal para aproximar una tabla-Q y así evitar lidiar con la representación del estado.
+    \item A la hora de entrenar una red neuronal, se debe hacer con información representativa de todos los estados o situaciones posibles. Si no, el agente mejorará su rendimiento en algunas situaciones pero lo empeorará en muchas otras.
+    \item Utilizar una segunda red neuronal facilita la convergencia, ya que el agente persigue un objetivo que permanece estable durante mayor tiempo.
+    \item Una recompensa representativa es clave para el aprendizaje.
+\end{itemize}
 
 \section{Cumplimiento de objetivos}
 
