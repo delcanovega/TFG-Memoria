@@ -35,9 +35,9 @@ Podemos ver el funcionamiento del aprendizaje por refuerzo en el pseudocódigo \
     
     Initialize state
     
-    repeat (for each step of the episode):
-        select action
-        perform action; observe reward and next-state
+    Repeat (for each step of the episode):
+        Select action
+        Perform action; Observe reward and next-state
         state $\leftarrow$ next-state
     \end{lstlisting}%
 \end{minipage}
@@ -126,11 +126,11 @@ Para ayudarnos a conseguir este balanceo entre exploración y explotación, lo q
 
     if random() < epsilon:
         # explore
-        choose a random action
+        Choose a random action
 
     else:
         # exploit
-        choose best action for current state
+        Choose best action for current state
     \end{lstlisting}%
 \end{minipage}
 
@@ -156,31 +156,27 @@ Podemos relacionar esta tasa de aprendizaje ($\alpha$) y la ecuación antes prop
 
 $$Q^*(s_{t}, a_{t}) = (1-\alpha ) Q(s_{t}, a_{t}) + \alpha [r(s_{t}, a_{t}) + \gamma\ max_{a'}\ Q^*(s_{t+1}, a')]$$
 
-Combinando todos estos factores, podemos definir el pseudocódigo del funcioniamiento de Q-Learning como apreciamos en el Listing \ref{code:q-learning}, de manera que relacionemos todos los hiperparámetros y conceptos vistos hasta ahora. Cabe destacar la variable \textbf{\texttt{env}}, cuyas funciones abordaremos en el punto \ref{sec:openai}, que corresponte al entorno sobre el que estamos trabajando, siendo la función \textbf{\texttt{env.reset()}} la cual nos proporciona un estado inicial aleatorio dentro del entorno, la función \textbf{\texttt{env.step()}} la que simula la ejecución de la acción tomada y devolviendo el estado-siguiente y la recompensa, el booleano \textbf{\texttt{end}} que nos indica si el episodio ha terminado o no, y la variable \textbf{\texttt{next\_max}} que se corresponde al valor-Q máximo en el estado-siguiente.
+Combinando todos estos factores, podemos definir el pseudocódigo del funcioniamiento de Q-Learning como apreciamos en el Listing \ref{code:q-learning}, de manera que relacionemos todos los hiperparámetros y conceptos vistos hasta ahora. Cabe destacar el booleano \textbf{\texttt{end}} que nos indica si el episodio ha terminado o no y la variable \textbf{\texttt{next\_max}} que se corresponde al valor-Q máximo en el estado-siguiente.
 
 \begin{minipage}{0.9\linewidth}%
-\begin{lstlisting}[frame=tb, language=python, caption=Pseudocódigo Aprendizaje por Refuerzo, label={code:q-learning}]
+\begin{lstlisting}[frame=tb, language=python, mathescape, caption=Pseudocódigo Q-Learning, label={code:q-learning}]
 import numpy as np
-import gym
-
-env = gym.make('gym-environment')
 
 # Initialize Q-table, states and actions
-states  = env.state_space
-actions = env.action_space
+states  = {1, .., $n_{s}$}
+actions = {1, .., $n_{a}$}
 q_table = np.zeros((states, actions))
 
 for i in range(episodes):
-    # Initialize current-state
-    state = env.reset()
+    Initialize state $\in$ states
     
     while not end:
-        choose an action
+        Choose an action $\in$ actions
         
-        # perform action
-        next_state,reward,end,_=env.step(action)
+        Perform action
+        Observe next_state, reward and end
         
-        # update Q-table
+        # Update Q-table
         Q'(state,action) = 
             (1 - LEARNING_RATE) * Q(state,action) + 
             LEARNING_RATE * (reward + 
