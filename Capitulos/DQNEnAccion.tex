@@ -286,14 +286,14 @@ Para poder comparar lo mejor posible los resultados, decidimos crear una serie d
 Se puede ver claramente en los resultados de Adadelta (figura \ref{fig:mountaincar_09}) consigue alcanzar el objetivo varias iteraciones antes que Adam (figura \ref{fig:mountaincar_09}), y ambas se mantienen casi totalmente estables durante los siguientes episodios.
 
 %TODO: elegir imagen  y explicarla bien
-La imagen cuenta con tres gráficas:
+Las imágenes \ref{fig:mountaincar_09} y \ref{fig:mountaincar_08} cuentan con tres gráficas:
 \begin{itemize}
-    \item La primera muestra la evolución general del sistema en función de los episodios. Se pueden ver los resultados de las dos redes neuronales, la azul para agente y la cian para el aprendiz. La línea roja representa la recompensa real que devuelve el entorno. La negra muestra la recompensa media de las cien ultimas partidas. Así tenemos una observación general y fácil de interpretar.
+    \item La primera muestra la evolución general del sistema en función de los episodios. Se pueden ver los resultados de las dos redes neuronales, la azul para agente y la cian para el aprendiz. La línea roja representa la recompensa real que devuelve el entorno. La negra muestra la recompensa media de las cien últimas partidas. Así tenemos una observación general y fácil de interpretar.
     \item La gráfica inferior izquierda muestra la posición máxima alcanzada durante la partida. Esto nos permite ver lo cerca que se ha quedado el agente de alcanzar la meta.
     \item La gráfica inferior derecha representa las puntuaciones obtenidas por ambas redes en una simulación al final de la ejecución, con el fin de comprobar si realmente han aprendido. Esta simulación se realiza utilizando la recompensa original, simplificando su interpretación.  
 \end{itemize}
 
-Dado que seguíamos encontrando fluctuaciones en el aprendizaje de algunas ejecuciones y continuábamos en busca de una mayor estabilidad, decidimos añadir una tercera red neuronal que permitiera almacenar el mejor modelo encontrado hasta el momento, como una copia de seguridad, introduciendo así una especie de elitismo entre los episodios. El objetivo de dicho modelo es intervenir eventualmente para medir la progresión del aprendizaje del modelo y, en caso de producirse un empeoramiento en los resultados, imponer la configuración de la copia de seguridad; en caso contrario se guarda la nueva mejor configuración. 
+Dado que seguíamos encontrando fluctuaciones en el aprendizaje de algunas ejecuciones,continuábamos en busca de una mayor estabilidad. Decidimos añadir una tercera red neuronal que permitiera almacenar el mejor modelo encontrado hasta el momento, como una copia de seguridad, introduciendo así una especie de elitismo entre los episodios. El objetivo de dicho modelo es intervenir eventualmente para medir la progresión del aprendizaje del modelo y, en caso de producirse un empeoramiento en los resultados, imponer la configuración de la copia de seguridad; en caso contrario se guarda la nueva mejor configuración. 
 
 \figura{Bitmap/DQNEnAccion/mountaincar_10}{width=1\textwidth}{fig:mountaincar_10}%
        {Resultado Final}
