@@ -239,13 +239,13 @@ A continuación, evaluaremos en mayor detalle cada una de las opciones disponibl
 
 \subsubsection*{Posición}
 
-La posición es el primer candidato para utilizar como recompensa. Al fin y al cabo, si conseguimos que el coche avance lo suficiente, terminará llegando a la meta. Hicimos una serie de pruebas en las que directamente reemplazábamos el valor de la recompensa por el valor de la posición. Para ser capaces de apreciar en qué momento se alcanzaba la meta, le otorgamos una recompensa significativamente más grande cuando lo conseguía, con la esperanza de que esto reforzase mucho más ese comportamiento.
+La posición es el primer candidato para utilizar como recompensa. Al fin y al cabo, si conseguimos que el coche avance lo suficiente, terminará llegando a la meta. Hicimos una serie de pruebas en las que directamente reemplazábamos el valor de la recompensa por el valor de la posición. Para ser capaces de apreciar en qué momento se alcanzaba la meta, le otorgamos una recompensa significativamente más grande cuando lo conseguía, inicialmente optamos por dar 4000 menos el numero de pasos que tarda en alcanzar la meta, con la esperanza de que esto reforzase mucho más ese comportamiento.
 
 \figura{Bitmap/DQNEnAccion/mountaincar_04}{width=0.7\textwidth}{fig:mountaincar_04}%
        {Visualización de la recompensa en función de la posición}
 
 %TODO: Añadir valor de recompensa
-Como podemos ver en la gráfica \ref{fig:mountaincar_04}, el rendimiento sigue siendo muy parecido al visto anteriormente en la imagen \ref{fig:mountaincar_02}. La repentina subida de puntuación en torno al episodio 1400, se traduce en que el coche ha conseguido alcanzar la meta, la cima de la montaña derecha. A partir de los nuevos resultados podemos hacer las siguientes observaciones:
+Como podemos ver en la gráfica \ref{fig:mountaincar_04}, el rendimiento sigue siendo muy parecido al visto anteriormente en la imagen \ref{fig:mountaincar_02}. La repentina subida de puntuación en torno al episodio 1400, se traduce en que el coche ha conseguido alcanzar la meta, la cima de la montaña derecha. Por otro lado el punto más alto que llega a alcanzar la gráfica es cerca de 470, teniendo en cuenta que la recompensa por llegar a la meta es de 3800 a 4000, podemos deducir que solo ha logrado alcanzar la meta poco más de 10 veces en los últimos 100 episodios de la simulación. A partir de los nuevos resultados podemos hacer las siguientes observaciones:
 
 \begin{itemize}
     % \item En primer lugar, dimos una recompensa exageradamente alta al alcanzar la meta, no solo para que ese camino se refuerce más que con la recompensa original, para acelerar el aprendizaje, sino para además permitirnos distinguir más fácilmente (en la gráfica) las partidas que llegan a la meta de las que no.  
@@ -256,9 +256,9 @@ Como podemos ver en la gráfica \ref{fig:mountaincar_04}, el rendimiento sigue s
 
 \figura{Bitmap/DQNEnAccion/mountaincar_05}{width=0.7\textwidth}{fig:mountaincar_05}%
        {Resultados finales de la posición como recompensa}
-
-%TODO: Añadir valor recompensa
+ 
 Teniendo en cuenta estos nuevos factores, los resultados obtenidos pueden verse en la gráfica \ref{fig:mountaincar_05}. Claramente, conseguimos que el problema se resuelva mucho más rápido: 400-500 episodios frente a los 1400 anteriores. Sin embargo la estabilidad aún sigue lejos de parecerse a la vista en el problema de CartPole. Siguen existiendo situaciones en las que el agente consigue resolver el problema en algunas partidas, pero luego vuelve a fracasar en las siguientes.
+Por otro lado, cabe destacar que la gráfica \ref{fig:mountaincar_05} obtiene valores mucho más altos, en sus primeros episodios, que los de la gráfica \ref{fig:mountaincar_04}, esto se debe a que ahora la recompensa se basa en la \texttt{posición absoluta acumulada}, mientras que en la anterior se basaba en la posición acumulada, esto sumado a la desviación del centro, hace que gran parte del entorno tuviera posición negativa.
 
 
 \subsubsection*{Velocidad}
